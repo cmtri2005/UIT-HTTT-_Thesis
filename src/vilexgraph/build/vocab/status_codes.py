@@ -1,6 +1,6 @@
 """Ground-truth mapping for `history[].content` (docs/plans/completed/2026-09-04-truoc-stage-6.md §A).
 
-Loads and enforces `data/eff_status_map.json`; it never invents a label, the
+Loads and enforces `data/vocab/eff_status_map.json`; it never invents a label, the
 same rule `vocab/reference_types.py` follows. Read that JSON's `_readme` for how
 each entry was established and what is still unknown about the numeric
 suffixes.
@@ -23,7 +23,7 @@ from pathlib import Path
 
 from ..storage.documents import REPO_DATA_DIR, read_json
 
-DEFAULT_MAP_PATH = REPO_DATA_DIR / "eff_status_map.json"
+DEFAULT_MAP_PATH = REPO_DATA_DIR / "vocab" / "eff_status_map.json"
 
 # Free-text rows the data-entry system writes instead of a code. Both halves
 # appear as either a code ("CHL") or a Vietnamese label ("Còn hiệu lực"),

@@ -58,7 +58,7 @@ class RelationType(str, Enum):
     """Edge vocabulary, named after what vbpl.vn actually publishes.
 
     The three structural relations are derived by this package. The rest map
-    one-to-one onto a `referenceType` code in `data/reference_type_map.json`;
+    one-to-one onto a `referenceType` code in `data/vocab/reference_type_map.json`;
     the comment on each is the portal's own Vietnamese label and how many such
     edges the corpus holds, so an edge type that stops appearing is visible.
     """

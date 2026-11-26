@@ -139,7 +139,7 @@ So với các bộ gần nhất: LawInForce-eCFR báo hai người gán đồng 
 
 ## 5. So với đề cương
 
-Nguồn: `docs/DeCuongKLTN_23521635_23521643_UIT.docx` [XM]. Bảng lệch chi tiết đã có ở Chương 1 mục 1.6; dưới đây là bản rút gọn kèm đánh giá.
+Nguồn: `docs/de_cuong_kltn.docx` [XM]. Bảng lệch chi tiết đã có ở Chương 1 mục 1.6; dưới đây là bản rút gọn kèm đánh giá.
 
 | Đề cương hứa | Hiện có | Mức |
 |---|---|---|
@@ -201,7 +201,7 @@ Bộ test cuối đã xem. Mọi cấu hình mới chạy trên bộ này phải
 ### P0. Phải xong trước khi nộp
 
 **P0-1. Đưa TCS và MRR vào paper.**
-- Vì sao: đề cương hứa hai chỉ số này. Số đã nằm sẵn trong `runs/final_g4_20261112/r1/test/all.score.json`, lát `all`, chế độ `giua_khoang` [XM]:
+- Vì sao: đề cương hứa hai chỉ số này. Số đã nằm sẵn trong `runs/final/main/r1/test/all.score.json`, lát `all`, chế độ `giua_khoang` [XM]:
 
   | Hệ | TCS (127 cặp T2) | MRR | VCR | EM | F1 |
   |---|---:|---:|---:|---:|---:|
@@ -217,12 +217,12 @@ Bộ test cuối đã xem. Mọi cấu hình mới chạy trên bộ này phải
 
 **P0-2. Người chấm cờ "sai phiên bản".**
 - Vì sao: F3 và con số 25–29% hiện chỉ theo scorer (D8).
-- Việc nhỏ nhất: chấm phiếu `data/review/human_score_g4/recheck_versions/phieu.xlsx` (33 câu, hiện mọi phiên bản) đã dựng ngày 14/11 [XM].
+- Việc nhỏ nhất: chấm phiếu `data/labels/human_scoring/recheck_versions/phieu.xlsx` (33 câu, hiện mọi phiên bản) đã dựng ngày 14/11 [XM].
 - Xong khi: có độ chính xác của cờ kèm khoảng Wilson. Nếu người chấm là tác giả thì ghi rõ.
 
 **P0-3. Thêm generator mã nguồn mở.**
 - Vì sao: yêu cầu của ICAIL (mục 6); M4.
-- Cách làm: prompt của mọi hệ đã lưu ở `runs/final_g4_20261112/r1/prompts/` [XM], nên chỉ cần sinh lại và chấm. Repo đã có đường chạy Qwen3-4B (ADR 0004) [XM]. Nên thêm một model mở lớn hơn, chọn trên dev. Không dùng họ Claude hay DeepSeek (ADR 0004 §3). Tên model cụ thể tôi chỉ biết đến giữa 2026 [NHỚ]; tra bảng xếp hạng hiện tại trước khi chọn.
+- Cách làm: prompt của mọi hệ đã lưu ở `runs/final/main/r1/prompts/` [XM], nên chỉ cần sinh lại và chấm. Repo đã có đường chạy Qwen3-4B (ADR 0004) [XM]. Nên thêm một model mở lớn hơn, chọn trên dev. Không dùng họ Claude hay DeepSeek (ADR 0004 §3). Tên model cụ thể tôi chỉ biết đến giữa 2026 [NHỚ]; tra bảng xếp hạng hiện tại trước khi chọn.
 - Lợi thêm: model chạy tại chỗ với seed cố định thì hết dao động API (ca `b5 − b4` đổi dấu).
 - Báo gì: F1–F5 có giữ chiều và cỡ không; cặp oracle có giữ khoảng cách không. Ghi "thăm dò, độ bền".
 - Chi phí: vài giờ GPU. GPU không phải giới hạn của dự án.
@@ -261,7 +261,7 @@ Bộ test cuối đã xem. Mọi cấu hình mới chạy trên bộ này phải
 - Cần: amendment; chỉnh trên dev; báo "thăm dò" hoặc dựng test mới. Quyết định mở lại reranker là của CMT.
 
 **P1-2. Đối chứng GraphRAG thật (LightRAG): xong, thăm dò.**
-- Đồ thị dựng trên Colab (608 văn bản, `Qwen/Qwen2.5-14B-Instruct`); câu trả lời sinh bằng GPT-4o mini với prompt chung, gửi thường, hai lần; amendment ADR 0006 ngày 15/11 duyệt trước khi chạy test [XM, `runs/lightrag_20261113/`].
+- Đồ thị dựng trên Colab (608 văn bản, `Qwen/Qwen2.5-14B-Instruct`); câu trả lời sinh bằng GPT-4o mini với prompt chung, gửi thường, hai lần; amendment ADR 0006 ngày 15/11 duyệt trước khi chạy test [XM, `runs/final/lightrag_baseline/`].
 - Bộ test cuối, `all` 318 dòng, lần 1 / lần 2 [XM, `test/{r1,r2}/*.score.json`]:
 
   | Chỉ số | LightRAG | Lai ghép phẳng | Cấu hình đầy đủ |
@@ -375,13 +375,13 @@ Xử lý lập luận này:
 
 Trong repo:
 - `docs/paper/ieee/main.tex`, `main.pdf`, `numbers.md`
-- `docs/DeCuongKLTN_23521635_23521643_UIT.docx`
+- `docs/de_cuong_kltn.docx`
 - `docs/reports/research-audit-20261113.md`
 - `docs/plans/active/REFACTOR_PLAN.md`, `docs/plans/active/master-plan.md`
 - `docs/thesis/chuong-1-mo-dau.md` mục 1.6, `chuong-7-ket-luan.md`
 - `related_paper/notes/2026-11-05-doc-nguon-va-tinh-moi.md`
-- `runs/final_g4_20261112/r1/results.md`, `r1/test/all.score.json`
-- `runs/lightrag_20261113/intake.json`, `dev/coverage.json`, `run_intake.sh` (file log chỉ nằm ở máy, không vào git)
+- `runs/final/main/r1/results.md`, `r1/test/all.score.json`
+- `runs/final/lightrag_baseline/intake.json`, `dev/coverage.json`, `run_intake.sh` (file log chỉ nằm ở máy, không vào git)
 
 Web, tra ngày 15/11/2026:
 - ICAIL 2027: <https://icail-vienna-2027.org>, <https://icail-vienna-2027.org/call-for-papers/>

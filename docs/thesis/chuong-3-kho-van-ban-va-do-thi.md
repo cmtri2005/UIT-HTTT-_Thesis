@@ -46,10 +46,10 @@ Corpus dùng trong thực nghiệm hiện tại có quy mô được manifest gh
 | Đơn vị lệnh sửa đổi hoặc bãi bỏ ở lớp A | 53.991 |
 | Đơn vị phiên bản ở lớp B | 1.477.089 |
 
-<!-- nguồn: data/derived/corpus/manifest.json -->
+<!-- nguồn: data/corpus/manifest.json -->
 
 Phễu dữ liệu có thể mô tả bằng chuỗi: dữ liệu cổng → chuẩn hóa và khử trùng quan hệ → điều kiện tham gia benchmark → cấu trúc điều khoản và sự kiện → chuỗi phiên bản → corpus truy xuất. Manifest corpus lưu mã băm đầu vào và đầu ra để truy nguyên đúng bản dẫn xuất. Tuy nhiên, chưa có một bảng phễu duy nhất, cùng ngày chụp, liên kết mọi bước thu thập với corpus hiện tại. [CẦN: đối soát phễu thu thập–backfill–eligibility trên cùng snapshot trước khi điền tỷ lệ hao hụt toàn pipeline].
-<!-- nguồn: data/derived/corpus/manifest.json -->
+<!-- nguồn: data/corpus/manifest.json -->
 <!-- nguồn: docs/audit_dataset.md -->
 
 Một giới hạn căn bản của nguồn là ngày nhập thông tin không nhất thiết là ngày có hiệu lực. Tương tự, trạng thái “hết hiệu lực một phần” ở cấp văn bản không xác định được khoản nào đã hết hiệu lực hoặc thời điểm kết thúc của khoản đó. Pipeline vì thế không dùng trực tiếp dấu thời gian lịch sử của cổng để đóng phiên bản. Những trường hợp thiếu ngày, thiếu đích duy nhất hoặc đích mơ hồ được giữ lại để kiểm tra thay vì tự suy đoán thành một lịch sử hoàn chỉnh.
@@ -118,7 +118,7 @@ M2 yêu cầu bộ truy vấn đối chiếu tay; kế hoạch vẫn để mở 
 ### Đối chiếu VBHN và gold mù
 
 Đối chiếu VBHN đã có báo cáo: chỉ phủ 2/819 mốc silver, 0/492 mốc test 2 và 2/487 mốc v1.0 trong phạm vi T2/T3/T6; các mốc trùng phiên bản không nhất thiết trùng ngày hỏi. Chỉ 2 cặp có đủ toàn văn để so, xác nhận khớp 1; cặp còn lại chưa phân xử, không tự tính là sai. Rà dấu bãi bỏ cho thấy lệch 2/2 ở nguồn đạt cổng; khảo sát căn ban đầu ghi lệch 10/24 và 344 đơn vị có độ giống dưới 0,90. Đây là tín hiệu cần phân xử, không phải tỷ lệ lỗi pháp lý toàn đồ thị. VBHN hiện không đủ làm gold của benchmark hoặc thay gold mù.
-<!-- nguồn: docs/reports/doi-chieu-vbhn.md; data/vbhn_files/c7_summary.json; docs/reports/thu-tai-vbhn-20261105.md; data/vbhn_files/pdf_compare.reproduced.json -->
+<!-- nguồn: docs/reports/doi-chieu-vbhn.md; data/corpus/consolidated_check/c7_summary.json; docs/reports/thu-tai-vbhn-20261105.md; data/corpus/consolidated_check/pdf_compare.reproduced.json -->
 
 PDF VBHN được tải từ `vbpl-bientap-gateway.moj.gov.vn`, cùng cổng vbpl với văn bản gốc. Nó là đối chiếu lời văn theo một quy trình biên tập khác, không phải nguồn thu thập độc lập; dự án vẫn phụ thuộc một nguồn. “Độc lập” của kiểm người chỉ nói đến việc người tự đọc và không thấy đáp án/cửa sổ đồ thị. M2 và kiểm gold còn chờ.
 <!-- nguồn: docs/reports/thu-tai-vbhn-20261105.md; docs/reports/doi-chieu-vbhn.md -->

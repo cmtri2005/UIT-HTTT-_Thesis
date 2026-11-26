@@ -3,7 +3,7 @@
 Mechanical, no judgement: only rows whose meta has qsource "t1" change, and only the leading mark of each
 "…"-separated span. The original release stays untouched; the fixed copy goes to --out with the meta beside it.
 
-    python scripts/eval/fix_t1_short_answers.py --release data/vilextime_final/vilextime.jsonl --out DIR
+    python scripts/eval/fix_t1_short_answers.py --release data/benchmark/test_final/vilextime.jsonl --out DIR
 """
 import argparse
 import json

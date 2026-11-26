@@ -8,8 +8,8 @@ Hai phiên Colab riêng (mỗi phiên tối đa 7 file prompt):
 
 | Phiên | Thư mục | File upload |
 |---|---|---|
-| 1 | `../runs/E3_test2/prompts/` | `b1.jsonl b2ctx.jsonl b7.jsonl b7pp.jsonl b5.jsonl proposed.jsonl` (227 prompt mỗi file) |
-| 2 | `../runs/E3_v1/prompts/` | cùng 6 tên (211 prompt mỗi file) |
+| 1 | `../runs/early/generation_test2/prompts/` | `b1.jsonl b2ctx.jsonl b7.jsonl b7pp.jsonl b5.jsonl proposed.jsonl` (227 prompt mỗi file) |
+| 2 | `../runs/early/generation_test_v1/prompts/` | cùng 6 tên (211 prompt mỗi file) |
 
 Chỉ upload các file `.jsonl`. Giữ lại các file `.export.json` ở máy này, lúc nhập kết quả cần chúng.
 

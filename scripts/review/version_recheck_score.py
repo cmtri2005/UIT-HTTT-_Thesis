@@ -2,8 +2,8 @@
 """Mở khóa phiếu chấm lại sai phiên bản (33 câu, version_recheck_sheet.py) và đo cờ wrong_version của scorer.
 
     .venv/bin/python scripts/review/version_recheck_score.py \\
-        --dir data/review/human_score_g4/recheck_versions --filled phieu_da_cham.xlsx \\
-        --out runs/version_recheck_20261117/agreement.json --note "<ai chấm, có AI nháp không>"
+        --dir data/labels/human_scoring/recheck_versions --filled phieu_da_cham.xlsx \\
+        --out runs/final/version_recheck/agreement.json --note "<ai chấm, có AI nháp không>"
 """
 from __future__ import annotations
 

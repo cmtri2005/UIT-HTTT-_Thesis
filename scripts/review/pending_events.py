@@ -9,7 +9,7 @@ row 9: 104/2022/NĐ-CP amended khoản 2 Điều 24 NĐ 19/2011 from 2023-01-01,
 the old wording). Rule R6 of docs/vilextime-dinh-nghia.md: such a row stays out of
 the test split until its line here has a decision.
 
-Writes `data/review/pending_events.tsv`, one line per (row, event), with the
+Writes `data/labels/pending_events.tsv`, one line per (row, event), with the
 instruction sentence and empty `decision` / `note` columns. `decision` is one of:
   stale      the event did change this provision before as_of: gold is wrong
   no_effect  the event does not change this provision's content (wrong target,
@@ -67,7 +67,7 @@ def blocked(rows: list[dict], data: Path) -> set[str]:
     pending = load_pending(data)
     db = sqlite3.connect(f"file:{data / 'temporal.sqlite'}?mode=ro", uri=True)
     parent_of = {pid: parent for pid, parent in db.execute("SELECT id, parent_id FROM provisions") if parent}
-    path = data / "review/pending_events.tsv"
+    path = data / "labels/pending_events.tsv"
     cleared = {(o["id"], o["event_id"]) for o in csv.DictReader(path.open(encoding="utf-8"), delimiter="\t")
                if o["decision"] == "no_effect"} if path.exists() else set()
     return {r["lineage_id"] for r in rows for _, ev in hits(r, pending, parent_of)
@@ -102,7 +102,7 @@ def main() -> None:
                 })
     out.sort(key=lambda o: (o["group"], o["id"], o["effective_on"]))
 
-    path = args.data / "review/pending_events.tsv"
+    path = args.data / "labels/pending_events.tsv"
     # a re-run keeps what a person already typed
     typed = {(o["id"], o["event_id"]): o for o in csv.DictReader(path.open(encoding="utf-8"), delimiter="\t")
              if o.get("decision") or o.get("note")} if path.exists() else {}

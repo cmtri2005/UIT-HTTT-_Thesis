@@ -74,7 +74,7 @@ bổ sung", "thay thế"...), nhưng trong code chúng chỉ là chuỗi i18n r�
 không dính với số nào.
 
 → Vì vậy phải **tự dựng bảng tra số → nhãn bằng tay**. Quy trình đã làm và kết
-quả: xem §3b. Bảng cuối cùng nằm ở `data/reference_type_map.json`.
+quả: xem §3b. Bảng cuối cùng nằm ở `data/vocab/reference_type_map.json`.
 
 **Trạng thái: XONG.** 13 mã đã được xác minh (`1,2,3,4,5,6,7,8,9,10,11,12,14`).
 Đừng đoán lại nhãn từ con số nữa — cứ đọc file mapping.
@@ -190,7 +190,7 @@ Không dùng taxonomy API (401, và phải tải hết chi tiết mới biết f
 ## 3b. Cách đã dựng bảng mapping `referenceType` — ✅ ĐÃ XONG
 
 > **Đọc mục này khi nào?** Khi crawl lộ ra một mã `referenceType` mới chưa có
-> trong `data/reference_type_map.json` (chương trình sẽ dừng và báo lỗi
+> trong `data/vocab/reference_type_map.json` (chương trình sẽ dừng và báo lỗi
 > `UnknownReferenceTypeError`). Lúc đó làm lại đúng 6 bước dưới đây cho riêng mã
 > mới. Còn nếu chỉ đang dùng bảng có sẵn thì không cần đọc — cứ đọc file JSON.
 
@@ -236,7 +236,7 @@ Kế hoạch ban đầu định dùng chúng làm bộ lọc tinh tự động �
 Vì vậy quy trình đã chốt (đang chạy trong `src/vilexgraph/field_filter.py`):
 
 1. Một văn bản chỉ bị coi là **khả nghi** khi **TẤT CẢ** lĩnh vực/ngành của nó
-   đều nằm trong danh sách chặn (`data/field_filter_map.json`). Chỉ cần có
+   đều nằm trong danh sách chặn (`data/vocab/field_filter_map.json`). Chỉ cần có
    **một** tag đúng lĩnh vực là giữ lại ngay — đây chính là cái cứu hai ví dụ
    phía trên khỏi bị loại nhầm.
 2. Kết quả chỉ là **danh sách chờ người duyệt** (`data/field_filter_review.txt`).
@@ -811,7 +811,7 @@ lạ. Đoán nghĩa `HHL1P3` là đúng kiểu sai lầm mà §3b tồn tại đ
       Kết quả: **13.863 văn bản** trong `data/raw/`, **87.587 cạnh** trong
       `data/edges.jsonl`, manifest trong `data/manifest.sqlite`.
 - [x] **Stage 3b — Bảng mapping `referenceType`.** 13 mã, xác minh thủ công,
-      đóng băng trong `data/reference_type_map.json`. Xem §3b.
+      đóng băng trong `data/vocab/reference_type_map.json`. Xem §3b.
 - [x] **Stage 4 — Rà soát lĩnh vực có người duyệt.** `filter_by_field.py` sinh
       danh sách khả nghi → người duyệt → `apply_field_review.py` chốt vào
       `data/excluded_ids.txt`. Xem §3c để hiểu vì sao KHÔNG tự động hoá bước này.
@@ -970,8 +970,8 @@ Run tests with `pytest` (or `python3 -m pytest`) from the repo root.
 | `data/manifest.sqlite` | id → last-crawled/lastmod/removed_at, for delta runs | rebuildable from `data/raw/`, but you lose delta history |
 | `data/edges.jsonl` | fully regenerated every `build_graph.py` run from `data/raw/` | yes |
 | `data/failed_ids.txt` | ids that failed on the *last* run (dangling refs get moved to manifest's `removed_at`; only transient failures should reappear here) | yes, regenerated each run |
-| `data/reference_type_map.json` | hand-verified `referenceType` code → label/group | **no** — this took manual browser verification, see §3b |
-| `data/field_filter_map.json` | blocklist of confidently off-topic majors/fields, used by Stage 4 | edit with care, read its own `note` field first |
+| `data/vocab/reference_type_map.json` | hand-verified `referenceType` code → label/group | **no** — this took manual browser verification, see §3b |
+| `data/vocab/field_filter_map.json` | blocklist of confidently off-topic majors/fields, used by Stage 4 | edit with care, read its own `note` field first |
 | `data/trees/{id}.json` | Chương/Điều/Khoản/Điểm tree, `[]` when the document has no structure | yes, but it's ~5h to refetch |
 | `data/history/{id}.json` | effectivity timeline — Stage 6's core input | yes, but slow to refetch |
 | `data/diagrams/{id}.json` | inbound + outbound relations, Stage 2b's discovery source | yes, slow to refetch |
@@ -984,7 +984,7 @@ Run tests with `pytest` (or `python3 -m pytest`) from the repo root.
 | `data/delta_runs.jsonl` | when each delta run happened and what it moved | **no** — this is what lets the corpus say "as of when" |
 | `data/tree_content_mismatch.txt` | documents whose tree claims articles the body lacks — review queue for Stage 5b | yes, regenerated |
 | `data/field_filter_review.txt` | Stage 4 candidates, regenerated each run | yes |
-| `data/vilextime/questions.jsonl` | ViLexTime question text, one row per lineage, with who wrote it and why a rejected one was rejected | **no** — model or hand-written text, not rebuildable; everything else in the dataset is derived |
+| `data/benchmark/test2/questions.jsonl` | ViLexTime question text, one row per lineage, with who wrote it and why a rejected one was rejected | **no** — model or hand-written text, not rebuildable; everything else in the dataset is derived |
 | `data/excluded_ids.txt` | **human-confirmed** exclusions from `apply_field_review.py` | no — encodes a manual decision, don't hand-edit without updating the script's `CONFIRMED_EXCLUSIONS` too |
 
 ## Gotchas (learned the hard way — read before you crawl)
@@ -1073,4 +1073,4 @@ Run tests with `pytest` (or `python3 -m pytest`) from the repo root.
   body runs `I.` / `1.1.`. There is no honest way to align those, so they are
   listed rather than guessed at.
 - The numeric suffix on `HHL1P1..4` is unresolved. Every `HHL1P*` is treated as
-  "partly expired" and nothing more; see `data/eff_status_map.json`.
+  "partly expired" and nothing more; see `data/vocab/eff_status_map.json`.

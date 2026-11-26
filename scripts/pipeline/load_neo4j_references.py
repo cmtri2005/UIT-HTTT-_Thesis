@@ -108,7 +108,7 @@ def plan_references(data_dir: Path) -> ReferencePlan:
             if row.get("label_vi") != info.label_vi or row.get("group") != info.group.value:
                 raise ValueError(
                     f"{context}: label/group disagree with verified "
-                    "data/reference_type_map.json; rebuild edges.jsonl or review mapping"
+                    "data/vocab/reference_type_map.json; rebuild edges.jsonl or review mapping"
                 )
             if source_id not in raw_ids:
                 raise ValueError(f"{context}: source Document {source_id} is absent from data/raw")

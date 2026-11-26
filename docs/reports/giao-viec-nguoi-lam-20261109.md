@@ -17,7 +17,7 @@ Tình trạng hiện tại (Codex báo, đã chạy lại kiểm 09/11):
 ---
 
 ## Việc 1. Luật sư: chốt 5 khoảng trống quy tắc
-- **Gửi:** `data/review/ai_research/2026-11-08_adjudication_final/README.md`, mục "Giới hạn" (5 mục) + `docs/vilextime-annotation.md`.
+- **Gửi:** `data/labels/ai_research/2026-11-08_adjudication_final/README.md`, mục "Giới hạn" (5 mục) + `docs/vilextime-annotation.md`.
 - **Làm:** với mỗi mục trả lời "tính / không tính" và cách mã hóa:
   1. Thay từ gần nghĩa mà không có định nghĩa kèm theo.
   2. Câu lặp chữ sinh ra khi áp nguyên văn phép thay cụm từ.
@@ -29,14 +29,14 @@ Tình trạng hiện tại (Codex báo, đã chạy lại kiểm 09/11):
 
 ## Việc 2. Luật sư (hoặc người có thẩm quyền): chốt 20 lineage lo2 còn mở
 - **Gửi:**
-  - `data/review/ai_research/2026-11-08_lo2/duyet_CMT_after_adjudication.xlsx`, sheet **"Duyệt"** (128 dòng; chỉ làm **20 dòng** có lineage trong danh sách dưới đây).
-  - Danh sách 20 lineage: `data/review/ai_research/2026-11-08_lo2/cmt_acceptance.json`, khóa `scope.unresolved_lineage_ids`.
-  - Lập luận và câu hỏi còn mở: `data/review/ai_research/2026-11-08_lo2/open_cases_for_CMT.jsonl` (23 ca, theo `lineage_id`). Sheet "Hòa giải" trong xlsx có cùng nội dung.
+  - `data/labels/ai_research/2026-11-08_lo2/duyet_CMT_after_adjudication.xlsx`, sheet **"Duyệt"** (128 dòng; chỉ làm **20 dòng** có lineage trong danh sách dưới đây).
+  - Danh sách 20 lineage: `data/labels/ai_research/2026-11-08_lo2/cmt_acceptance.json`, khóa `scope.unresolved_lineage_ids`.
+  - Lập luận và câu hỏi còn mở: `data/labels/ai_research/2026-11-08_lo2/open_cases_for_CMT.jsonl` (23 ca, theo `lineage_id`). Sheet "Hòa giải" trong xlsx có cùng nội dung.
 - **Làm:** với mỗi lineage, đọc câu hỏi, điều khoản gốc và văn bản tác động. Trả lời câu hỏi còn mở (chủ yếu **Q4**, 14/23 ca: văn bản nào đã sửa/thay thế điều khoản này?). Điền cột `chot_q1`…`chot_q4_reason`, `xac_nhan`, `ghi_chu_cmt`.
 - **Kết quả:** 20 dòng có đủ nhãn cuối. Lo2 thành 128/128 có nhãn cuối. File xlsx trả lại, không đổi tên và không sửa cột xám.
 
 ## Việc 3. CMT + NMT: duyệt phiếu silver 168 lineage
-- **Gửi:** `data/review/ai_research/2026-11-08_adjudication_final/duyet_CMT_final.xlsx`, sheet **"Duyệt"** (168 dòng). Sheet "Đọc trước" có hướng dẫn.
+- **Gửi:** `data/labels/ai_research/2026-11-08_adjudication_final/duyet_CMT_final.xlsx`, sheet **"Duyệt"** (168 dòng). Sheet "Đọc trước" có hướng dẫn.
 - **Làm (đề xuất chia đôi 84/84; CMT chốt cách chia):**
   - Thứ tự ưu tiên: (a) dòng AI hòa giải hoặc có `[phân vân]` / cột `cau_hoi_mo` có chữ; (b) dòng **đạt** (vào bộ test, xem kỹ); (c) dòng **không đạt** mà hai AI đồng ý (xem lướt lý do).
   - Cột `cmt_dong_y`: ghi `x` nếu đồng ý toàn bộ nhãn. Nếu sửa: ghi Q cần sửa và lý do ở `cmt_sua`. Ghi chú ở `cmt_ghi_chu`.
@@ -45,8 +45,8 @@ Tình trạng hiện tại (Codex báo, đã chạy lại kiểm 09/11):
 
 ## Việc 4. Gold mù (cần người độc lập với đồ thị)
 - **Gửi:**
-  - Người A: `data/review/gold_A.xlsx` (hoặc `.tsv`), 75 dòng.
-  - Người B: `data/review/gold_B.xlsx` (hoặc `.tsv`), 75 dòng.
+  - Người A: `data/labels/gold_A.xlsx` (hoặc `.tsv`), 75 dòng.
+  - Người B: `data/labels/gold_B.xlsx` (hoặc `.tsv`), 75 dòng.
   - Hai file có **30 câu chung** (mã khóa G001…), còn lại riêng: tổng **120 câu khác nhau**.
   - **Không gửi** `gold_sample.tsv` (0/120, đã cũ) và không gửi thư mục `the4/gold1/`.
 - **Làm (A và B làm tách biệt, không trao đổi, không mở đồ thị hệ hay nhãn AI):** với mỗi dòng, đọc văn bản gốc hoặc VBHN tại `ngay_hoi` rồi điền:

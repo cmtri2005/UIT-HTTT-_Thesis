@@ -8,10 +8,10 @@ Phiếu này lấy lại từ phiếu đã chấm:
 Ẩn tên hệ, cờ scorer và nhãn cũ; xáo thứ tự có seed. Không gọi model.
 
     PYTHONPATH=src .venv/bin/python scripts/review/version_recheck_sheet.py \\
-        --g4 runs/final_g4_20261112/r1/test --release data/vilextime_final/vilextime.jsonl \\
+        --g4 runs/final/main/r1/test --release data/benchmark/test_final/vilextime.jsonl \\
         --versions data/derived/corpus/versions.jsonl \\
-        --filled data/review/human_score_g4/phieu_cham_da_cham.xlsx \\
-        --out data/review/human_score_g4/recheck_versions/
+        --filled data/labels/human_scoring/phieu_cham_da_cham.xlsx \\
+        --out data/labels/human_scoring/recheck_versions/
 """
 from __future__ import annotations
 

@@ -110,7 +110,7 @@ def main() -> None:
     data = args.data
 
     if args.m2_readiness:
-        sheets = gold_readiness(data / "review")
+        sheets = gold_readiness(data / "labels")
         print(json.dumps({"gold_sheets": sheets,
                           "note": "Readiness only; repeated gold rows are not independent M2 cases."},
                          ensure_ascii=False, indent=2))

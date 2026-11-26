@@ -10,7 +10,7 @@ Inputs are the locked lists and worksheets only; no model is called, no label is
      evidence and metadata are the ones of every older release. `check_release.py` runs on the same staging dir.
   3. `export_release.published` / `meta` write vilextime.jsonl + vilextime_meta.jsonl (schema of h6).
 
-Usage: python scripts/pipeline/build_final_release.py [--out data/vilextime_final]
+Usage: python scripts/pipeline/build_final_release.py [--out data/benchmark/test_final]
 Also writes <out>/internal/ (data dir for final_run.py --data, see <out>/README.md "Chạy G4").
 """
 from __future__ import annotations
@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT / "scripts/review"))
 from crosscheck import GUIDELINE  # noqa: E402
 from export_release import SCHEMA_VERSION, meta, published, row_exclusions  # noqa: E402
 
-AI = ROOT / "data/review/ai_research"
+AI = ROOT / "data/labels/ai_research"
 LOC = Path("/home/trica/vilextime_loc")
 PID = re.compile(r'"provision_id"\s*:\s*"([^"]+)"')
 SHEETS = {"silver": "lo1_silver", "new": "lo2_moi", "t1": "t1_moi"}
@@ -53,7 +53,7 @@ def sha(p) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--out", type=Path, default=ROOT / "data/vilextime_final")
+    ap.add_argument("--out", type=Path, default=ROOT / "data/benchmark/test_final")
     ap.add_argument("--stage", type=Path)
     args = ap.parse_args()
     out, data = args.out, ROOT / "data"
@@ -67,7 +67,7 @@ def main() -> None:
     # locked worksheets: lineage -> (qsource, slim record)
     locked: dict[str, tuple[str, dict]] = {}
     for q, name in SHEETS.items():
-        for r in rd(data / f"review/the4/{name}_worksheet.jsonl"):
+        for r in rd(data / f"labels/the4/{name}_worksheet.jsonl"):
             locked[r["lineage_id"]] = (q, r)
     supp = {}
     for f in sorted(glob.glob(str(AI / "2026-11-08_supp18/input/chunk*.jsonl"))):

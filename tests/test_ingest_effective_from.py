@@ -8,7 +8,7 @@ RAW = {"docNum": "41/2021/TT-BGTVT", "issueDate": "2021-12-31T00:00:00", "effFro
 
 
 def test_only_accepted_decisions_are_applied(tmp_path):
-    review = tmp_path / "review"
+    review = tmp_path / "labels"
     review.mkdir()
     rows = [
         {"document_id": "1", "field": "effective_from", "value": "2022-02-15", "decision": "accept"},

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Chẩn đoán T6 trên DEV (chỉ đọc): bảng từng dòng + đếm loại lỗi. Không gọi API, không đọc versions.jsonl.
 
-    python scripts/check/t6_diag.py [--run runs/rebuild_20261110_dev] [--out docs/reports/chan-doan-t6-dev-20261111.tsv]
+    python scripts/check/t6_diag.py [--run runs/dev/rebuild_rerun] [--out docs/reports/chan-doan-t6-dev-20261111.tsv]
 
 Recall của scorer dùng tiền tố mã đơn vị (version:<id>:n, asis:provision:<id>) để nhận lineage, nên
 bản này tính lại không cần versions.jsonl; cột `recall@10 tính lại` phải khớp all.score.json (có kiểm).
@@ -63,7 +63,7 @@ def classify(row, twin, p2, pr2):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--run", default="runs/rebuild_20261110_dev")
+    ap.add_argument("--run", default="runs/dev/rebuild_rerun")
     ap.add_argument("--out", default="docs/reports/chan-doan-t6-dev-20261111.tsv")
     a = ap.parse_args()
     run = Path(a.run)

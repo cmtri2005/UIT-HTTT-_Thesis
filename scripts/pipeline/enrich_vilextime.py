@@ -17,7 +17,7 @@ and picks boundary rows as before; this step reads `selected.jsonl` and writes
       ends; windows are capped at the snapshot. The twin's gold is recomputed
       from the version chain and must equal its boundary row's, or no twin. A
       date the review found an amendment the chain missed on caps the window
-      (`data/review/validity_queue.tsv`, `missed_event` judged `loi`; 29/09).
+      (`data/labels/validity_queue.tsv`, `missed_event` judged `loi`; 29/09).
       The third row "sau_het_hieu_luc" (asked after the document ended, no
       answer) is gone since 20/10: a replacing act usually carries the content on
       (docs/vilextime-dinh-nghia.md §5), so "no answer" was wrong for most of them.
@@ -63,7 +63,7 @@ and picks boundary rows as before; this step reads `selected.jsonl` and writes
       after its amending act was signed and before it applies), T6a (repealed by
       name), T6b (fell with an ancestor).
   short_answer
-      From `data/vilextime/short_answers.jsonl`, keyed by (lineage, version),
+      From `data/benchmark/test2/short_answers.jsonl`, keyed by (lineage, version),
       its writer in `by` (a person or a model, audited with the row's label);
       it must be a span of the answer or lead-in,
       or several such spans joined by " … ". One that no longer is — a rebuild
@@ -448,7 +448,7 @@ def main() -> None:
     fields = domains(data, {r["target"]["document_id"] for r in rows})
 
     shorts, stale_shorts = {}, []
-    path = data / "vilextime/short_answers.jsonl"
+    path = data / "benchmark/test2/short_answers.jsonl"
     if path.exists():
         for line in path.open(encoding="utf-8"):
             s = json.loads(line)
@@ -510,7 +510,7 @@ def main() -> None:
 
     always_test = {r["target"]["document_id"] for r in rows if r["group"] == "T5"}
     caps: dict[str, list[date]] = collections.defaultdict(list)
-    queue = data / "review/validity_queue.tsv"
+    queue = data / "labels/validity_queue.tsv"
     if queue.exists():
         for q in csv.DictReader(queue.open(encoding="utf-8"), delimiter="\t"):
             if q["kind"] == "missed_event" and q["decision"] == "loi" and q["strategy"] == "giua_khoang":

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """ViLexTime D4 — hoà giải các dòng A và B lệch nhau (W2-03, hướng dẫn §5 bước 4).
 
-    export   -> data/review/hoa_giai_D4.xlsx: mỗi dòng lệch một hàng, nhãn và ghi
+    export   -> data/labels/hoa_giai_D4.xlsx: mỗi dòng lệch một hàng, nhãn và ghi
                chú của A và B đặt cạnh nhau; chỉ ba cột `chot_*` mở để điền.
     import   đọc xlsx, kiểm như nạp nhãn thường, rồi ghi
-               data/review/hoa_giai_D4.tsv (id, verdict, reasons, note đã chốt) và
+               data/labels/hoa_giai_D4.tsv (id, verdict, reasons, note đã chốt) và
                cột `adjudicated` của crosscheck_A.tsv (= verdict đã chốt).
                Không ghi gì nếu còn một lỗi hoặc còn dòng chưa chốt.
-    drop     thêm vào data/vilextime/dropped.jsonl mọi lineage D4 có dòng mang nhãn
+    drop     thêm vào data/benchmark/test2/dropped.jsonl mọi lineage D4 có dòng mang nhãn
              cuối `khong_dat` (đã chốt, hoặc A và B cùng nhãn), để lineage xếp hạng
              kế tiếp thế chỗ (hướng dẫn §5 bước 6). Lineage đã có trong file thì bỏ qua.
 
@@ -65,8 +65,8 @@ def cause(a: dict, b: dict) -> str:
 
 
 def disagreements(data: Path, name: str = "crosscheck") -> list[dict]:
-    a_rows = read(data / f"review/{name}_A.tsv")
-    b = {r["id"]: r for r in read(data / f"review/{name}_B.tsv")}
+    a_rows = read(data / f"labels/{name}_A.tsv")
+    b = {r["id"]: r for r in read(data / f"labels/{name}_B.tsv")}
     out = []
     for a in a_rows:
         other = b.get(a["id"])
@@ -117,7 +117,7 @@ def stem(name: str) -> str:
 
 
 def export(data: Path, name: str = "crosscheck") -> None:
-    out = data / f"review/{stem(name)}.xlsx"
+    out = data / f"labels/{stem(name)}.xlsx"
     if out.exists():
         raise SystemExit(f"{out} đã có; không ghi đè kết quả hoà giải")
     rows = disagreements(data, name)
@@ -184,7 +184,7 @@ def check(rows: dict[str, dict], expected: set[str]) -> list[str]:
 
 
 def ingest(data: Path, by: str, name: str = "crosscheck") -> None:
-    ws = load_workbook(data / f"review/{stem(name)}.xlsx", data_only=True)[SHEET]
+    ws = load_workbook(data / f"labels/{stem(name)}.xlsx", data_only=True)[SHEET]
     head = [c.value for c in ws[1]]
     rows = {}
     for values in ws.iter_rows(min_row=2, values_only=True):
@@ -197,12 +197,12 @@ def ingest(data: Path, by: str, name: str = "crosscheck") -> None:
         for e in errors[:40]:
             print(f"  {e}", file=sys.stderr)
         raise SystemExit(1)
-    with (data / f"review/{stem(name)}.tsv").open("w", encoding="utf-8", newline="") as f:
+    with (data / f"labels/{stem(name)}.tsv").open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter="\t", lineterminator="\n")
         w.writerow(["id", "verdict", "reasons", "note", "adjudicator"])
         for rid, c in rows.items():
             w.writerow([rid, c["chot_verdict"], c["chot_reasons"], c["chot_note"], by])
-    tsv = data / f"review/{name}_A.tsv"
+    tsv = data / f"labels/{name}_A.tsv"
     a_rows = read(tsv)
     for r in a_rows:
         r["adjudicated"] = rows[r["id"]]["chot_verdict"] if r["id"] in rows else r.get("adjudicated", "")
@@ -212,11 +212,11 @@ def ingest(data: Path, by: str, name: str = "crosscheck") -> None:
         w.writerows(a_rows)
     final = [c["chot_verdict"] for c in rows.values()]
     print(f"chốt {len(rows)} dòng: dat {final.count('dat')}, khong_dat {final.count('khong_dat')} "
-          f"-> data/review/{stem(name)}.tsv, cột adjudicated của {tsv}")
+          f"-> data/labels/{stem(name)}.tsv, cột adjudicated của {tsv}")
 
 
 def drop(data: Path, today: str | None = None) -> None:
-    path = data / "vilextime/dropped.jsonl"
+    path = data / "benchmark/test2/dropped.jsonl"
     old = [json.loads(line) for line in path.open(encoding="utf-8")] if path.exists() else []
     known = {d["lineage_id"] for d in old}
     new = {}

@@ -30,9 +30,9 @@ from vilexgraph.build.temporal import (
 
 ROOT = Path("data/vbhn_files")
 DATASETS = {
-    "silver": Path("data/vilextime_dataset/vilextime_silver.jsonl"),
-    "test2": Path("data/vilextime/test2_release_v2.jsonl"),
-    "v1.0": Path("data/vilextime_dataset/vilextime.jsonl"),
+    "silver": Path("data/benchmark/test_v1/vilextime_silver.jsonl"),
+    "test2": Path("data/benchmark/test2/test2_release_v2.jsonl"),
+    "v1.0": Path("data/benchmark/test_v1/vilextime.jsonl"),
 }
 PORTAL = "https://vbpl-bientap-gateway.moj.gov.vn/api/qtdc/public/doc/"
 HEADERS = {"Referer": "https://vbpl.vn/", "User-Agent": "Mozilla/5.0 (compatible; legal-crawler/0.1)"}

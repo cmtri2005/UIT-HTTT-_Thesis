@@ -5,11 +5,11 @@ R=Path('.')
 csv.field_size_limit(10**9)
 def j(p): return json.load(open(R/p,encoding='utf-8'))
 def jl(p): return [json.loads(l) for l in open(R/p,encoding='utf-8') if l.strip()]
-S={'v1':j('runs/E3_v1/test/all.score.json'),'t2':j('runs/E3_test2/rescore/all.score.json')}
-L={'v1':j('runs/E1/test/ladder.score.json'),'t2':j('runs/E1_test2/test/ladder.score.json')}
-X={'v1':j('runs/E3_v1/test/confirm.json')['results'],'t2':j('runs/E3_test2/rescore/confirm.json')['results']}
-PRED={'v1':R/'runs/E3_v1/test','t2':R/'runs/E3_test2/test'}
-REL={'v1':jl('data/vilextime_dataset/vilextime.jsonl'),'t2':jl('data/vilextime/test2_release_v2.jsonl')}
+S={'v1':j('runs/early/generation_test_v1/test/all.score.json'),'t2':j('runs/early/generation_test2/rescore/all.score.json')}
+L={'v1':j('runs/early/retrieval_test_v1/test/ladder.score.json'),'t2':j('runs/early/retrieval_test2/test/ladder.score.json')}
+X={'v1':j('runs/early/generation_test_v1/test/confirm.json')['results'],'t2':j('runs/early/generation_test2/rescore/confirm.json')['results']}
+PRED={'v1':R/'runs/early/generation_test_v1/test','t2':R/'runs/early/generation_test2/test'}
+REL={'v1':jl('data/benchmark/test_v1/vilextime.jsonl'),'t2':jl('data/benchmark/test2/test2_release_v2.jsonl')}
 def n(x,d=3,sign=False):
     if x is None: return '—'
     return (f'{x:+.{d}f}' if sign else f'{x:.{d}f}').replace('.',',')
@@ -58,31 +58,31 @@ for v,t in sec.items():
         V[f'e7.{v}.{s}.r20']=f"{b[2]} = {b[3].replace('.',',')}"; V[f'e7.{v}.{s}.cond']=f"{b[4]} = {b[5].replace('.',',')}"
         V[f'e7.{v}.{s}.r20p']=f"{float(b[3])*100:.1f}".replace('.',','); V[f'e7.{v}.{s}.condp']=f"{float(b[5])*100:.1f}".replace('.',',')
 # dữ liệu v1.0
-man=j('data/vilextime_dataset/manifest.json'); a=man['agreement']
+man=j('data/benchmark/test_v1/manifest.json'); a=man['agreement']
 V.update({'iaa.n':str(a['n']),'iaa.ac1':n(a['ac1']),'iaa.ac1ci':ci(a['ac1_ci95']),'iaa.k':n(a['kappa']),'iaa.pneg':n(a['p_neg']),'rows.main':f"{man['rows']['main']}",'rows.silver':f"{man['rows']['silver']}"})
 for g in('T1','T2','T3','T6'): V[f'iaa.{g}']=n(a['per_group'][g]['ac1']); V[f'iaa.{g}.n']=str(a['per_group'][g]['n'])
 d=man['dropped_lineages_by_reason']; V['drop.unclear']=str(d['relocation_unclear']); V['drop.reloc']=str(d['relocated']); V['drop.t6rows']=str(man['dropped_rows_by_group']['T6'])
-meta={r['id']:r for r in jl('data/vilextime_dataset/vilextime_meta.jsonl')}
+meta={r['id']:r for r in jl('data/benchmark/test_v1/vilextime_meta.jsonl')}
 tb=[r for r in REL['v1'] if r['split']=='test' and r['as_of_strategy']=='ranh_gioi']
 lab=C.Counter(meta[r['id']]['review'].get('labeler') for r in tb)
 V['lab.ab']=str(lab['A+B']); V['lab.agent']=str(sum(c for k,c in lab.items() if k and k.startswith('Codex'))); V['lab.law']=str(sum(c for k,c in lab.items() if k and k.startswith('luật sư'))); V['lab.law_ai']=str(sum(c for k,c in lab.items() if k and 'Claude' in k)); V['lab.n']=str(len(tb))
 # corpus
-cm=j('data/derived/corpus/manifest.json'); V['corpus.raw']=json.dumps(cm,ensure_ascii=False)[:0]
+cm=j('data/corpus/manifest.json'); V['corpus.raw']=json.dumps(cm,ensure_ascii=False)[:0]
 # test 2, nhãn
-ag=j('data/review/test2_llm/agreement.json')['metrics']
+ag=j('data/labels/test2_llm_labels/agreement.json')['metrics']
 for q in('q1','q2','q3'): V[f'ag.{q}.ac1']=n(ag[q]['ac1']); V[f'ag.{q}.pneg']=n(ag[q]['p_neg'])
 V['ag.v.ac1']=n(ag['verdict']['ac1']); V['ag.v.pneg']=n(ag['verdict']['p_neg'])
-sil=list(csv.DictReader(open(R/'data/review/test2_llm/test2_LLM_silver.tsv',encoding='utf-8'),delimiter='\t'))
+sil=list(csv.DictReader(open(R/'data/labels/test2_llm_labels/test2_LLM_silver.tsv',encoding='utf-8'),delimiter='\t'))
 ls=C.Counter(r['labeler'] for r in sil); V['sil.n']=str(len(sil)); V['sil.ab']=str(ls['LLM-silver (A=B)']); V['sil.adj']=str(sum(c for k,c in ls.items() if 'hoa_giai' in k)); V['sil.law']=str(ls['LLM-silver (hoa_giai_Opus + kiem_luat)']); V['sil.dat']=str(sum(r['verdict']=='dat' for r in sil))
 for who in('A','B'):
-    rows=list(csv.DictReader(open(R/f'data/review/test2_llm/test2_LLM_{who}.tsv',encoding='utf-8'),delimiter='\t')); V[f'sil.{who}.drop']=str(sum(r['verdict']!='dat' for r in rows))
+    rows=list(csv.DictReader(open(R/f'data/labels/test2_llm_labels/test2_LLM_{who}.tsv',encoding='utf-8'),delimiter='\t')); V[f'sil.{who}.drop']=str(sum(r['verdict']!='dat' for r in rows))
 # hiệu chuẩn v2
-cs=j('data/review/test2_llm_v2/calib_score.json')
+cs=j('data/labels/test2_llm_calibration/calib_score.json')
 for k,t in(('calib_silver','f'),('calib_A','a'),('calib_B','b')):
     for g in('toàn tập','T2','T3','T6'):
         x=cs[k][g]; gg={'toàn tập':'all'}.get(g,g); V[f'c.{t}.{gg}.ac1']=n(x['ac1']); V[f'c.{t}.{gg}.pneg']=n(x['p_neg']); V[f'c.{t}.{gg}.n']=str(x['n']); V[f'c.{t}.{gg}.xau']=str(x['xau'])
-key={r['lineage_id']:r for r in csv.DictReader(open(R/'data/review/test2_llm_v2/calib_key.tsv',encoding='utf-8'),delimiter='\t')}
-fin={r['lineage_id']:r for r in csv.DictReader(open(R/'data/review/test2_llm_v2/calib_silver.tsv',encoding='utf-8'),delimiter='\t')}
+key={r['lineage_id']:r for r in csv.DictReader(open(R/'data/labels/test2_llm_calibration/calib_key.tsv',encoding='utf-8'),delimiter='\t')}
+fin={r['lineage_id']:r for r in csv.DictReader(open(R/'data/labels/test2_llm_calibration/calib_silver.tsv',encoding='utf-8'),delimiter='\t')}
 bad=[i for i in key if key[i]['su_that']=='khong_dat']; good=[i for i in key if key[i]['su_that']=='dat']
 V['c.bad']=str(len(bad)); V['c.good']=str(len(good)); V['c.catch']=str(sum(fin[i]['verdict']=='khong_dat' for i in bad)); V['c.false']=str(sum(fin[i]['verdict']=='khong_dat' for i in good)); V['c.n']=str(len(key))
 V['c.bad.t6']=str(sum(key[i]['loai'].startswith('T6') for i in bad)); V['c.bad.other']=str(sum(not key[i]['loai'].startswith('T6') for i in bad))
@@ -95,12 +95,12 @@ for v in S:
     for k in('b7pp − b7','proposed − b7pp'):
         for g in('T2','T3'):
             V[f"d.acc.{v}.{k.replace(' − ','_')}.{g}"]=m(S[v][k]['giua_khoang'][g],'accuracy',True)
-V['sil.dis']=str(len(j('data/review/test2_llm/agreement.json')['disagreements']))
-_A={r['lineage_id']:r for r in csv.DictReader(open(R/'data/review/test2_llm_v2/calib_A.tsv',encoding='utf-8'),delimiter='\t')}
-_B={r['lineage_id']:r for r in csv.DictReader(open(R/'data/review/test2_llm_v2/calib_B.tsv',encoding='utf-8'),delimiter='\t')}
+V['sil.dis']=str(len(j('data/labels/test2_llm_labels/agreement.json')['disagreements']))
+_A={r['lineage_id']:r for r in csv.DictReader(open(R/'data/labels/test2_llm_calibration/calib_A.tsv',encoding='utf-8'),delimiter='\t')}
+_B={r['lineage_id']:r for r in csv.DictReader(open(R/'data/labels/test2_llm_calibration/calib_B.tsv',encoding='utf-8'),delimiter='\t')}
 V['c.bothwrong']=str(sum(_A[i]['verdict']!=key[i]['su_that'] and _B[i]['verdict']!=key[i]['su_that'] for i in key))
 _q={}
-for x in jl('data/vilextime/questions.jsonl'): _q[x['lineage_id']]=x
+for x in jl('data/benchmark/test2/questions.jsonl'): _q[x['lineage_id']]=x
 _ids={r['lineage_id'] for r in REL['v1'] if r['split']=='test'}
 _c=C.Counter(_q[i].get('provider') for i in _ids)
 V['q.claude']=str(_c['claude-code']); V['q.deepseek']=str(_c['deepseek'])
@@ -140,7 +140,7 @@ for v in S:
     V[f'subgroup.{v}'] = '\n'.join(subgroup)
 
     # XN1: đếm chuyển trạng thái TV-hit@1 trên từng dòng có đáp án E1.
-    pred = {s:{r['id']:r for r in jl(Path('runs/E1/test' if v=='v1' else 'runs/E1_test2/test')/f'{s}.jsonl')}
+    pred = {s:{r['id']:r for r in jl(Path('runs/early/retrieval_test_v1/test' if v=='v1' else 'runs/early/retrieval_test2/test')/f'{s}.jsonl')}
             for s in ('b7','b7pp')}
     clusters = C.defaultdict(lambda:[0,0])
     contribution = ['| Nhóm | Dòng có đáp án / lineage | Tăng hit / mất hit | Chênh lệch số hit |', '|---|---|---|---:|']

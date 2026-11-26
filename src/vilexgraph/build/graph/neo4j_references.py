@@ -1,6 +1,6 @@
 """D3 mapping from verified vbpl.vn reference codes to graph edge types.
 
-The numeric code/label/group authority is ``data/reference_type_map.json``;
+The numeric code/label/group authority is ``data/vocab/reference_type_map.json``;
 ``RelationType`` supplies the project's typed Neo4j vocabulary. This table
 binds the two without interpreting Vietnamese labels at load time.
 """
@@ -33,5 +33,5 @@ def relationship_type(reference_type: int) -> RelationType:
     except KeyError as exc:
         raise ValueError(
             f"referenceType={reference_type!r} has no D3 RelationType mapping; "
-            "verify data/reference_type_map.json and update neo4j_references.py"
+            "verify data/vocab/reference_type_map.json and update neo4j_references.py"
         ) from exc

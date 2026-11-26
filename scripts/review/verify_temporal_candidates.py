@@ -23,7 +23,7 @@ file and need a human (open the links in
 `data/derived/temporal_candidates_review.tsv`) or an L2 extraction pass
 (master plan P3.10+) to resolve.
 
-Writes `data/review/temporal_candidates.jsonl`. This script only owns
+Writes `data/labels/temporal_candidates.jsonl`. This script only owns
 records whose `method` is `text_corroborated` — every re-run recomputes
 exactly those and rewrites them, so that part alone is a pure function of
 `data/`, delete-and-rerun. Records left by a human or by another reviewing
@@ -152,7 +152,7 @@ def main() -> None:
     ]
     eff_to = [c for c in candidates if c.get("field") == "effective_to"]
 
-    out_path = d / "review" / "temporal_candidates.jsonl"
+    out_path = d / "labels" / "temporal_candidates.jsonl"
     kept = []  # decisions this script does not own: never recomputed, never overwritten
     if out_path.exists():
         for line in out_path.read_text(encoding="utf-8").splitlines():

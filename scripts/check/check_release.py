@@ -19,7 +19,7 @@
   * ids are unique.
 
 Exits non-zero naming the first rows that break a rule. With `--manifest`, and
-only when every rule holds, writes `data/vilextime/manifest.json` (committed; the
+only when every rule holds, writes `data/benchmark/test2/manifest.json` (committed; the
 release itself is derived and gitignored): the sha256 of the release and of every
 committed input it was built or judged from, the corpus manifest's, the commit
 (and whether the tree had uncommitted changes), the snapshot, the schema and the
@@ -107,7 +107,7 @@ def problems(release: list[dict], selected: dict[str, dict], layer_a: set[str], 
     return out
 
 
-ROW_REASONS = {"superseded_by_other_norm"}   # data/vilextime/dropped_rows.jsonl (H5 L7); partial_repeal is derived
+ROW_REASONS = {"superseded_by_other_norm"}   # data/benchmark/test2/dropped_rows.jsonl (H5 L7); partial_repeal is derived
 
 
 def dropped_row_problems(path: Path, release: list[dict]) -> list[str]:
@@ -130,9 +130,9 @@ SUBGROUPS = {"T1", "T2", "T3", "T4", "T5a", "T5b", "T6a", "T6b"}   # docs/vilext
 
 MANIFESTED = ("derived/vilextime/release.jsonl", "derived/corpus/manifest.json", "vilextime/questions.jsonl",
               "vilextime/short_answers.jsonl", "vilextime/sample.jsonl", "vilextime/dropped.jsonl", "vilextime/dropped_rows.jsonl",
-              "review/labels.tsv", "review/crosscheck_A.tsv", "review/crosscheck_B.tsv",
-              "review/crosscheck_result.json", "review/validity_queue.tsv", "review/temporal_candidates.jsonl",
-              "review/t5_documents.tsv", "review/t5_items.tsv")
+              "labels/labels.tsv", "labels/crosscheck_A.tsv", "labels/crosscheck_B.tsv",
+              "labels/crosscheck_result.json", "labels/validity_queue.tsv", "labels/temporal_candidates.jsonl",
+              "labels/t5_documents.tsv", "labels/t5_items.tsv")
 
 
 def manifest(data: Path, release: list[dict]) -> dict:
@@ -143,8 +143,8 @@ def manifest(data: Path, release: list[dict]) -> dict:
         "schema_version": sorted({r["schema_version"] for r in release}),
         "snapshot": SNAPSHOT,
         "commit": git("rev-parse", "--short", "HEAD"),
-        "uncommitted_changes": bool(git("status", "--porcelain", "--", "scripts", "src", "data/vilextime", "data/review",
-                                        ":(exclude)data/vilextime/manifest.json")),
+        "uncommitted_changes": bool(git("status", "--porcelain", "--", "scripts", "src", "data/benchmark/test2", "data/labels",
+                                        ":(exclude)data/benchmark/test2/manifest.json")),
         "sha256": {f: hashlib.sha256((data / f).read_bytes()).hexdigest() for f in MANIFESTED if (data / f).exists()},
         "rows": len(release),
         "counts": {f"{g} · {m} · {sp}": n for (g, m, sp), n in sorted(collections.Counter(
@@ -155,7 +155,7 @@ def manifest(data: Path, release: list[dict]) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--data", type=Path, default=Path("data"))
-    parser.add_argument("--manifest", action="store_true", help="write data/vilextime/manifest.json when all rules hold")
+    parser.add_argument("--manifest", action="store_true", help="write data/benchmark/test2/manifest.json when all rules hold")
     args = parser.parse_args()
     base, corpus = args.data / "derived/vilextime", args.data / "derived/corpus"
     release = [json.loads(line) for line in (base / "release.jsonl").open(encoding="utf-8")]
@@ -166,7 +166,7 @@ def main() -> None:
                if (m := UNIT.search(line)) and m.group(1) in need_a}
     layer_b = {m.group(1) for line in (corpus / "versions.jsonl").open(encoding="utf-8")
                if (m := UNIT.search(line)) and m.group(1) in need_b}
-    found = problems(release, selected, layer_a, layer_b) + dropped_row_problems(args.data / "vilextime/dropped_rows.jsonl", release)
+    found = problems(release, selected, layer_a, layer_b) + dropped_row_problems(args.data / "benchmark/test2/dropped_rows.jsonl", release)
     if found:
         raise SystemExit(f"{len(found)} vi phạm:\n" + "\n".join(found[:20]))
     modes = collections.Counter(r["as_of_strategy"] for r in release)
@@ -177,7 +177,7 @@ def main() -> None:
         these = [r for r in boundary if r["group"] == group]
         print(f"  {group}: dev {sum(r['split'] == 'dev' for r in these) / len(these):.1%} số dòng ranh giới")
     if args.manifest:
-        out = args.data / "vilextime/manifest.json"
+        out = args.data / "benchmark/test2/manifest.json"
         out.write_text(json.dumps(manifest(args.data, release), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         print(f"-> {out}")
 

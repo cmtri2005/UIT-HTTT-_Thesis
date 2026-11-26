@@ -6,7 +6,7 @@ TSV vẫn là bản ghi chính: `crosscheck.py kappa --set kiem` và `adjudicate
 Luật kiểm nhãn giống `crosscheck_xlsx.py import` (từ vựng, note bắt buộc, bốn ô hướng dẫn 3.0).
 
     python scripts/review/label_ui.py --who A          # mở http://127.0.0.1:8765
-    python scripts/review/label_ui.py --who B --ids data/review/kiem_cheo.txt   # B: chỉ các dòng gán chéo
+    python scripts/review/label_ui.py --who B --ids data/labels/kiem_cheo.txt   # B: chỉ các dòng gán chéo
 
 Gán qua link chung (25/10, CMT): đặt mật khẩu rồi mở cổng ra ngoài bằng ngrok; người gán chỉ cần trình duyệt,
 nhãn vẫn lưu vào TSV trên máy chạy server (nhớ commit). Không có mật khẩu thì không được mở ra ngoài.
@@ -23,7 +23,7 @@ ghi (TSV, questions.jsonl, short_answers.jsonl) giống hệt khi gán ở máy.
     python scripts/review/label_ui.py --who A --pull <out_dir>/kiem_A
 
 Sửa câu chữ (CMT 21/10): câu hỏi (cả lineage) và đáp án ngắn (cả phiên bản) sửa được ngay trên trang. Lưu thì
-ghi vào data/vilextime/questions.jsonl, short_answers.jsonl (giữ bản model ở `model_question`,
+ghi vào data/benchmark/test2/questions.jsonl, short_answers.jsonl (giữ bản model ở `model_question`,
 `model_short_answer`, ghi `edited_by`, `edited_at`) và vào phiếu TSV, để lần dựng lại sau mang chúng vào bản
 phát hành mà nhãn vẫn khớp. Lời văn luật, ngày, phiên bản do đồ thị suy ra thì không sửa tay: sai là khong_dat.
 Đáp án ngắn phải là đoạn trích của đáp án hoặc câu dẫn (enrich_vilextime.check_short_answer).
@@ -63,7 +63,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "pipeline"))
 from enrich_vilextime import check_short_answer  # noqa: E402
 
 NEEDS_NOTE = {"gold_wrong", "other", "relocated", "superseded_by_other_norm"}
-B_SAMPLE = Path("review/kiem_cheo.txt")   # B labels only the cross-check sample (decided 21/10)
+B_SAMPLE = Path("labels/kiem_cheo.txt")   # B labels only the cross-check sample (decided 21/10)
 DOC_ID = re.compile(r"^[A-Za-z0-9_\-.~:@+]{1,200}$")   # an Artifact db document id
 doc_id = lambda rid: rid.replace("#", "~").replace("%", "+")   # as the page names its documents
 LABELS = ("verdict", "reasons", "note", "suggestion", *KIEM_FIELDS)
@@ -214,7 +214,7 @@ def save(path: Path, rid: str, new: dict, edits: dict | None = None, data: Path 
             def change(x, q=edits["question"]):
                 x["model_question"] = x.get("model_question") or x["question"]
                 x.update(question=q, **stamp)
-            if not rewrite_jsonl(data / "vilextime/questions.jsonl",
+            if not rewrite_jsonl(data / "benchmark/test2/questions.jsonl",
                                  lambda x: x["lineage_id"] == lid and x["question"], change):
                 return [], [f"không thấy câu hỏi của {lid} trong questions.jsonl"]
             changed += [r for r in rows if r["lineage_id"] == lid]
@@ -226,7 +226,7 @@ def save(path: Path, rid: str, new: dict, edits: dict | None = None, data: Path 
             def change(x, s=edits["short_answer"]):
                 x["model_short_answer"] = x.get("model_short_answer") or x["short_answer"]
                 x.update(short_answer=s, **stamp)
-            if not rewrite_jsonl(data / "vilextime/short_answers.jsonl",
+            if not rewrite_jsonl(data / "benchmark/test2/short_answers.jsonl",
                                  lambda x: x["lineage_id"] == lid and x["version_id"] == vid, change):
                 return [], [f"không thấy đáp án ngắn của {vid} trong short_answers.jsonl"]
             same = [r for r in rows if version_of.get(r["id"]) == vid]
@@ -266,8 +266,8 @@ def state(path: Path, who: str, only: set[str] | None = None) -> dict:
 
 def web_page(data: Path) -> str:
     """The page with both sheets inside, for the Artifact: no doctype, html, head or body (the publish adds them)."""
-    states = {"A": state(data / "review/kiem_A.tsv", "A"),
-              "B": state(data / "review/kiem_B.tsv", "B", set((data / B_SAMPLE).read_text(encoding="utf-8").split()))}
+    states = {"A": state(data / "labels/kiem_A.tsv", "A"),
+              "B": state(data / "labels/kiem_B.tsv", "B", set((data / B_SAMPLE).read_text(encoding="utf-8").split()))}
     bad = [r["id"] for st in states.values() for r in st["rows"] if not DOC_ID.match(doc_id(r["id"]))]
     if bad:
         raise SystemExit(f"{len(bad)} row ids are not db document ids, e.g. {bad[0]}")
@@ -378,11 +378,11 @@ def main() -> None:
     if not args.who:
         ap.error("--who is required")
     if args.pull:
-        saved, errors = pull(args.data / f"review/kiem_{args.who}.tsv", args.pull, args.data, args.who)
+        saved, errors = pull(args.data / f"labels/kiem_{args.who}.tsv", args.pull, args.data, args.who)
         print(f"{saved} dòng đã ghi vào kiem_{args.who}.tsv; {len(errors)} lỗi")
         print("\n".join(errors))
         sys.exit(1 if errors else 0)
-    path = args.data / f"review/kiem_{args.who}.tsv"
+    path = args.data / f"labels/kiem_{args.who}.tsv"
     port = args.port or (8765 if args.who == "A" else 8766)
     version_of = {r["id"]: version_id(r) for r in load(path)[1]}   # from the sheet: no gitignored release.jsonl
     only = set(args.ids.read_text(encoding="utf-8").split()) if args.ids else None

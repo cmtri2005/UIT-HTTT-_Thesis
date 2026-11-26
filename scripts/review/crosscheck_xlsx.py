@@ -4,7 +4,7 @@
 `crosscheck.py` giữ TSV làm bản ghi chính và tính κ từ đó. Script này chỉ lo
 phần người: xuất ra Excel dễ đọc, rồi nạp nhãn ngược về TSV.
 
-    export   -> data/review/crosscheck_{A,B}.xlsx, mỗi file ba trang tính:
+    export   -> data/labels/crosscheck_{A,B}.xlsx, mỗi file ba trang tính:
                "Đọc trước"  hướng dẫn gán nhãn, rút từ docs/vilextime-annotation.md
                "Gán nhãn"   300 dòng; chỉ ba cột nhãn mở để sửa, phần còn lại khóa
                "Mã lý do"   bảy mã `reasons` và khi nào dùng
@@ -103,7 +103,7 @@ REASON_HELP = [   # docs/vilextime-annotation.md §2, hướng dẫn 3.0
 # codes a failed check is written with (guideline 3.0 §2). The verdict is khong_dat as soon as one fails.
 DECISION = [
     ("1", "Đáp án đúng là phiên bản có hiệu lực pháp lý tại as_of? Đối chiếu trich_van_ban_goc, trich_van_ban_tac_dong, "
-          "cac_phien_ban: cả lời văn, cả câu dẫn lead_in. Văn bản tác động có hiệu lực tách phần (data/review/hieu_luc_tach.tsv): "
+          "cac_phien_ban: cả lời văn, cả câu dẫn lead_in. Văn bản tác động có hiệu lực tách phần (data/labels/hieu_luc_tach.tsv): "
           "đọc điều hiệu lực của nó. Chữ hỏng dấu do trích xuất cũng là gold_wrong.", "gold_wrong · transitional_rule"),
     ("2", "(T2, T4, T3) Câu hỏi chạm đúng chỗ đổi? Chữ đỏ trong answer và cac_phien_ban là chỗ đổi. Hai mốc phải ra hai "
           "đáp án khác nhau (T3: ít nhất ba). Ghi ngày chuyển câu hỏi chạm vào cham_lan_sua. "
@@ -385,14 +385,14 @@ def ordered(rows: list[dict], who: str, name: str = "crosscheck") -> list[dict]:
 
 
 def export(data: Path, name: str = "crosscheck") -> None:
-    labels = data / "review/labels.tsv"
+    labels = data / "labels/labels.tsv"
     known = {r.get("id") for r in read(labels)} if labels.exists() else set()
     for who in ("A", "B"):
-        tsv = data / f"review/{name}_{who}.tsv"
+        tsv = data / f"labels/{name}_{who}.tsv"
         rows = read(tsv)
         # TSV labels are fine (crosscheck.py build carries an earlier draw's labels over);
         # what must not be overwritten is labelling done in the workbook and not imported yet.
-        xlsx = data / f"review/{name}_{who}.xlsx"
+        xlsx = data / f"labels/{name}_{who}.xlsx"
         if xlsx.exists():
             have = {r["id"]: (r.get("verdict") or "").strip() for r in rows}
             ws = load_workbook(xlsx, data_only=True)[SHEET]
@@ -416,7 +416,7 @@ def export(data: Path, name: str = "crosscheck") -> None:
             sheet_decision(wb)
         sheet_reasons(wb)
         sheet_labels(wb, columns, ordered(rows, who, name), name)
-        out = data / f"review/{name}_{who}.xlsx"
+        out = data / f"labels/{name}_{who}.xlsx"
         wb.save(out)
         print(f"{out}  {len(rows)} dòng · {len(non_blind)} dòng không còn mù · "
               f"thứ tự {'như TSV' if who == 'A' or name == 'kiem' else 'xáo theo lineage'}")
@@ -441,7 +441,7 @@ def missing_fields(group: str, cells: dict, who: str = "A") -> list[str]:
 
 
 def ingest(data: Path, who: str, name: str = "crosscheck") -> None:
-    xlsx, tsv = data / f"review/{name}_{who}.xlsx", data / f"review/{name}_{who}.tsv"
+    xlsx, tsv = data / f"labels/{name}_{who}.xlsx", data / f"labels/{name}_{who}.tsv"
     ws = load_workbook(xlsx, data_only=True)[SHEET]
     head = [c.value for c in ws[1]]
     got = {}

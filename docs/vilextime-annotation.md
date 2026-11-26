@@ -102,12 +102,12 @@ bản gốc, văn bản tác động, các mốc và đáp án trên trang (ch�
 - Văn bản gốc trên cổng đã là lời văn sau sửa, nên vế trước không đúng → `gold_wrong`.
 - Văn bản tác động có hiệu lực tách phần ("trừ quy định tại khoản 2, 3 Điều này", "các quy định
   về … có hiệu lực kể từ ngày ký"): đọc điều hiệu lực của nó. Lần sửa ở mốc đang kiểm thuộc phần ngoại lệ
-  → `gold_wrong`, ghi ngày đúng. Danh sách văn bản cần đọc: `data/review/hieu_luc_tach.tsv`.
+  → `gold_wrong`, ghi ngày đúng. Danh sách văn bản cần đọc: `data/labels/hieu_luc_tach.tsv`.
 - Chữ hỏng dấu hoặc ký tự ẩn do trích xuất ("sản xuât", "giây phép") → `gold_wrong`, ghi chữ đúng theo
-  Công báo. Không sửa tay lời văn. Danh sách chỗ nghi: `data/review/chu_hong_dau.tsv` (khoảng một nửa là
+  Công báo. Không sửa tay lời văn. Danh sách chỗ nghi: `data/labels/chu_hong_dau.tsv` (khoảng một nửa là
   chữ đúng nhưng hiếm, như "dược điển").
 - T5a (hồi tố: mốc nằm giữa ngày hiệu lực và ngày ký của văn bản sửa): đáp án là **bản mới**. Việc
-  văn bản có hồi tố hay không đã được luật sư chốt (`data/review/t5_documents.tsv`, 12/10/2026),
+  văn bản có hồi tố hay không đã được luật sư chốt (`data/labels/t5_documents.tsv`, 12/10/2026),
   người gán không xét lại.
 - T5b (đã ký, chưa có hiệu lực): đáp án là **bản cũ**. Đối chiếu ngày ký, ngày hiệu lực ghi ở phiếu
   với văn bản.
@@ -255,19 +255,19 @@ Các đoạn dưới đây ghi lại quy trình v1.0, không áp dụng cho đ�
 Đọc đầy đủ ở commit `32c66ed` và định nghĩa §6.
 
 Nhãn model chỉ
-dùng để xếp thứ tự dòng cần người xem trước. Nhãn model cũ ở `data/review/labels.tsv` giữ nguyên để
+dùng để xếp thứ tự dòng cần người xem trước. Nhãn model cũ ở `data/labels/labels.tsv` giữ nguyên để
 phân tích phụ, có ghi `labeler`. Dòng chỉ có nhãn model là dòng chưa kiểm (`not_verified`) và không
 vào tập test.
 
 **Ngoại lệ từ 26/10/2026 (CMT):** nhãn của agent kiểm (từ 27/10 là Codex, ghi ở `labeler`; có tra văn bản gốc, trích dẫn
 nguồn) được tính là kiểm định cho dòng test khi đã qua kiểm chứng ở mục 6 của định nghĩa: gán mù
 trên dòng có nhãn người, đạt AC1 ≥ 0,80 và p_neg ≥ 0,60, và luật sư kiểm mẫu 50 dòng. Nhãn agent ở
-`data/review/kiem_agent.tsv`, không trộn vào phiếu A hay B.
+`data/labels/kiem_agent.tsv`, không trộn vào phiếu A hay B.
 
 **Giới hạn từ 28/10/2026 (CMT):** agent không đạt AC1 0,80 ở mức toàn tập (0,721), nên nhãn agent chỉ
 có giá trị ở nhóm T1 và T6; xem mục 6 của định nghĩa.
 
-Lớp phụ, chỉ có ở `data/review/labels.tsv` và không tính vào đồng thuận: `meta_issues` ghi lỗi siêu
+Lớp phụ, chỉ có ở `data/labels/labels.tsv` và không tính vào đồng thuận: `meta_issues` ghi lỗi siêu
 dữ liệu không làm sai đáp án (`valid_to_wrong` · `valid_from_wrong` · `group_wrong` ·
 `citation_path_wrong` · `doc_number_wrong` · `lead_in_wrong` · `other`).
 
@@ -277,7 +277,7 @@ Mỗi mục ghi: ngày, người chốt, câu hỏi chung (không nêu dòng gá
 vào hướng dẫn. Kết luận chỉ làm rõ cách áp quy tắc đã có. Quy tắc mới thì phải sửa định nghĩa và
 tăng phiên bản hướng dẫn.
 
-- **24/10/2026, luật sư, lô 0** (`data/review/hoa_giai_lo0_chot.xlsx`). 12/21 dòng lệch; cả 12 là một người
+- **24/10/2026, luật sư, lô 0** (`data/labels/hoa_giai_lo0_chot.xlsx`). 12/21 dòng lệch; cả 12 là một người
   gán `dat` không ghi `note`, người kia gán `khong_dat` kèm lý do. Luật sư chốt cả 12 là `khong_dat`.
   Sáu kết luận:
   1. T6 xét bảy yếu tố trong phạm vi câu hỏi: điều khoản sang văn bản mới mà nội dung được hỏi giữ
@@ -288,8 +288,8 @@ tăng phiên bản hướng dẫn.
   4. Đáp án ngắn thiếu ý là `other`; không viết lời mới. Lỗi ở câu hỏi thì dùng mã của câu hỏi (bước 8).
   5. Văn bản tác động có hiệu lực tách phần có thể làm mốc sai; thuộc phần ngoại lệ là `gold_wrong` (bước 1).
   6. Chữ hỏng dấu do trích xuất là `gold_wrong`; không sửa tay (bước 1).
-- **26/10/2026, luật sư, lô 1–18** (`data/review/hoa_giai_kiem.xlsx`). 89 dòng lệch. Luật sư đọc phiếu
-  kiểm trước của Claude (`data/review/hoa_giai_kiem_claude.tsv`) và đồng ý, nên lần hòa giải này **có AI
+- **26/10/2026, luật sư, lô 1–18** (`data/labels/hoa_giai_kiem.xlsx`). 89 dòng lệch. Luật sư đọc phiếu
+  kiểm trước của Claude (`data/labels/hoa_giai_kiem_claude.tsv`) và đồng ý, nên lần hòa giải này **có AI
   hỗ trợ**, khác §5 mục 8; biên bản D5 phải ghi rõ. Hai kết luận:
   1. T6, dòng mốc trước ngày bãi bỏ, đáp án đúng tại mốc: `dat`, kể cả khi nội dung sau đó chuyển sang
      văn bản khác. `group_mismatch` ở T6 chỉ dùng cho câu hỏi có/không; chuyển chỗ xét ở dòng mốc sau (bước 7).
@@ -298,7 +298,7 @@ tăng phiên bản hướng dẫn.
   3. Câu hiệu lực "áp dụng từ năm ngân sách X" là hiệu lực trở về trước, tính từ 01/01/X (Luật
      17/2008/QH12 Điều 79, khoản 1 Điều 83; năm ngân sách theo Luật 01/2002/QH11 Điều 14). Mốc trong năm X
      trước ngày hiệu lực lấy đáp án bản mới, như T5a (bước 1).
-- **10/11/2026, luật sư, 5 khoảng trống của silver** (báo ở `data/review/ai_research/2026-11-08_adjudication_final/README.md`).
+- **10/11/2026, luật sư, 5 khoảng trống của silver** (báo ở `data/labels/ai_research/2026-11-08_adjudication_final/README.md`).
   Chỉ làm rõ cách áp quy tắc đã có; mã mới `single_change` đã thêm vào công cụ.
   1. Thay từ gần nghĩa ("Bán" → "Buôn bán"): không tính là đáp án mới nếu nội dung pháp lý không đổi; thiếu
      định nghĩa chưa đủ chứng minh hai từ tương đương. Chỉ tính khi có căn cứ phạm vi hành vi khác nhau.

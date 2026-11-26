@@ -36,7 +36,7 @@ def paired_ci(a: list[int], b: list[int]) -> tuple[float, float, float]:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runs/x8_t6_dev_20261111")
-    ap.add_argument("--run", default="runs/rebuild_20261110_dev")
+    ap.add_argument("--run", default="runs/dev/rebuild_rerun")
     ap.add_argument("--release", default="data/vilextime_dataset_h6/vilextime.jsonl")
     a = ap.parse_args()
     out = Path(a.out)

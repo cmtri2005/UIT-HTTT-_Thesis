@@ -18,7 +18,7 @@ Rules, in order:
   documents do not collapse into a handful of decrees;
 * a lineage is never cut between its dates.
 
-Writes `data/vilextime/sample.jsonl`, committed: it is the ranking of record, and
+Writes `data/benchmark/test2/sample.jsonl`, committed: it is the ranking of record, and
 a re-run keeps it (see `sample`). Offline and deterministic given that file.
 
 `--select` is the second half, run after `generate_questions.py --sample` and
@@ -26,7 +26,7 @@ a re-run keeps it (see `sample`). Offline and deterministic given that file.
 first lineages whose question is the model's (not the template) and whose rows
 still fit, to exactly the release quota (`RELEASE`); T5 takes only the pairs the
 lawyer confirmed. A lineage listed in
-`data/vilextime/dropped.jsonl` (review found it unfixable: not a norm, a
+`data/benchmark/test2/dropped.jsonl` (review found it unfixable: not a norm, a
 truncated source, too few distinct answers) is skipped as if its question had
 failed, so the next ranked lineage takes its rows; so is one rule R6 keeps out of test
 (`pending_events.blocked`).
@@ -54,7 +54,7 @@ from pending_events import blocked  # noqa: E402  rule R6
 QUOTA = {"T1": 250, "T2": 550, "T3": 200, "T5": 50, "T6": 150}
 # Release rows per group, docs/vilextime-dinh-nghia.md §9 (20/10, CMT): T2 450 is 300 regular
 # + T4's 150 near-identical; T6 350 is T6a 100 (direct) + T6b 250 (ancestor, H3). T5 has no
-# number: T5a is every pair the lawyer confirmed in data/review/t5_items.tsv, nothing else.
+# number: T5a is every pair the lawyer confirmed in data/labels/t5_items.tsv, nothing else.
 RELEASE = {"T1": 150, "T2": 450, "T3": 150, "T5": None, "T6": 350}
 OVERSAMPLE = {"T1": 2, "T2": 2, "T3": 3, "T5": 2, "T6": 2}   # T3 kept 9 of 22 in the first run
 PER_DOCUMENT = 2
@@ -174,13 +174,13 @@ def main() -> None:
     args = parser.parse_args()
 
     base = args.data / "derived/vilextime"
-    ranking = args.ranking or args.data / "vilextime/sample.jsonl"
-    dropfile = args.data / "vilextime/dropped.jsonl"
+    ranking = args.ranking or args.data / "benchmark/test2/sample.jsonl"
+    dropfile = args.data / "benchmark/test2/dropped.jsonl"
     dropped = ({json.loads(line)["lineage_id"] for line in dropfile.open(encoding="utf-8")}
                if dropfile.exists() else set())
     if args.select:
         ranked = [json.loads(line) for line in ranking.open(encoding="utf-8")]
-        with (args.data / "review/t5_items.tsv").open(encoding="utf-8") as f:
+        with (args.data / "labels/t5_items.tsv").open(encoding="utf-8") as f:
             confirmed = {r["lineage_id"] for r in csv.DictReader(f, delimiter="\t")
                          if r["LUẬT SƯ: đáp án mốc sau đúng? (có/không)"].strip().lower() == "có"}
         by_group = {group: [json.loads(line) for line in (base / f"{group}.jsonl").open(encoding="utf-8")]

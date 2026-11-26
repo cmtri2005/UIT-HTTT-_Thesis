@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """ViLexTime — the published files (docs/vilextime-schema-phat-hanh.md), from the release and the labels.
 
-Reads data/derived/vilextime/release.jsonl and the 100% check (data/review/kiem_{A,B}.tsv,
+Reads data/derived/vilextime/release.jsonl and the 100% check (data/labels/kiem_{A,B}.tsv,
 optional kiem_agent.tsv, and hoa_giai_kiem.tsv once the lawyer has settled disagreements), and writes to
-data/vilextime_dataset/ (its own folder, apart from the build inputs in data/vilextime/):
+data/benchmark/test_v1/ (its own folder, apart from the build inputs in data/benchmark/test2/):
 
     vilextime.jsonl          13 columns, the rows a person checked and passed: what a user needs
     vilextime_silver.jsonl   same columns, rows nobody has checked yet (definition §8, `not_verified`)
@@ -116,14 +116,14 @@ ROW_REASONS = {"superseded_by_other_norm", PARTIAL_REPEAL}
 def row_exclusions(data: Path, rows: list[dict]) -> dict[str, dict]:
     """row id -> {code, note}: rows kept out of scoring one by one, not by lineage (H5, 10/11/2026).
 
-    * `data/vilextime/dropped_rows.jsonl` — a row the review found superseded by another norm
+    * `data/benchmark/test2/dropped_rows.jsonl` — a row the review found superseded by another norm
       (`superseded_by_other_norm`, H021) while its lineage's other rows stand. Its twins go with it.
     * `partial_repeal` (Q1) — the row is asked on or after the date an event trimmed part of the node
       (or of a node under it): the graph keeps the old wording open, so the gold is unknown. The
       node is not split into the words that remain.
     """
     out: dict[str, dict] = {}
-    path = data / "vilextime/dropped_rows.jsonl"
+    path = data / "benchmark/test2/dropped_rows.jsonl"
     if path.exists():
         for line in path.read_text(encoding="utf-8").splitlines():
             d = json.loads(line)
@@ -182,7 +182,7 @@ def meta(r: dict, review: dict) -> dict:
 def export(data: Path, out: Path, final: bool = False, draft: bool = False) -> dict:
     rows = [json.loads(line) for line in (data / "derived/vilextime/release.jsonl").open(encoding="utf-8")]
     scope = {r["id"]: (r["group"], r["split"]) for r in rows if r["as_of_strategy"] == "ranh_gioi"}
-    labels = final_labels(data / "review", scope)
+    labels = final_labels(data / "labels", scope)
     status = lineage_status(rows, labels)
     boundary = {r["lineage_id"]: [] for r in rows}
     for r in rows:
@@ -239,7 +239,7 @@ def export(data: Path, out: Path, final: bool = False, draft: bool = False) -> d
         files[name] = items
     count = lambda items: dict(sorted(collections.Counter(
         f"{x['group']} · {x['as_of_strategy']} · {x['split']}" for x in items).items()))
-    agreement = data / "review/kiem_result.json"
+    agreement = data / "labels/kiem_result.json"
     manifest = {
         "schema_version": SCHEMA_VERSION, "final": final, "draft": draft,
         "rows": {"main": len(main), "silver": len(silver)},
@@ -271,7 +271,7 @@ def main() -> None:
     args = ap.parse_args()
     if args.final and args.draft:
         ap.error("--final or --draft, not both")
-    m = export(args.data, args.out or args.data / "vilextime_dataset", args.final, args.draft)
+    m = export(args.data, args.out or args.data / "benchmark" / "test_v1", args.final, args.draft)
     print(f"schema {m['schema_version']}: {m['rows']['main']} dòng chính, {m['rows']['silver']} dòng silver; "
           f"lineage {m['lineages']}")
     print(f"  dòng ranh giới: {m['boundary_rows']}")

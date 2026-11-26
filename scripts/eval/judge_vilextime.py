@@ -24,8 +24,8 @@ questions, DeepSeek the rest of the questions.
 
 Usage:
     python scripts/eval/judge_vilextime.py judge preds.jsonl --split dev
-    python scripts/eval/judge_vilextime.py sample --out data/review/judge_sample.tsv
-    python scripts/eval/judge_vilextime.py agree judgments.jsonl data/review/judge_sample.tsv
+    python scripts/eval/judge_vilextime.py sample --out data/labels/judge_sample.tsv
+    python scripts/eval/judge_vilextime.py agree judgments.jsonl data/labels/judge_sample.tsv
 """
 from __future__ import annotations
 
@@ -186,7 +186,7 @@ def main() -> None:
             p.add_argument("--provider")
             p.add_argument("--model")
         else:
-            p.add_argument("--out", type=Path, default=Path("data/review/judge_sample.tsv"))
+            p.add_argument("--out", type=Path, default=Path("data/labels/judge_sample.tsv"))
             p.add_argument("-n", type=int, default=100)
     p = sub.add_parser("agree")
     p.add_argument("judgments", type=Path)

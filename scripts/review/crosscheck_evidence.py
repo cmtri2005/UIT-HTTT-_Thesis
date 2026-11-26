@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ViLexTime D4 — what an annotator reads behind `source_url`, for the model annotator A.
 
-Writes data/review/crosscheck_evidence.jsonl, one line per row of crosscheck_A.tsv:
+Writes data/labels/crosscheck_evidence.jsonl, one line per row of crosscheck_A.tsv:
 
     base     the target document (number, dates, status) and the cited Article, or
              its Clause when the row cites one, cut from the raw vbpl text
@@ -123,7 +123,7 @@ def main() -> None:
     if args.ids:
         order = [x.strip() for x in args.ids.read_text(encoding="utf-8").splitlines() if x.strip()]
     else:
-        with (d / "review/crosscheck_A.tsv").open(encoding="utf-8", newline="") as f:
+        with (d / "labels/crosscheck_A.tsv").open(encoding="utf-8", newline="") as f:
             order = [r["id"] for r in csv.DictReader(f, delimiter="\t")]
     wanted = set(order)
     release = args.release or d / "derived/vilextime/release.jsonl"
@@ -155,7 +155,7 @@ def main() -> None:
         if e["id"] in need:
             events[e["id"]] = e
 
-    out, sizes, stats = args.out or d / "review/crosscheck_evidence.jsonl", [], {"actors": 0, "passage": 0, "transitional": 0}
+    out, sizes, stats = args.out or d / "labels/crosscheck_evidence.jsonl", [], {"actors": 0, "passage": 0, "transitional": 0}
     with out.open("w", encoding="utf-8") as f:
         for rid in order:
             r, missing = rows[rid], []

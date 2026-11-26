@@ -11,13 +11,13 @@ lineage, so a pair or chain is judged whole —
   * T3 50.
 Labels follow docs/vilextime-annotation.md (version GUIDELINE).
 
-Both files live in data/review/ — the directory .gitignore whitelists because
+Both files live in data/labels/ — the directory .gitignore whitelists because
 losing a human label means labelling it again by hand — and every reader
 (labels.py, check_validity.py, crosscheck_evidence.py, check_release.py's
 manifest) expects them there. A labelled copy kept anywhere else is outside
 version control and makes `kappa` read the empty originals.
 
-    build   writes data/review/crosscheck_A.tsv and crosscheck_B.tsv: the same
+    build   writes data/labels/crosscheck_A.tsv and crosscheck_B.tsv: the same
             rows, lineages in a shuffled order, `verdict`, `reasons`, `note`
             (and `adjudicated` on A) empty except on a row labelled in the
             earlier draw whose question and answer are unchanged, which keeps
@@ -28,12 +28,12 @@ version control and makes `kappa` read the empty originals.
             when nearly every row is `dat` even if the two agree; AC1 does not),
             overall, per group and per lineage (a lineage is `khong_dat` when any
             of its rows is), plus the rows they disagree on, and the rows that
-            already carry a label from outside D4 (data/review/labels.tsv: the
+            already carry a label from outside D4 (data/labels/labels.tsv: the
             Excel preview, or a model label from before the row joined the set)
             — they were not blind to whoever labelled them, and the record of D5
-            must say so. Writes data/review/crosscheck_result.json.
+            must say so. Writes data/labels/crosscheck_result.json.
             `--set pilot_T6` reads the pilot files instead and writes pilot_T6_result.json.
-    kiem    writes data/review/kiem_A.tsv and kiem_B.tsv: every boundary row of the
+    kiem    writes data/labels/kiem_A.tsv and kiem_B.tsv: every boundary row of the
             release, the check of docs/vilextime-dinh-nghia.md §8 that decides the test
             split. KIEM_OVERLAP of each group's rows, whole lineages, go to both files
             (labelled blind, `kappa --set kiem`); the rest alternate A/B. Before them, batch
@@ -49,7 +49,7 @@ version control and makes `kappa` read the empty originals.
             machine's flags, a batch number `lo`, and the guideline 3.0 fields KIEM_FIELDS. A
             re-run keeps who has which lineage and every label still on an unchanged
             row; a file carrying labels is first copied to kiem_X.<YYYYMMDD>.tsv.
-    pilot   writes data/review/pilot_T6_A.tsv and pilot_T6_B.tsv: PILOT_ROWS T6
+    pilot   writes data/labels/pilot_T6_A.tsv and pilot_T6_B.tsv: PILOT_ROWS T6
             boundary rows outside D4 that carry no label anywhere, whole
             lineages, split ancestor/direct in the release's proportion (B8,
             MASTER_RESEARCH_GUIDE §5.3.4). Calibrates guideline 2.0 on T6 before
@@ -298,7 +298,7 @@ LABEL_CELLS = ("verdict", "reasons", "note", "suggestion", "guideline_version", 
 
 
 def build(data: Path, today: str | None = None) -> None:
-    out = data / "review"
+    out = data / "labels"
     stamp = today or date.today().strftime("%Y%m%d")
     earlier = {}
     for name in ("crosscheck_A.tsv", "crosscheck_B.tsv"):
@@ -355,9 +355,9 @@ def evidence_cells(e: dict | None) -> tuple[str, str]:
 
 def d4_final(data: Path) -> dict[tuple[str, str], dict]:
     """(lineage_id, as_of) -> the D4 row with its final label: adjudicated, else the label both gave."""
-    a = {r["id"]: r for r in read(data / "review/crosscheck_A.tsv")}
-    b = {r["id"]: r for r in read(data / "review/crosscheck_B.tsv")}
-    adj = {r["id"]: r for r in read(data / "review/hoa_giai_D4.tsv")} if (data / "review/hoa_giai_D4.tsv").exists() else {}
+    a = {r["id"]: r for r in read(data / "labels/crosscheck_A.tsv")}
+    b = {r["id"]: r for r in read(data / "labels/crosscheck_B.tsv")}
+    adj = {r["id"]: r for r in read(data / "labels/hoa_giai_D4.tsv")} if (data / "labels/hoa_giai_D4.tsv").exists() else {}
     out = {}
     for i, ra in a.items():
         rb = b.get(i, {})
@@ -406,7 +406,7 @@ def batches(overlap: list[str], singles: list[str], size: dict[str, int], batch:
 
 
 def kiem(data: Path, today: str | None = None) -> None:
-    out = data / "review"
+    out = data / "labels"
     stamp = today or date.today().strftime("%Y%m%d")
     released = [json.loads(line) for line in (data / "derived/vilextime/release.jsonl").open(encoding="utf-8")]
     rows = [r for r in released if r["as_of_strategy"] == "ranh_gioi"]
@@ -527,11 +527,11 @@ def kiem(data: Path, today: str | None = None) -> None:
 
 
 def pilot(data: Path) -> None:
-    out = [data / f"review/pilot_T6_{who}.tsv" for who in "AB"]
+    out = [data / f"labels/pilot_T6_{who}.tsv" for who in "AB"]
     if any(p.exists() for p in out):
         raise SystemExit(f"{out[0].parent}/pilot_T6_*.tsv đã có; không ghi đè nhãn pilot")
-    d4 = {r["id"] for r in read(data / "review/crosscheck_A.tsv")}
-    labels = data / "review/labels.tsv"
+    d4 = {r["id"] for r in read(data / "labels/crosscheck_A.tsv")}
+    labels = data / "labels/labels.tsv"
     labelled = {r["id"] for r in read(labels)} if labels.exists() else set()
     t6 = [r for r in map(json.loads, (data / "derived/vilextime/release.jsonl").open(encoding="utf-8"))
           if r["group"] == "T6" and r["as_of_strategy"] == "ranh_gioi"]
@@ -563,8 +563,8 @@ def pilot(data: Path) -> None:
 
 
 def kappa(data: Path, name: str = "crosscheck") -> None:
-    a = {r["id"]: r for r in read(data / f"review/{name}_A.tsv")}
-    b = {r["id"]: r for r in read(data / f"review/{name}_B.tsv")}
+    a = {r["id"]: r for r in read(data / f"labels/{name}_A.tsv")}
+    b = {r["id"]: r for r in read(data / f"labels/{name}_B.tsv")}
     bad = [(who, r["id"], r["verdict"]) for who, rows in (("A", a), ("B", b)) for r in rows.values()
            if r["verdict"] and r["verdict"] not in VERDICTS]
     bad += [(who, r["id"], code) for who, rows in (("A", a), ("B", b)) for r in rows.values()
@@ -597,7 +597,7 @@ def kappa(data: Path, name: str = "crosscheck") -> None:
     worst = lambda rows, lid: "khong_dat" if any(rows[i]["verdict"] == "khong_dat" for i in lineage[lid]) else "dat"
     lids = sorted(lineage)
     lva, lvb = [worst(a, lid) for lid in lids], [worst(b, lid) for lid in lids]
-    labels = data / "review/labels.tsv"
+    labels = data / "labels/labels.tsv"
     outside = read(labels) if labels.exists() else []
     result = {
         "guideline_version": GUIDELINE,
@@ -614,7 +614,7 @@ def kappa(data: Path, name: str = "crosscheck") -> None:
         "labelled_before_d4": {i: sorted({x["labeler"] for x in outside if x["id"] == i})
                                for i in sorted({x["id"] for x in outside if x["id"] in a})},
     }
-    (data / f"review/{name}_result.json").write_text(json.dumps(result, ensure_ascii=False, indent=1) + "\n",
+    (data / f"labels/{name}_result.json").write_text(json.dumps(result, ensure_ascii=False, indent=1) + "\n",
                                                         encoding="utf-8")
     fmt = lambda x: f"{x:.3f}" if x is not None else "—"
     ci = lambda x: f"[{x[0]:.3f}; {x[1]:.3f}]" if x else "—"

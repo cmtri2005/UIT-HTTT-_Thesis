@@ -32,10 +32,10 @@ Artifact cục bộ:
 - `data/vbhn_files/relevant_ids.json`: 48 ID được chọn.
 - `data/vbhn_files/pdf/{id}/source.pdf`: 40 PDF đã tải.
 - `data/vbhn_files/relevant_quality.json`: dung lượng, số trang và chỉ báo lớp chữ.
-- `data/vbhn_files/pdf_compare.json`: kết quả đối chiếu và ví dụ từng đơn vị.
+- `data/corpus/consolidated_check/pdf_compare.json`: kết quả đối chiếu và ví dụ từng đơn vị.
 - `data/vbhn_files/source/`: ba script liệt kê, tải và đối chiếu khôi phục từ
   lệnh trong log Claude, gồm các chỉnh sửa cuối trước khi phiên dừng.
-- `data/vbhn_files/pdf_compare.reproduced.json`: kết quả Codex chạy lại từ PDF
+- `data/corpus/consolidated_check/pdf_compare.reproduced.json`: kết quả Codex chạy lại từ PDF
   cục bộ, **khớp từng byte** với `pdf_compare.json`.
 - `data/vbhn_files/probe.sha256`: hash của 48 file (40 PDF, năm file metadata
   và ba script).

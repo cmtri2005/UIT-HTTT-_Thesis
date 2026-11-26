@@ -15,7 +15,7 @@ The run that the thesis reports must have all nine.
 
 Usage:
     python scripts/eval/confirm_vilextime.py --retrieval runs/E1_ladder/test --generation runs/E3/test \\
-        --split test --release data/vilextime_dataset/vilextime.jsonl --draws 10000 --out runs/confirm_test.json
+        --split test --release data/benchmark/test_v1/vilextime.jsonl --draws 10000 --out runs/confirm_test.json
 """
 from __future__ import annotations
 

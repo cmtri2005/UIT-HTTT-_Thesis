@@ -250,7 +250,7 @@ def main():
     ap.add_argument('--step', choices=('all', *STEPS), default='all')
     ap.add_argument('--split', choices=('dev', 'test'), required=True)
     ap.add_argument('--release', type=Path, required=True)
-    ap.add_argument('--dev-release', type=Path, default=Path('data/vilextime_dataset/vilextime.jsonl'))
+    ap.add_argument('--dev-release', type=Path, default=Path('data/benchmark/test_v1/vilextime.jsonl'))
     ap.add_argument('--data', type=Path, default=Path('data'))
     ap.add_argument('--index', type=Path, default=colab_b1.INDEX)
     ap.add_argument('--source-prompts', type=Path, help='replay existing exports byte for byte')

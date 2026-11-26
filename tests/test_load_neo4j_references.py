@@ -23,7 +23,7 @@ def _fixture(tmp_path, edges, *, raw_ids=("1", "2")):
     raw.mkdir()
     for doc_id in raw_ids:
         (raw / f"{doc_id}.json").write_text("{}", encoding="utf-8")
-    shutil.copyfile(REPO_DATA_DIR / "reference_type_map.json", tmp_path / "reference_type_map.json")
+    shutil.copyfile(REPO_DATA_DIR / "vocab" / "reference_type_map.json", tmp_path / "reference_type_map.json")
     (tmp_path / "edges.jsonl").write_text(
         "".join(json.dumps(edge, ensure_ascii=False) + "\n" for edge in edges),
         encoding="utf-8",

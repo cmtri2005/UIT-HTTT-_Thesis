@@ -1,7 +1,7 @@
 # Biên bản D5 — kiểm chéo D4 và hoà giải
 
-Ngày lập: 19/10/2026. Nguồn số liệu: `data/review/crosscheck_result.json`
-(`scripts/review/crosscheck.py kappa`), `data/review/hoa_giai_D4.tsv`
+Ngày lập: 19/10/2026. Nguồn số liệu: `data/labels/crosscheck_result.json`
+(`scripts/review/crosscheck.py kappa`), `data/labels/hoa_giai_D4.tsv`
 (`scripts/review/adjudicate.py`). Ánh xạ A, B sang người thật chỉ ghi trong plan, không phát hành.
 
 ## 1. Người gán, phiên bản hướng dẫn
@@ -9,7 +9,7 @@ Ngày lập: 19/10/2026. Nguồn số liệu: `data/review/crosscheck_result.jso
 - Hai người gán độc lập, mù với nhau, trên cùng 300 dòng (thứ tự đọc khác nhau): T2 100
   (50 thường + 50 gần giống), T3 50, T5 38, T6 112.
 - Nhãn đợt trước (gán theo hướng dẫn 1.2): A 166 dòng, B 165 dòng; bản lưu
-  `data/review/crosscheck_{A,B}.20261011.tsv`.
+  `data/labels/crosscheck_{A,B}.20261011.tsv`.
 - Phần còn lại gán theo hướng dẫn 2.0, file nộp ngày 14/10, nạp ngày 19/10. B gán lại 64 dòng cũ
   theo 2.0; A giữ nhãn 1.2 trên các dòng cũ. Một ô `reasons` của B chứa lời giải thích: đã chuyển sang
   `note`, đặt mã `gold_wrong`.

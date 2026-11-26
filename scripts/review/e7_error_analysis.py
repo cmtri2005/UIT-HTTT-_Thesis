@@ -37,8 +37,8 @@ SAMPLE_SYSTEMS = ('proposed', 'b7', 'b2ctx', 'b1')
 LAYERS = ('ABST', 'RET-UNIT', 'RET-VER-OLD', 'RET-VER-NEW', 'GEN-BLANK', 'GEN-MISREAD')
 SEED = 'vilextime-e7-0411'
 DATASETS = (
-    ('v1', Path('data/vilextime_dataset/vilextime.jsonl'), Path('runs/E3_v1/test')),
-    ('test2', Path('data/vilextime/test2_release_v2.jsonl'), Path('runs/E3_test2/test')),
+    ('v1', Path('data/benchmark/test_v1/vilextime.jsonl'), Path('runs/early/generation_test_v1/test')),
+    ('test2', Path('data/benchmark/test2/test2_release_v2.jsonl'), Path('runs/early/generation_test2/test')),
 )
 
 
@@ -194,7 +194,7 @@ def main() -> None:
     report = sub.add_parser('report')
     report.add_argument('--out', type=Path, default=Path('docs/reports/e7_phan_ra_loi.md'))
     sample = sub.add_parser('sample')
-    sample.add_argument('--out-dir', type=Path, default=Path('data/review/e7'))
+    sample.add_argument('--out-dir', type=Path, default=Path('data/labels/error_analysis'))
     args = ap.parse_args()
     lines = ['# E7 — Phân rã lỗi theo tầng', '',
              '> **thăm dò, do máy phân loại, chưa có người kiểm**. Test 2 dùng nhãn LLM, không phải người.', '',
@@ -207,7 +207,7 @@ def main() -> None:
              '`b1` không truy xuất theo thiết kế nên RET-UNIT ở hệ này chỉ mô tả thiếu căn cứ trong prompt, '
              'không phải lỗi triển khai truy xuất. Phân loại ưu tiên không khẳng định nguyên nhân nhân quả.', '',
              'Đối chiếu mô tả với oracle context dev **0,854** (129/151, '
-             '`runs/B2_dev/dev/all.score.json`, `oracle`, `giua_khoang/all`). '
+             '`runs/dev/pilot_generation/dev/all.score.json`, `oracle`, `giua_khoang/all`). '
              'Khác split, nhóm và số căn cứ; tỷ lệ có điều kiện dưới đây không phải phép so sánh ghép cặp '
              'hay bằng chứng vượt oracle. Không thêm kiểm định hoặc đổi chỉ số.', '',
              'Tái lập tuần tự: `.venv/bin/python scripts/review/e7_error_analysis.py report`; '

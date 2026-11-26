@@ -6,8 +6,8 @@ answers written for test 2 and the scorer then accepted any answer on those rows
 amendment 04/11). The old release stays: E1 and the Colab prompts name its sha256.
 
 Usage:
-    python scripts/review/test2_fill_shorts.py --release data/vilextime/test2_release.jsonl \\
-        --shorts data/vilextime/short_answers_test2.jsonl --out data/vilextime/test2_release_v2.jsonl
+    python scripts/review/test2_fill_shorts.py --release data/benchmark/test2/test2_release.jsonl \\
+        --shorts data/benchmark/test2/short_answers_test2.jsonl --out data/benchmark/test2/test2_release_v2.jsonl
 """
 from __future__ import annotations
 

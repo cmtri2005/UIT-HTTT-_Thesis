@@ -9,11 +9,11 @@ from labels import COLUMNS, add, from_raw, read
 
 def _data(tmp_path, crosscheck_verdicts=("", "")):
     (tmp_path / "derived/vilextime").mkdir(parents=True)
-    (tmp_path / "review").mkdir()
+    (tmp_path / "labels").mkdir()
     rows = [{"id": f"vilextime:T2:p{i}:2020-01-01", "group": "T2"} for i in range(3)]
     (tmp_path / "derived/vilextime/release.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
     for name, verdict in zip(("crosscheck_A.tsv", "crosscheck_B.tsv"), crosscheck_verdicts):
-        (tmp_path / "review" / name).write_text(f"id\tverdict\n{rows[0]['id']}\t{verdict}\n")
+        (tmp_path / "labels" / name).write_text(f"id\tverdict\n{rows[0]['id']}\t{verdict}\n")
     return tmp_path, [r["id"] for r in rows]
 
 
@@ -32,7 +32,7 @@ def test_model_label_is_refused_on_a_crosscheck_row_until_both_people_labelled(t
         add(data, batch)
     data, ids = _data(tmp_path / "done", ("dat", "khong_dat"))
     add(data, batch)
-    assert [r["id"] for r in read(data / "review/labels.tsv")] == [ids[0]]
+    assert [r["id"] for r in read(data / "labels/labels.tsv")] == [ids[0]]
 
 
 def test_out_of_vocabulary_rejects_the_whole_batch(tmp_path):
@@ -43,7 +43,7 @@ def test_out_of_vocabulary_rejects_the_whole_batch(tmp_path):
     ])
     with pytest.raises(SystemExit, match="reasons ngoài từ vựng"):
         add(data, batch)
-    assert not (data / "review/labels.tsv").exists()
+    assert not (data / "labels/labels.tsv").exists()
 
 
 def test_every_model_khong_dat_is_audited(tmp_path):
@@ -52,7 +52,7 @@ def test_every_model_khong_dat_is_audited(tmp_path):
         {"id": ids[1], "labeler": "claude-opus-5-5", "verdict": "khong_dat", "reasons": "question_ambiguous"},
         {"id": ids[2], "labeler": "human:A", "verdict": "khong_dat", "reasons": "gold_wrong"},
     ]))
-    labels = {r["labeler"]: r for r in read(data / "review/labels.tsv")}
+    labels = {r["labeler"]: r for r in read(data / "labels/labels.tsv")}
     assert labels["claude-opus-5-5"]["audit_required"] == "có"
     assert labels["human:A"]["audit_required"] == ""
 
@@ -88,7 +88,7 @@ def test_audit_round_trips_through_the_workbook(tmp_path):
     ws.cell(2, head.index("auditor") + 1, "human:A")
     wb.save(tmp_path / "a.xlsx")
     import_audit(data, tmp_path / "a.xlsx")
-    (label,) = read(data / "review/labels.tsv")
+    (label,) = read(data / "labels/labels.tsv")
     assert (label["audit"], label["auditor"]) == ("khong_dong_y", "human:A")
 
 
@@ -105,8 +105,8 @@ def test_a_row_whose_lineage_was_dropped_still_reaches_the_audit_sheet(tmp_path)
     (data / "derived/vilextime/T2.jsonl").write_text(json.dumps(gone) + "\n")
     kept = [line for line in (data / "derived/vilextime/release.jsonl").open() if ids[1] not in line]
     (data / "derived/vilextime/release.jsonl").write_text("".join(kept))
-    (data / "vilextime").mkdir()
-    (data / "vilextime/dropped.jsonl").write_text(json.dumps({"lineage_id": "p1", "reason": "group_mismatch",
+    (data / "benchmark" / "test2").mkdir(parents=True)
+    (data / "benchmark/test2/dropped.jsonl").write_text(json.dumps({"lineage_id": "p1", "reason": "group_mismatch",
                                                               "note": "hai đáp án"}) + "\n")
     audit_sheet(data, tmp_path / "a.xlsx", None)
     ws = load_workbook(tmp_path / "a.xlsx").active

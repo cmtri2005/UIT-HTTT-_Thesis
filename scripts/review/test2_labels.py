@@ -476,8 +476,8 @@ def silver_worksheet(data: Path, source: Path, release: Path, out: Path) -> dict
     manifest = {'seed': 'vilextime-silver-0511', 'questions': len(ids), 'groups': counts,
                 'boundary_rows': len(selected), 'thieu': thieu, 'missing_source_lineages': len(missing_sources),
                 'inputs_sha256': {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in
-                    (source, release, data / 'vilextime_dataset/vilextime.jsonl',
-                     data / 'vilextime_dataset/vilextime_meta.jsonl')},
+                    (source, release, data / 'benchmark/test_v1/vilextime.jsonl',
+                     data / 'benchmark/test_v1/vilextime_meta.jsonl')},
                 'exclusion_check': {'test2': 0, 'v1.0': 0, 'dev_documents': 0}}
     if len(missing_sources) > len(ids) / 10:
         manifest['status'] = 'stopped_missing_sources_over_10_percent'
@@ -876,19 +876,19 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='command', required=True)
     p = sub.add_parser('pilot')
-    p.add_argument('--source', type=Path, default=Path('data/review/test2_candidate_worksheet_v3.jsonl'))
-    p.add_argument('--release', type=Path, default=Path('data/vilextime/test2_release_v2.jsonl'))
-    p.add_argument('--out', type=Path, default=Path('data/review/the4/lo0_worksheet.jsonl'))
+    p.add_argument('--source', type=Path, default=Path('data/labels/test2_candidate_worksheet_v3.jsonl'))
+    p.add_argument('--release', type=Path, default=Path('data/benchmark/test2/test2_release_v2.jsonl'))
+    p.add_argument('--out', type=Path, default=Path('data/labels/annotation_rounds/lo0_worksheet.jsonl'))
     p = sub.add_parser('silver')
     p.add_argument('--data', type=Path, default=Path('data'))
-    p.add_argument('--source', type=Path, default=Path('data/vilextime_dataset/vilextime_silver.jsonl'))
-    p.add_argument('--release', type=Path, default=Path('data/vilextime/test2_release_v2.jsonl'))
-    p.add_argument('--out', type=Path, default=Path('data/review/the4/lo1_silver_worksheet.jsonl'))
+    p.add_argument('--source', type=Path, default=Path('data/benchmark/test_v1/vilextime_silver.jsonl'))
+    p.add_argument('--release', type=Path, default=Path('data/benchmark/test2/test2_release_v2.jsonl'))
+    p.add_argument('--out', type=Path, default=Path('data/labels/annotation_rounds/lo1_silver_worksheet.jsonl'))
     for command in ('serve', 'web', 'pull', 'report'):
         p = sub.add_parser(command)
         p.add_argument('--worksheet', type=Path, action='append', required=True)
         if command in ('serve', 'pull'):
-            p.add_argument('--labels-dir', type=Path, default=Path('data/review/the4'))
+            p.add_argument('--labels-dir', type=Path, default=Path('data/labels/annotation_rounds'))
             p.add_argument('--who', choices=('A', 'B'), required=True)
         if command == 'serve':
             p.add_argument('--port', type=int)

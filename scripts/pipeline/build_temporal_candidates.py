@@ -9,7 +9,7 @@ Offline, a pure function of `data/` (run `build_eligibility.py` first). Writes
                         with an effFrom later than the target's own. The
                         candidate is that actor's effFrom. status needs_review:
                         only a human decision in
-                        data/review/temporal_candidates.jsonl can accept it.
+                        data/labels/temporal_candidates.jsonl can accept it.
     effective_from_lower_bound
                         no effFrom but an issueDate: a bound, never a date a
                         point-in-time query may use as exact.

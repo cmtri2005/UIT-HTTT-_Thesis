@@ -73,12 +73,12 @@ def accepted_corrections(data_dir: Path) -> dict[str, dict[str, date]]:
     """Reviewed corrections to `effFrom` and `effTo`, keyed by portal id (ADR 0002 §4).
 
     The raw record is never edited; a correction is a derived value with its
-    evidence and a decision in `data/review/temporal_candidates.jsonl`, and
+    evidence and a decision in `data/labels/temporal_candidates.jsonl`, and
     only an accepted one reaches the store. An `effTo` correction dates a
     document the portal still shows in force although another one ended it
     (plan phase-4, J3), or one the portal marks ended without a date.
     """
-    path = data_dir / "review" / "temporal_candidates.jsonl"
+    path = data_dir / "labels" / "temporal_candidates.jsonl"
     if not path.exists():
         return {}
     out: dict[str, dict[str, date]] = {}

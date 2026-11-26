@@ -6,7 +6,7 @@ never searched for where the repealed content went (§3 T6, step 2), and on T2/T
 they read differently whether the change touches what the question asks. Both
 are look-ups a machine can do once, the same way for both people, so neither has
 to dig alone and both read the same evidence. Writes
-data/review/kiem_goi_y.jsonl, one line per boundary row of the release, read by
+data/labels/kiem_goi_y.jsonl, one line per boundary row of the release, read by
 `crosscheck.py kiem`:
 
     cac_phien_ban   every version of the row's provision with its window, the act
@@ -190,7 +190,7 @@ def main() -> None:
             if r["as_of_strategy"] == "ranh_gioi"]
     corpus = Corpus(args.index)
     got = hints(rows, corpus)
-    path = args.data / "review/kiem_goi_y.jsonl"
+    path = args.data / "labels/kiem_goi_y.jsonl"
     path.write_text("".join(json.dumps(got[r["id"]], ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
     t6 = [g for g in got.values() if g["goi_y_cho_moi"]]
     print(f"{len(got)} dòng -> {path} · {sum(bool(g['cac_phien_ban']) for g in got.values())} có chuỗi phiên bản"

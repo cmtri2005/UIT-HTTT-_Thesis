@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bảng T6 tách có/không đáp án (dev, chỉ đọc; không gọi API, không đổi scorer).
 
-    python scripts/eval/t6_breakdown.py [--run runs/rebuild_20261110_dev] [--release data/vilextime_dataset_h6/vilextime.jsonl]
+    python scripts/eval/t6_breakdown.py [--run runs/dev/rebuild_rerun] [--release data/vilextime_dataset_h6/vilextime.jsonl]
 
 Điểm gọi thẳng score_vilextime.score (units_of đọc ~1 GB versions.jsonl theo luồng). Assert: Accuracy và
 Recall@10 T6 gộp tính lại khớp all.score.json.
@@ -40,7 +40,7 @@ def breakdown(rows, preds, prompts, units) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--run", default="runs/rebuild_20261110_dev")
+    ap.add_argument("--run", default="runs/dev/rebuild_rerun")
     ap.add_argument("--release", default="data/vilextime_dataset_h6/vilextime.jsonl")
     ap.add_argument("--data", default="data")
     a = ap.parse_args()

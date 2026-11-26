@@ -5,7 +5,7 @@
 Hướng dẫn gán nhãn (`docs/vilextime-annotation.md`, từ bản 3.0) và code dựng dữ liệu phải
 theo tài liệu này. Khi có chỗ mâu thuẫn, tài liệu này đúng.
 
-Các quy tắc pháp lý đánh dấu ⚖ chờ luật sư ký một lần (`data/review/gui_luat_su_dinh_nghia.xlsx`).
+Các quy tắc pháp lý đánh dấu ⚖ chờ luật sư ký một lần (`data/labels/gui_luat_su_dinh_nghia.xlsx`).
 Luật sư không đồng ý điểm nào thì sửa đúng điểm đó trước khi gán nhãn, rồi khóa.
 
 ---
@@ -154,7 +154,7 @@ AC1 0,721 (ngưỡng 0,80), p_neg 0,610 (ngưỡng 0,60), nên điều kiện 1 
 Theo từng nhóm: T1 AC1 0,970 (n=38), T6 0,681 (n=50, p_neg 0,833); T2 0,704 với p_neg 0,211 (n=67);
 T3 0,473 với p_neg 0,200 (n=23); T5 không có dòng hiệu chuẩn. CMT chốt:
 1. Nhãn agent chỉ có giá trị ở nhóm **T1 và T6**. Dòng T2, T3, T5 của tập test không dùng nhãn agent
-   (389 nhãn agent ở nhóm này nằm ở `data/review/kiem_agent_ngoai_pham_vi.tsv`, không đưa vào phát hành).
+   (389 nhãn agent ở nhóm này nằm ở `data/labels/kiem_agent_ngoai_pham_vi.tsv`, không đưa vào phát hành).
 2. Ở tập test, nhãn của **một người** không đủ để vào file chính (nhãn nhanh của A, khoảng 5 giây mỗi dòng).
    Dòng đủ điều kiện: luật sư chốt, hoặc A và B cùng nhãn, hoặc nhãn agent ở T1, T6. Tập dev vẫn nhận
    nhãn một người (dev chỉ để chọn cấu hình).
@@ -166,11 +166,11 @@ T3 0,473 với p_neg 0,200 (n=23); T5 không có dòng hiệu chuẩn. CMT chố
 5. Luật sư kiểm nhãn agent (29/10): mẫu ngẫu nhiên 50 dòng (`luat_su_kiem_agent_da_chot.xlsx`), đồng ý 43/50,
    Wilson 95% [0,738; 0,930], dưới ngưỡng 45/50; rồi toàn bộ 67 dòng A–agent lệch còn lại
    (`luat_su_kiem_q2_da_chot.xlsx`), đồng ý 54/67. Nhãn luật sư của 117 dòng này
-   (`data/review/luat_su_kiem_agent.tsv`) đứng trên nhãn agent và nhãn A.
+   (`data/labels/luat_su_kiem_agent.tsv`) đứng trên nhãn agent và nhãn A.
 
 **Sửa ngày 06/11/2026 (CMT), bộ test cuối.** Tám ô trên giữ nguyên. Ai đánh dấu:
 1. Hai agent `legal-annotator-a`, `legal-annotator-b` gán mù độc lập theo thẻ 4.0, nguồn tra
-   theo skill `vn-legal-research`. Nhãn thô lưu ở `data/review/ai_research/<run>/`, khóa và băm
+   theo skill `vn-legal-research`. Nhãn thô lưu ở `data/labels/ai_research/<run>/`, khóa và băm
    trước khi xem nhau; đồng thuận AI–AI đo bằng `scripts/review/ai_labels.py`.
 2. Dòng hai agent lệch: `legal-adjudicator` đề xuất, lưu file riêng.
 3. CMT duyệt **mọi dòng**, có xem nhãn và lý do của AI, đồng ý hoặc sửa. Nhãn CMT là nhãn cuối;

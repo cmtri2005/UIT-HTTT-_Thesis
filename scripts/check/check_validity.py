@@ -26,7 +26,7 @@ rows. This re-runs its detectors inside the repo, on every row:
                       Điều này") with almost no legal content of its own
 
 A detector, not a verdict: the 29/09 review found 31–37% of its flags true. The
-queue is `data/review/validity_queue.tsv`, one line per (row, kind, ref); a re-run
+queue is `data/labels/validity_queue.tsv`, one line per (row, kind, ref); a re-run
 keeps every decision already typed in and marks lines it no longer finds as
 `active = khong`. Rows of a cross-check (D4) lineage get `decision = sau_D4`: they
 are adjudicated only after the blind labels are in.
@@ -211,7 +211,7 @@ def main() -> None:
     args = ap.parse_args()
     data = args.data
     rows = [json.loads(line) for line in (data / "derived/vilextime/release.jsonl").open(encoding="utf-8")]
-    kappa_ids = {r["id"] for r in csv.DictReader((data / "review/crosscheck_A.tsv").open(encoding="utf-8"), delimiter="\t")}
+    kappa_ids = {r["id"] for r in csv.DictReader((data / "labels/crosscheck_A.tsv").open(encoding="utf-8"), delimiter="\t")}
     kappa = {r["lineage_id"] for r in rows if r["id"] in kappa_ids}
 
     db = sqlite3.connect(f"file:{data / 'temporal.sqlite'}?mode=ro", uri=True)
@@ -252,7 +252,7 @@ def main() -> None:
         if r["answerable"] and reference_only(r["answer"] or ""):
             flag(r, "reference_only", r["as_of"], "", r["answer"])
 
-    path = data / "review/validity_queue.tsv"
+    path = data / "labels/validity_queue.tsv"
     old = {}
     if path.exists():
         for line in csv.DictReader(path.open(encoding="utf-8"), delimiter="\t"):

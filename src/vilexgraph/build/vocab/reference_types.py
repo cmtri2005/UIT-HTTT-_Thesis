@@ -13,7 +13,7 @@ from pathlib import Path
 
 from ..storage.documents import REPO_DATA_DIR, read_json
 
-DEFAULT_MAP_PATH = REPO_DATA_DIR / "reference_type_map.json"
+DEFAULT_MAP_PATH = REPO_DATA_DIR / "vocab" / "reference_type_map.json"
 
 
 class EdgeGroup(Enum):

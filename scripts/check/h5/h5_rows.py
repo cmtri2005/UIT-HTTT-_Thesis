@@ -12,12 +12,12 @@ def load_rows():
     out = []  # (set, id, lineage, as_of, answerable, doc, vid)
     for r in rd("data/derived/vilextime/release.jsonl"):
         out.append(("dev" if r["split"] == "dev" else "v1.0_test", r["id"], r["lineage_id"], r["as_of"], r["answerable"], r["target"]["document_id"], r.get("version_id")))
-    for r in rd("data/vilextime/test2_release_v2.jsonl"):
+    for r in rd("data/benchmark/test2/test2_release_v2.jsonl"):
         out.append(("test2", r["id"], r["lineage_id"], r["as_of"], r["answerable"], r["target"]["document_id"], r.get("version_id")))
-    for r in rd("data/vilextime_dataset/vilextime_silver.jsonl"):
+    for r in rd("data/benchmark/test_v1/vilextime_silver.jsonl"):
         out.append(("silver_old859", r["id"], r["lineage_id"], r["as_of"], r["answerable"], doc(r["lineage_id"]), r.get("version_id")))
     for name, tag in (("lo1_silver", "silver_lo1"), ("lo2_moi", "lo2")):
-        for w in rd(f"data/review/the4/{name}_worksheet.jsonl"):
+        for w in rd(f"data/labels/annotation_rounds/{name}_worksheet.jsonl"):
             for r in w["rows"]:
                 out.append((tag, r["id"], w["lineage_id"], r["as_of"], r["answerable"], r["target"]["document_id"], r.get("version_id")))
     return out

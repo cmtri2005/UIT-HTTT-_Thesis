@@ -83,14 +83,14 @@ def calib_records(data: Path, evidence_paths: list[Path]) -> tuple[list[dict], d
         lineages[r["lineage_id"]].append(r)
     lineage_of = {r["id"]: r["lineage_id"] for r in rows}
     reviews: dict[str, list[dict]] = collections.defaultdict(list)
-    for i, rev in final_labels(data / "review").items():
+    for i, rev in final_labels(data / "labels").items():
         if i in lineage_of:
             reviews[lineage_of[i]].append(rev)
     truth = {l: t for l, revs in reviews.items() if (t := truth_of(revs, len(lineages[l])))}
     truth = {l: t for l, t in truth.items()
              if (lineages[l][0]["target"]["law_id"], lineages[l][0]["target"]["citation"]) not in EXAMPLES}
-    questions = {q["lineage_id"]: q for q in jsonl(ROOT / "data/vilextime/questions.jsonl") if q.get("question")}
-    shorts = {(s["lineage_id"], s["version_id"]): s["short_answer"] for s in jsonl(ROOT / "data/vilextime/short_answers.jsonl")}
+    questions = {q["lineage_id"]: q for q in jsonl(ROOT / "data/benchmark/test2/questions.jsonl") if q.get("question")}
+    shorts = {(s["lineage_id"], s["version_id"]): s["short_answer"] for s in jsonl(ROOT / "data/benchmark/test2/short_answers.jsonl")}
     wanted = {r["id"] for l in truth for r in lineages[l]}
     evidence = {e["id"]: e for p in evidence_paths for e in jsonl(p) if e["id"] in wanted}
     if missing := wanted - evidence.keys():
@@ -132,7 +132,7 @@ def build(which: str, out: Path, key: Path | None, evidence: list[Path]) -> None
             f.write("lineage_id\tloai\tsu_that\n")
             f.writelines(f"{r['lineage_id']}\t{r['stratum']}\t{truth[r['lineage_id']]}\n" for r in records)
     else:
-        records = jsonl(ROOT / "data/review/test2_candidate_worksheet_v3.jsonl")
+        records = jsonl(ROOT / "data/labels/test2_candidate_worksheet_v3.jsonl")
     random.Random(f"test2-relabel-{which}").shuffle(records)
     tasks = [task(r, corpus) for r in records]
     install(out, tasks, PROMPT.read_text(encoding="utf-8"))

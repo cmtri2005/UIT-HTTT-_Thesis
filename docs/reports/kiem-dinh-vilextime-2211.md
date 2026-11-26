@@ -63,7 +63,7 @@ Riêng nhóm repealed (T6) loại 133 lineage vì không rõ nội dung đã chu
 
 **3.3 Gán nhãn.** Phần này yếu nhất.
 - Không có ai gán nhãn người một cách độc lập trên toàn bộ.
-- Duyệt silver và lo2 (296 dòng): câu "Đã xem và mình xác nhận", thời gian từng dòng không đo (`data/review/ai_research/2026-11-10_cmt_confirmed/cmt_confirmed.json`).
+- Duyệt silver và lo2 (296 dòng): câu "Đã xem và mình xác nhận", thời gian từng dòng không đo (`data/labels/ai_research/2026-11-10_cmt_confirmed/cmt_confirmed.json`).
 - Duyệt T1 (60 dòng): câu "ok bạn nhé" (`2026-11-11_t1_labels/cmt_confirmed_t1.json`).
 - Lượt gán lại AI-B cho T1 đã nhìn thấy nhãn AI-B của lượt trước (`2026-11-11_t1_labels/README.txt`), nên không còn mù.
 
@@ -81,7 +81,7 @@ Riêng nhóm repealed (T6) loại 133 lineage vì không rõ nội dung đã chu
 **3.6 Tái lập.**
 - Có datasheet, schema, prompt nguyên văn, nhãn thô và changelog.
 - Thiếu danh sách 175 lineage bị loại kèm mã lý do. Thiếu DOI.
-- Một phần đầu vào nằm ngoài repo (`~/vilextime_loc/`). Chúng đã được sao vào `data/vilextime_final/inputs/` kèm sha256.
+- Một phần đầu vào nằm ngoài repo (`~/vilextime_loc/`). Chúng đã được sao vào `data/benchmark/test_final/inputs/` kèm sha256.
 
 ## 4. Danh sách phát hiện
 

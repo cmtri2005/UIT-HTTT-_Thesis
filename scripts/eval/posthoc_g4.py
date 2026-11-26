@@ -4,9 +4,9 @@
 Chỉ đọc dự đoán đã lưu; không gọi model, không đổi scorer. Không thay phán quyết F1–F7 của ADR 0006.
 Hiệu ghép cặp dùng đúng `confirm_vilextime.run` (bootstrap theo lineage, ADR 0006 §5).
 
-    PYTHONPATH=src .venv/bin/python scripts/eval/posthoc_g4.py --g4 runs/final_g4_20261112 \\
-        --release data/vilextime_final/vilextime.jsonl --data data/vilextime_final/internal \\
-        --extra-retrieval runs/posthoc_g4_20261113/retrieval --out runs/posthoc_g4_20261113/attribution.json
+    PYTHONPATH=src .venv/bin/python scripts/eval/posthoc_g4.py --g4 runs/final/main \\
+        --release data/benchmark/test_final/vilextime.jsonl --data data/benchmark/test_final/internal \\
+        --extra-retrieval runs/final/posthoc/retrieval --out runs/final/posthoc/attribution.json
 """
 from __future__ import annotations
 

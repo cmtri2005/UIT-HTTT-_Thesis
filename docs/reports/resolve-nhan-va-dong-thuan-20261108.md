@@ -28,14 +28,14 @@ thẻ, sửa nhãn hoặc miễn cổng**. Kế hoạch đang có hiệu lực v
 
 ### Hồ sơ gốc để tiếp tục
 
-- [Tổng hợp hiện tại](../../data/review/ai_research/2026-11-08_lo2/combined_review_summary.json).
-- [23 ca mở, có lineage ID và câu hỏi còn thiếu](../../data/review/ai_research/2026-11-08_lo2/open_cases_for_CMT.jsonl).
-- [Phiếu CMT lô 128](../../data/review/ai_research/2026-11-08_lo2/duyet_CMT_after_adjudication.xlsx).
-- [Phiếu CMT lô 18](../../data/review/ai_research/2026-11-08_supp18/duyet_CMT_after_adjudication.xlsx).
-- [CMT duyệt lô 128](../../data/review/ai_research/2026-11-08_lo2/cmt_acceptance.json)
-  và [lô 18](../../data/review/ai_research/2026-11-08_supp18/cmt_acceptance.json).
-- [Metrics lô 128](../../data/review/ai_research/2026-11-08_lo2/schema_validated/metrics.json)
-  và [metrics lô 18](../../data/review/ai_research/2026-11-08_supp18/metrics.json).
+- [Tổng hợp hiện tại](../../data/labels/ai_research/2026-11-08_lo2/combined_review_summary.json).
+- [23 ca mở, có lineage ID và câu hỏi còn thiếu](../../data/labels/ai_research/2026-11-08_lo2/open_cases_for_CMT.jsonl).
+- [Phiếu CMT lô 128](../../data/labels/ai_research/2026-11-08_lo2/duyet_CMT_after_adjudication.xlsx).
+- [Phiếu CMT lô 18](../../data/labels/ai_research/2026-11-08_supp18/duyet_CMT_after_adjudication.xlsx).
+- [CMT duyệt lô 128](../../data/labels/ai_research/2026-11-08_lo2/cmt_acceptance.json)
+  và [lô 18](../../data/labels/ai_research/2026-11-08_supp18/cmt_acceptance.json).
+- [Metrics lô 128](../../data/labels/ai_research/2026-11-08_lo2/schema_validated/metrics.json)
+  và [metrics lô 18](../../data/labels/ai_research/2026-11-08_supp18/metrics.json).
 - [Quy tắc định nghĩa](../vilextime-dinh-nghia.md),
   [thẻ gán nhãn 4.0](../vilextime-annotation.md).
 
@@ -138,7 +138,7 @@ Không dùng bảng tóm tắt này thay việc đọc nguồn gốc để quy�
   không tồn tại bất kỳ quy phạm nào; cũng không suy không có từ một tìm kiếm rỗng.
 
 Hồ sơ nguồn đã có trong
-`data/review/ai_research/2026-11-08_lo2/schema_validated/adjudication_native/full_sources/`:
+`data/labels/ai_research/2026-11-08_lo2/schema_validated/adjudication_native/full_sources/`:
 index theo batch, bản trích toàn văn không giới hạn 30.000 ký tự, hash. Nguồn
 cached là toàn văn chính thức lấy sẵn, không phải một lượt kiểm live mới.
 
@@ -216,12 +216,12 @@ phê duyệt, phải đọc kèm `cmt_acceptance.json`. Sau thay đổi nguồn/
 lưu phiên mới và quyết định tác động trước, không ghi đè kết quả cũ.
 
 ```sh
-.venv/bin/python data/review/ai_research/2026-11-08_lo2/finalize_native.py
-.venv/bin/python data/review/ai_research/2026-11-08_supp18/package_review.py
+.venv/bin/python data/labels/ai_research/2026-11-08_lo2/finalize_native.py
+.venv/bin/python data/labels/ai_research/2026-11-08_supp18/package_review.py
 ```
 
 Validator owner:
-`data/review/ai_research/2026-11-07_adjudication_all/package_review.py:load_validate`.
+`data/labels/ai_research/2026-11-07_adjudication_all/package_review.py:load_validate`.
 Không hạ yêu cầu validator về evidence_status để ép ca thành resolved.
 
 Phiên lập hồ sơ này chỉ lưu phân tích/checklist; không chạy lại gán nhãn,

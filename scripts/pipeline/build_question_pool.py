@@ -291,7 +291,7 @@ def norm_continuity(document_id: str, ended_on: str | None, co_dated: set[tuple[
     The test is a proxy and over-triggers on purpose: an amendment landing in the
     same document on the same day is a *candidate* successor, not a proven one, so
     this returns "unclear" and never "moved". Only a person reading the target
-    text may write "moved", in data/review/audit_queue_relocation.tsv,
+    text may write "moved", in data/labels/audit_queue_relocation.tsv,
     and the 18 unchecked rows there are what measures this proxy's precision.
     """
     if not ended_on:
@@ -603,7 +603,7 @@ def stable_sample(rows: list[dict], cap: int, ranked: set[str]) -> list[dict]:
 
     A seeded sample of a list that gained or lost a row picks different rows, so
     a rebuild that moves a few provisions between groups would drop lineages the
-    release already holds (data/vilextime/sample.jsonl is walked in rank order)
+    release already holds (data/benchmark/test2/sample.jsonl is walked in rank order)
     out of the pool (plan phase-4, J3). `ranked` must be this group's lineages
     only: a T6 "ancestor" lineage is also a T1 candidate, and kept in T1 it would
     be taken before T6 could have it.
@@ -625,7 +625,7 @@ def main() -> None:
     parser.add_argument("--today", type=date.fromisoformat, default=date(2026, 9, 20))
     args = parser.parse_args()
     data = args.data
-    ranking = data / "vilextime/sample.jsonl"
+    ranking = data / "benchmark/test2/sample.jsonl"
     ranked: dict[str, set[str]] = collections.defaultdict(set)     # group -> its ranked lineages
     for line in ranking.open(encoding="utf-8") if ranking.exists() else ():
         entry = json.loads(line)

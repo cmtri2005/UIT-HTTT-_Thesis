@@ -14,8 +14,8 @@ Tài liệu này được commit **trước khi giao bất kỳ phiếu nào** c
 | CMT | Tác giả duyệt | Chốt ca máy móc, ra quyết định ở các điểm kiểm | Đọc hay chấm, vì đã thấy mọi đáp án |
 | Claude | Agent | Dựng phiếu, so máy, tìm ứng viên W3, đề xuất phân xử | Đứng tên gold, chấm thay người |
 
-- **Xác nhận độ mù.** Trước lô đầu tiên, A và B mỗi người ký một dòng trong `data/review/qa_v6/attestation.md`:
-  chưa mở `data/review/gold_random30/*.reveal.tsv`, `KET_QUA.md`, `data/vilextime_dib/`, repo phát hành, hay bất kỳ
+- **Xác nhận độ mù.** Trước lô đầu tiên, A và B mỗi người ký một dòng trong `data/labels/qa_v6/attestation.md`:
+  chưa mở `data/labels/gold_random30/*.reveal.tsv`, `KET_QUA.md`, `data/vilextime_dib/`, repo phát hành, hay bất kỳ
   file nào có đáp án kho của các lineage trong phiếu.
 - Ai đã xem đáp án của lineage nào thì không đọc lineage đó, và việc này được ghi lại.
 - Nếu một người đã đọc lời văn của một điều khoản ở đợt trước, chấm W2 ghi cờ `seen_provision` cho câu đó.
@@ -164,7 +164,7 @@ Mọi mục dưới đây ghi ngày 22/11/2026, trước khi giao phiếu W2 nà
   tháng năm, tên người, địa danh; (3) viết hoa chữ đầu câu khi phần xóa đứng đầu câu. Không thêm hay thay chữ nào.
 - Giữ lại các câu dẫn cần để hiểu câu hỏi (tránh "trường hợp trên" không rõ là gì). Tham chiếu Điều, Khoản được giữ,
   vì đăng ký trước chỉ yêu cầu bỏ số hiệu văn bản.
-- Nguyên văn, bản rút gọn và URL nằm trong `data/review/qa_v6/w2/moc_src.py`. Hàm `check()` kiểm luật này; đã thử âm
+- Nguyên văn, bản rút gọn và URL nằm trong `data/labels/qa_v6/w2/moc_src.py`. Hàm `check()` kiểm luật này; đã thử âm
   (thêm một chữ thì bị bắt).
 
 **S3. Giới hạn mới của W2: độ mù về nguồn câu yếu.** Câu mốc dài hơn và thường xưng "tôi", nên người chấm có thể
@@ -177,7 +177,7 @@ văn riêng trong kho, dùng lời văn của Điều chứa nó. Bản chạy t
 vai người đã đọc mù lineage đó ở đợt trước (`read_before_by`). Bài báo cáo cả hai.
 
 **S6. Cổng tin cậy W3 chạy trên một lô trộn (§3).** Ghi trước khi xem kết quả của agent.
-- Lô `data/review/qa_v6/w3/gate_batch.jsonl` gồm 12 văn bản: 6 văn bản chứa 6 lỗi đã biết, trộn với 6 văn bản của
+- Lô `data/labels/qa_v6/w3/gate_batch.jsonl` gồm 12 văn bản: 6 văn bản chứa 6 lỗi đã biết, trộn với 6 văn bản của
   control rút bằng `random.Random("20261122:w3:gate-mix")`; thứ tự xáo bằng `random.Random("20261122:w3:gate-order")`.
   Agent không được biết văn bản nào có lỗi đã biết. 6 văn bản control đồng thời là phần đầu của W3 cho control.
 - Agent được dặn không mở file nào trong repo và không dùng tab Lược đồ của vbpl. Đây là mù theo lời dặn; công cụ của
@@ -191,7 +191,7 @@ vai người đã đọc mù lineage đó ở đợt trước (`read_before_by`)
 **S7. Luật gắn ứng viên đổi sau khi thấy kết quả cổng (22/11).** Nếu ngày hiệu lực của văn bản tác động trùng ngày
 bắt đầu hoặc kết thúc một phiên bản của lineage hoặc của văn bản đích, thì không gắn ứng viên. Lý do: văn bản thay thế
 toàn bộ được kho thể hiện bằng ngày hết hiệu lực của văn bản, không bằng sự kiện. Kết quả cổng theo cả hai luật đều
-là 5/6, và số ứng viên giảm từ 18 xuống 11. Chi tiết ở `data/review/qa_v6/w3/KET_QUA_CONG.md`.
+là 5/6, và số ứng viên giảm từ 18 xuống 11. Chi tiết ở `data/labels/qa_v6/w3/KET_QUA_CONG.md`.
 
 **S8. Thêm loại ứng viên `weak_no`.** Văn bản tác động mà agent ghi "không chạm điều khoản đích" nhưng chỉ dựa trên
 nguồn thứ ba vẫn được đưa vào ứng viên. Lý do: F060 bị sót đúng theo kiểu này. Luật này áp dụng từ lần chạy toàn bộ
@@ -203,14 +203,14 @@ và không chấm lại cổng.
 - Văn bản sửa đổi đầu tiên mới là văn bản cần tìm, kể cả khi sau đó có văn bản ban hành lại cùng lời văn.
 
 Lời dặn của cổng giữ nguyên như lúc chạy. Lô control còn lại có 36 lineage, ở
-`data/review/qa_v6/w3/control_batch.jsonl`; chia 6 agent, mỗi agent 6 lineage.
+`data/labels/qa_v6/w3/control_batch.jsonl`; chia 6 agent, mỗi agent 6 lineage.
 
 **S10. Chỉ ứng viên có thể đổi đáp án mới cần người đọc (22/11, sau lần chạy control).** Một ứng viên được đánh dấu
 `affects_rows` khi văn bản tác động có hiệu lực vào hoặc trước ngày hỏi muộn nhất của lineage, hoặc khi không rõ ngày.
 - Ứng viên có hiệu lực sau mọi dòng của lineage không đổi được đáp án nào. Nó chỉ cho thấy kho thiếu một sự kiện ở
   phía sau, nên được ghi lại nhưng không đưa vào phiếu người xác nhận.
 - 6 lỗi đã biết đã sửa ở 5.x nên cũng không đưa vào phiếu.
-- Phiếu `data/review/qa_v6/w3/xac_nhan.xlsx` có 11 dòng. Để giữ độ mù, chỉ giao phiếu cho người đã khóa W1 lô 1.
+- Phiếu `data/labels/qa_v6/w3/xac_nhan.xlsx` có 11 dòng. Để giữ độ mù, chỉ giao phiếu cho người đã khóa W1 lô 1.
   Lô 1 chứa các lineage control chưa ai đọc, mà tên văn bản tác động trong phiếu gợi ý chỗ kho có thể thiếu.
 
 
@@ -227,7 +227,7 @@ Khi Claude hết hạn mức, Codex lập danh sách cho 17 lô này. Cách làm
 - Hệ quả: recall 5/6 của cổng chỉ áp cho cách làm của agent (gate, control, `V001–V054`). Cách làm của Codex không
   chạy lại được trên lô cổng, vì danh sách giữ lại do Codex chọn tay và kết quả tìm kiếm không lưu lại. Bài không được
   ngoại suy recall 5/6 cho 97 lineage này.
-- Lưu vết: mọi lệnh Codex đã gọi ở `data/review/qa_v6/w3/codex_rest_calls.jsonl` (241 lệnh, trích từ nhật ký phiên
+- Lưu vết: mọi lệnh Codex đã gọi ở `data/labels/qa_v6/w3/codex_rest_calls.jsonl` (241 lệnh, trích từ nhật ký phiên
   Codex sha256 `a6320bf5…522e`). Script trung gian ở `/tmp/w3-*` đã mất; chỉ còn lời gọi trong tệp này.
 - Ứng viên `unclear` vẫn vào phiếu như mọi ứng viên, nên cách làm này không làm mất ứng viên đã liệt kê; rủi ro nằm ở
   văn bản tác động không được liệt kê.
@@ -239,7 +239,7 @@ bản, nên loại nhầm mọi lineage khác cùng dẫn văn bản đó. Thự
 **S13. Chạy lại `V055–V151` bằng cách làm của agent (ghi 23/11, trước khi chạy).** Để recall của cổng áp được cho cả
 bộ, 97 lineage của S11 được lập danh sách lại bằng agent `vn-law-verifier`, cùng lời dặn đã dùng cho `V001–V054`
 (có hai ý của S9), 17 lô theo đúng cách chia của `rest_batch.jsonl`. Agent không thấy danh sách của Codex.
-- Kết quả ghi ở `data/review/qa_v6/w3/rest2_agent_V*.jsonl`; danh sách của Codex giữ nguyên.
+- Kết quả ghi ở `data/labels/qa_v6/w3/rest2_agent_V*.jsonl`; danh sách của Codex giữ nguyên.
 - Ứng viên = hợp của hai danh sách, so máy bằng `compare.py` như cũ. Phiếu chỉ thêm dòng mới, giữ 100 dòng đã dựng.
 - Báo thêm: số văn bản tác động chỉ một bên liệt kê, theo từng bên.
 - Nếu một lô agent không trả về, chạy lại lô đó một lần; vẫn không được thì ghi là thiếu, không bù bằng tay.

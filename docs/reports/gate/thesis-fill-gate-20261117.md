@@ -1,6 +1,6 @@
 # Evidence-gate: điền khóa luận 17/11/2026
 
-Phạm vi: `git diff fecae0b..3a16e5c -- docs/thesis`; phân tích `51123d4` (`runs/gap_analysis_20261117/`, `docs/paper/NGUYEN_NHAN_3_VAN_DE.md`); A1 `2df3340`, `94953d1`. Agent `evidence-gate` (AI, không phải duyệt của người). Phiên chính ghi lại bản tóm tắt này, vì agent không được ghi file.
+Phạm vi: `git diff fecae0b..3a16e5c -- docs/thesis`; phân tích `51123d4` (`runs/final/retrieval_funnel/`, `docs/paper/NGUYEN_NHAN_3_VAN_DE.md`); A1 `2df3340`, `94953d1`. Agent `evidence-gate` (AI, không phải duyệt của người). Phiên chính ghi lại bản tóm tắt này, vì agent không được ghi file.
 
 ## Lượt 1: FAIL
 

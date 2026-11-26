@@ -5,7 +5,7 @@ slug happens to contain a domain keyword but whose actual `documentFields`/
 `documentMajors` put it in an unrelated ministry. This module classifies a
 document as "foreign" using a hand-reviewed blocklist of major/field names
 that have no plausible overlap with the 3 target domains — never a guess
-made from the majors/fields seen at runtime. See `data/field_filter_map.json`
+made from the majors/fields seen at runtime. See `data/vocab/field_filter_map.json`
 for what's on the list and why it's deliberately conservative.
 
 Unlike `reference_types.ReferenceTypeMap`, this is not fail-loud on unknown
@@ -28,7 +28,7 @@ from pathlib import Path
 from ..storage.documents import REPO_DATA_DIR, read_json
 from typing import Any
 
-DEFAULT_MAP_PATH = REPO_DATA_DIR / "field_filter_map.json"
+DEFAULT_MAP_PATH = REPO_DATA_DIR / "vocab" / "field_filter_map.json"
 
 JsonDict = dict[str, Any]
 

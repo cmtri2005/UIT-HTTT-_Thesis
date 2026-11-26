@@ -104,7 +104,7 @@ def published_scope(data: Path) -> tuple[set[str], set[str]]:
     The approved test2 plan excludes whole dev documents, not only the groups
     present in the test2 pool. Published metadata is the owner of document IDs.
     """
-    root = data / "vilextime_dataset"
+    root = data / "benchmark" / "test_v1"
     main = [json.loads(line) for line in (root / "vilextime.jsonl").open(encoding="utf-8")]
     dev_ids = {r["id"] for r in main if r["split"] == "dev"}
     docs = {}
@@ -214,7 +214,7 @@ def build(out: Path, data: Path, second_round: bool = False, third: bool = False
     doc_of = {lid: rs[0]["target"]["document_id"] for lid, rs in by_lineage.items()}
 
     reviews: dict[str, list[dict]] = collections.defaultdict(list)
-    for i, rev in final_labels(data / "review").items():
+    for i, rev in final_labels(data / "labels").items():
         if i in lineage_of:
             reviews[lineage_of[i]].append(rev)
     truth = {lid: t for lid, revs in reviews.items() if (t := lineage_truth(revs))}
@@ -532,7 +532,7 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, help="qpack: chỉ rút chừng này mục để thử")
     ap.add_argument("--model", help="qcheck: ai viết câu hỏi")
     ap.add_argument("--provider", default="claude-code", help="qcheck: nguồn thực tế, ví dụ codex hoặc claude-code")
-    ap.add_argument("--dest", type=Path, default=Path("data/vilextime/questions_test2.jsonl"), help="qcheck: file câu chốt")
+    ap.add_argument("--dest", type=Path, default=Path("data/benchmark/test2/questions_test2.jsonl"), help="qcheck: file câu chốt")
     ap.add_argument("--from", dest="old", type=Path, help="redo: thư mục gói của lần trước")
     ap.add_argument("--codes", default="transitional_rule", help="redo: mã đã sửa trong lời dặn, phẩy ngăn cách")
     args = ap.parse_intermixed_args()

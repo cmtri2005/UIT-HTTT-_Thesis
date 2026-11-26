@@ -5,7 +5,7 @@ T5 asks about a change made by a document that takes effect before it was
 signed. Whether that falls under Điều 152 Luật BHVBQPPL is a legal judgement;
 this script lays out the facts for it and decides nothing.
 
-Writes two tab-separated files into `data/review/`:
+Writes two tab-separated files into `data/labels/`:
 
   t5_documents.tsv  one row per acting document: its dates, the retroactive
                     window, the kind this pipeline guessed (stated
@@ -87,7 +87,7 @@ def main() -> None:
         candidates[retro["actor_document_id"]] += 1
         pairs[retro["actor_document_id"]] += lid in released
 
-    out = d / "review"
+    out = d / "labels"
     kept_docs, kept_items = answers(out / "t5_documents.tsv"), answers(out / "t5_items.tsv")
     with (out / "t5_documents.tsv").open("w", encoding="utf-8") as f:
         f.write("\t".join(["văn bản tác động", "tên", "ngày ký", "ngày hiệu lực", "số ngày hồi tố",

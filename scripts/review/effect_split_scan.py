@@ -7,7 +7,7 @@ mốc sai (NĐ 17/2020/NĐ-CP, lô 0). Đọc điều hiệu lực trong toàn v
 bản tác động mà bản phát hành dùng, ghi ứng viên ra TSV. Chỉ là ứng viên: người kiểm đọc
 `dieu_hieu_luc` để biết lần sửa của dòng có thuộc phần ngoại lệ không.
 
-    python scripts/review/effect_split_scan.py      # -> data/review/hieu_luc_tach.tsv
+    python scripts/review/effect_split_scan.py      # -> data/labels/hieu_luc_tach.tsv
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def effect_article(raw: Path) -> str | None:
 def main(data: Path = Path("data")) -> None:
     docs = {d["document_id"]: d for d in map(json.loads, open(data / "derived/corpus/documents.jsonl", encoding="utf-8"))}
     use = collections.defaultdict(list)          # văn bản tác động -> dòng dùng nó làm mốc
-    for line in open(data / "vilextime_dataset/vilextime_meta.jsonl", encoding="utf-8"):
+    for line in open(data / "benchmark/test_v1/vilextime_meta.jsonl", encoding="utf-8"):
         m = json.loads(line)
         for t in m["derivation"]["transitions"]:
             use[t["actor"]["document_id"]].append(m)
@@ -64,7 +64,7 @@ def main(data: Path = Path("data")) -> None:
                      "nhom": ", ".join(f"{k}:{v}" for k, v in sorted(collections.Counter(m["subgroup"] for m in metas).items())),
                      "dieu_hieu_luc": seg[:900], "ids": " ".join(m["id"] for m in metas)})
     rows.sort(key=lambda r: (-r["so_lineage"], r["law_id"]))
-    out = data / "review/hieu_luc_tach.tsv"
+    out = data / "labels/hieu_luc_tach.tsv"
     with out.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]), delimiter="\t", lineterminator="\n")
         w.writeheader()

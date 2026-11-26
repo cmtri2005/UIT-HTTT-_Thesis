@@ -1,10 +1,10 @@
 """Build the Data in Brief release of ViLexTime from the locked final test set.
 
 Inputs are read-only: the T1-fixed release (ADR 0006 amendment 19/11) and the
-labelling provenance under data/review. Output: data/vilextime_dib/.
+labelling provenance under data/labels. Output: data/vilextime_dib/.
 
-Changes versus data/vilextime_final (all listed in CHANGES.md of the output):
-  1. T1 answers: leading enumeration marker removed (runs/posthoc_g4_20261113/t1_fix).
+Changes versus data/benchmark/test_final (all listed in CHANGES.md of the output):
+  1. T1 answers: leading enumeration marker removed (runs/final/posthoc/t1_fix).
   2. F019 gold corrected per ADR 0006 §7 (lawyer blind read; TT 36/2026/TT-BXD).
   3. meta.review rewritten per lineage from the real provenance files.
   4. meta.question_source: Codex model recorded as author-reported gpt-6.1-sol.
@@ -13,7 +13,7 @@ Changes versus data/vilextime_final (all listed in CHANGES.md of the output):
   8. Descriptive group names replace the thesis codes T1/T2/T3/T6 (GROUP_NAMES), also inside ids and twin_of;
      date modes ranh_gioi/giua_khoang become boundary/mid_interval (DATE_MODES).
   9. Store errors of the missed-amendment class corrected (STORE_FIXES; audit: scripts/check/audit_missed_amendments.py,
-     runs/audit_missed_amendments/NOTE.md). A version that ended earlier than the store recorded gets its true end; a
+     data/labels/missed_amendment_audit/NOTE.md). A version that ended earlier than the store recorded gets its true end; a
      row dated after that end moves to the middle of its version's true interval (same answer, same labels).
   7. meta.review.labelers per run (real runtime/model), and annotation/ exported:
      raw AI labels, adjudication records, worksheets shown to the agents, blind-reading sheets.
@@ -32,9 +32,9 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT / "runs/posthoc_g4_20261113/t1_fix/release"
-AI = ROOT / "data/review/ai_research"
-GOLD = ROOT / "data/review"
+BASE = ROOT / "runs/final/posthoc/t1_fix/release"
+AI = ROOT / "data/labels/ai_research"
+GOLD = ROOT / "data/labels"
 GOLD_DOT3 = GOLD / "gold_dot3_highrisk"  # high-risk augmentation (AI-proposed, CMT-verified; not blind)
 OUT = ROOT / "data/vilextime_dib"
 
@@ -152,14 +152,14 @@ GOLD_DROP = {"ly_do", "ghi_chu_mo", "phut", "ghi_chu", "stage1_sha256"}  # free 
 
 # Verbatim prompts, agent definitions and guideline (initials such as CMT = the reviewing author are kept).
 PROMPTS = [
-    ("data/review/ai_research/2026-11-06_silver/prompts", "labelling/silver"),
-    ("data/review/ai_research/2026-11-08_lo2/prompts", "labelling/lo2"),
-    ("data/review/ai_research/2026-11-08_supp18/prompts", "labelling/supp18"),
-    ("data/review/ai_research/2026-11-11_t1_labels/prompts", "labelling/t1"),
-    ("data/review/ai_research/2026-11-19_uniform/prompts", "labelling/uniform_20261119"),
-    ("data/review/ai_research/codex_b_wrapper.md", "labelling/codex_b_wrapper.txt"),
-    ("data/review/ai_research/2026-11-07_adjudication_all/prompts", "adjudication/silver"),
-    ("data/review/ai_research/2026-11-08_lo2/adjudication/prompts", "adjudication/lo2"),
+    ("data/labels/ai_research/2026-11-06_silver/prompts", "labelling/silver"),
+    ("data/labels/ai_research/2026-11-08_lo2/prompts", "labelling/lo2"),
+    ("data/labels/ai_research/2026-11-08_supp18/prompts", "labelling/supp18"),
+    ("data/labels/ai_research/2026-11-11_t1_labels/prompts", "labelling/t1"),
+    ("data/labels/ai_research/2026-11-19_uniform/prompts", "labelling/uniform_20261119"),
+    ("data/labels/ai_research/codex_b_wrapper.md", "labelling/codex_b_wrapper.txt"),
+    ("data/labels/ai_research/2026-11-07_adjudication_all/prompts", "adjudication/silver"),
+    ("data/labels/ai_research/2026-11-08_lo2/adjudication/prompts", "adjudication/lo2"),
     (".claude/agents/legal-annotator-a.md", "agents/legal-annotator-a.txt"),
     (".claude/agents/legal-annotator-b.md", "agents/legal-annotator-b.txt"),
     (".claude/agents/legal-adjudicator.md", "agents/legal-adjudicator.txt"),
@@ -422,7 +422,7 @@ def _sheet(path):
 def excluded_lineages(final):
     """The 175 lineages labelled for the final set but not released, with the step that removed them and the
     reason codes of the final label (docs/vilextime-dinh-nghia.md §7). Reproduces the funnel of
-    data/review/ai_research/2026-11-11_final_count/count_final.py: silver 168 → 75, lo2 128 → 70, supp 18 → 11,
+    data/labels/ai_research/2026-11-11_final_count/count_final.py: silver 168 → 75, lo2 128 → 70, supp 18 → 11,
     control 60 → 43."""
     out = {}
 

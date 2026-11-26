@@ -12,7 +12,7 @@ Ba phép thử trên `context` (lời văn gold) và `answer` (đáp án ngắn)
 
 Chỉ là ứng viên: dòng có chữ hỏng thật thì người kiểm gán `gold_wrong`, không sửa tay lời văn.
 
-    python scripts/review/diacritic_scan.py         # -> data/review/chu_hong_dau.tsv
+    python scripts/review/diacritic_scan.py         # -> data/labels/chu_hong_dau.tsv
 """
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def pairs(text: str) -> list[tuple[str, str]]:
 
 
 def main(data: Path = Path("data")) -> None:
-    rows = [json.loads(line) for line in open(data / "vilextime_dataset/vilextime.jsonl", encoding="utf-8")]
+    rows = [json.loads(line) for line in open(data / "benchmark/test_v1/vilextime.jsonl", encoding="utf-8")]
     rows = [r for r in rows if r.get("answerable") and (r.get("context") or r.get("answer"))]
     keys = {f"{strip(a)} {strip(b)}" for r in rows for f in ("context", "answer") for a, b in pairs(r.get(f) or "")}
     counts: dict[str, collections.Counter] = collections.defaultdict(collections.Counter)
@@ -82,7 +82,7 @@ def main(data: Path = Path("data")) -> None:
             for w, how, should in dict.fromkeys(found):
                 out.append({"id": r["id"], "lineage_id": r["lineage_id"], "split": r["split"], "group": r["group"],
                             "cot": field, "chu": w, "cach_bat": how, "goi_y": should})
-    path = data / "review/chu_hong_dau.tsv"
+    path = data / "labels/chu_hong_dau.tsv"
     with path.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["id", "lineage_id", "split", "group", "cot", "chu", "cach_bat", "goi_y"],
                            delimiter="\t", lineterminator="\n")

@@ -37,8 +37,8 @@ def test_too_few_unseen_lineages_stop_the_draw():
 
 
 def test_reveal_waits_for_every_blind_answer(tmp_path):
-    (tmp_path / "review").mkdir()
-    (tmp_path / "review/gold_A.tsv").write_text(
+    (tmp_path / "labels").mkdir()
+    (tmp_path / "labels/gold_A.tsv").write_text(
         "khoa\tcau_hoi\tngay_hoi\tvan_ban\tdieu_khoan\tlink\tvan_ban_tac_dong_theo_cong\thieu_luc\tnoi_dung\t"
         "van_ban_ap_dung\tphut\tghi_chu\nG001\tq\t2020-01-01\tv\tĐiều 1\tu\t-\tcòn\t\t\t\t\n", encoding="utf-8")
     with pytest.raises(SystemExit, match="chưa xong"):
@@ -50,19 +50,19 @@ def test_the_workbook_round_trip_loads_answers_and_refuses_an_edited_data_cell(t
 
     from independent_gold import SHEET, export, ingest, read
 
-    (tmp_path / "review").mkdir()
+    (tmp_path / "labels").mkdir()
     head = "\t".join(SHEET)
     data_cells = ["G001", "q", "2020-01-01", "v", "Điều 1", "https://vbpl.vn/x", "-"]
-    (tmp_path / "review/gold_A.tsv").write_text(f"{head}\n" + "\t".join(data_cells + [""] * 5) + "\n", encoding="utf-8")
+    (tmp_path / "labels/gold_A.tsv").write_text(f"{head}\n" + "\t".join(data_cells + [""] * 5) + "\n", encoding="utf-8")
     export(tmp_path, "A")
-    book = tmp_path / "review/gold_A.xlsx"
+    book = tmp_path / "labels/gold_A.xlsx"
     wb = load_workbook(book)
     ws = wb["Gán nhãn"]
     ws.cell(2, SHEET.index("hieu_luc") + 1, "còn")
     ws.cell(2, SHEET.index("noi_dung") + 1, "1. Nội dung đang có hiệu lực")
     wb.save(book)
     ingest(tmp_path, "A")
-    assert read(tmp_path / "review/gold_A.tsv")[0]["noi_dung"] == "1. Nội dung đang có hiệu lực"
+    assert read(tmp_path / "labels/gold_A.tsv")[0]["noi_dung"] == "1. Nội dung đang có hiệu lực"
     ws.cell(2, SHEET.index("cau_hoi") + 1, "câu hỏi đã sửa")
     wb.save(book)
     with pytest.raises(SystemExit, match="cau_hoi"):

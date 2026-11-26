@@ -1,0 +1,70 @@
+{
+  "coverage": {
+    "silver": {
+      "rows": 819,
+      "lineages": 168,
+      "candidate_lineages": 21,
+      "confirmed_lineages": 1,
+      "aligned_lineages": 1,
+      "version_covered_rows": 2,
+      "version_covered_lineages": 1,
+      "version_covered_points": 2,
+      "repeal_covered_rows": 0,
+      "exact_date_rows": 0
+    },
+    "test2": {
+      "rows": 492,
+      "lineages": 101,
+      "candidate_lineages": 17,
+      "confirmed_lineages": 2,
+      "aligned_lineages": 0,
+      "version_covered_rows": 0,
+      "version_covered_lineages": 0,
+      "version_covered_points": 0,
+      "repeal_covered_rows": 0,
+      "exact_date_rows": 0
+    },
+    "v1.0": {
+      "rows": 487,
+      "lineages": 105,
+      "candidate_lineages": 13,
+      "confirmed_lineages": 3,
+      "aligned_lineages": 1,
+      "version_covered_rows": 2,
+      "version_covered_lineages": 1,
+      "version_covered_points": 2,
+      "repeal_covered_rows": 0,
+      "exact_date_rows": 0
+    }
+  },
+  "candidate_sources": 71,
+  "source_statuses": {
+    "can_nguoi_xem": 39,
+    "pdf_khong_lop_chu": 14,
+    "khong_co_pdf": 12,
+    "ready": 6
+  },
+  "pairs": 96,
+  "categories": {
+    "khong_can_duoc": 42,
+    "can_nguoi_xem": 12,
+    "pdf_khong_lop_chu": 24,
+    "khong_co_pdf": 17,
+    "khop": 1
+  },
+  "comparable": 2,
+  "matches": 1,
+  "unresolved_comparable": 1,
+  "match_rate": 0.5,
+  "wilson95": [
+    0.09453120573423074,
+    0.9054687942657693
+  ],
+  "nearest": {
+    "selected_best": 1,
+    "other_closer": 1
+  },
+  "repeal": {
+    "khop": 3
+  }
+}

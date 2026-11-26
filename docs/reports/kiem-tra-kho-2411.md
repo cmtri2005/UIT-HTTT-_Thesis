@@ -1,14 +1,14 @@
 # Kiểm tra kho phiên bản, 24/11/2026
 
 Chỉ đọc. Kho = `data/derived/versions.jsonl` + `event_log.jsonl` (dựng 10/11). `data/temporal.sqlite` chỉ là chỉ mục
-bản gốc, mỗi điều khoản đúng 1 bản. Script: lệnh trong phiên, tái lập bằng `data/review/qa_v6/w3/store_check.py` cho mục 3.
+bản gốc, mỗi điều khoản đúng 1 bản. Script: lệnh trong phiên, tái lập bằng `data/labels/qa_v6/w3/store_check.py` cho mục 3.
 
 ## 1. Cấu trúc: đạt
 1.598.662 phiên bản / 1.576.199 điều khoản. 0 điều khoản mồ côi, 0 khoảng hiệu lực chồng, hở hay âm.
 
 ## 2. Độ phủ lệnh sửa đổi: yếu
 Áp 21.892 / 56.624 lệnh (38,7%): sửa đổi 15.428/35.432, bãi bỏ 6.430/13.138, **bổ sung 0/5.653**, thay thế 32/2.228,
-đình chỉ 0/36. Từ chối vì: 18.982 `needs_review` chưa ai duyệt (hàng duyệt `data/review/provision_events.jsonl` có 909
+đình chỉ 0/36. Từ chối vì: 18.982 `needs_review` chưa ai duyệt (hàng duyệt `data/labels/provision_events.jsonl` có 909
 dòng, đều `auto_rejected`, 0 dòng LLM hay người duyệt); 14.765 văn bản đích không có trong kho.
 Hệ quả: 98,6% điều khoản chỉ có 1 phiên bản. Khớp số 09/11: kho phủ 40,2% lần hết hiệu lực (`g2-recall-m2-20261109.md`).
 

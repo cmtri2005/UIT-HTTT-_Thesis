@@ -18,7 +18,7 @@ annotators; the other 90 split evenly, so each labels 75.
 
 Labelling is blind, then revealed:
 
-    build   writes data/review/gold_sample.tsv (key -> row; not for the annotators) and
+    build   writes data/labels/gold_sample.tsv (key -> row; not for the annotators) and
             gold_A.tsv, gold_B.tsv: an opaque key, the question, the date, where to
             look (document, citation, portal link) and the documents the portal's Lược
             đồ tab lists as acting on that document. Never the KG's answer, its dates,
@@ -62,7 +62,7 @@ RELEASE: Path | None = None  # --release: the rows live outside DATA (the final 
 
 
 def review_dir(data: Path) -> Path:
-    return REVIEW or data / "review"
+    return REVIEW or data / "labels"
 
 
 def release_rows(data: Path) -> list[dict]:
@@ -72,7 +72,7 @@ def release_rows(data: Path) -> list[dict]:
 PER_STRATUM, SHARED = 20, 5
 STRATA = ("T1", "T2-regular", "T2-near", "T3", "T6-direct", "T6-ancestor")
 URL = "https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID={}"
-# Lược đồ codes as seen from the acting document (data/reference_type_map.json). Detailed
+# Lược đồ codes as seen from the acting document (data/vocab/reference_type_map.json). Detailed
 # guidance (9) and citations change no validity, so they are left out.
 ACTS = {1: "bãi bỏ", 5: "đình chỉ thi hành", 6: "đính chính", 7: "hợp nhất", 10: "sửa đổi, bổ sung",
         11: "tạm ngưng hiệu lực", 12: "thay thế"}
@@ -255,7 +255,7 @@ def build(data: Path, only: Path | None = None, strata: tuple[str, ...] = STRATA
     lineage_of = {r["id"]: r["lineage_id"] for r in rows}
     if only:
         ids = {json.loads(line)["id"] for line in only.open(encoding="utf-8")}
-        seen = {w: set() if FRESH else seen_lineages(data / "review", lineage_of, w) for w in "AB"}
+        seen = {w: set() if FRESH else seen_lineages(data / "labels", lineage_of, w) for w in "AB"}
         items = draw_blind([r for r in rows if r["id"] in ids], seen, strata, prefix, sizes, solo)
     else:
         items = draw(rows, seen_lineages(review, lineage_of))
@@ -276,7 +276,7 @@ def build(data: Path, only: Path | None = None, strata: tuple[str, ...] = STRATA
 GUIDE = [
     "Gold độc lập — bước một: gán mù",
     "Mục đích: kiểm xem đồ thị tri thức (KG) có xác định đúng điều khoản có hiệu lực hay không, bằng cách tự đọc văn bản gốc.",
-    "Không mở đáp án của hệ thống, release.jsonl hay data/review/gold_sample.tsv trước khi nộp bước này. Thấy đáp án trước là mất tính độc lập.",
+    "Không mở đáp án của hệ thống, release.jsonl hay data/labels/gold_sample.tsv trước khi nộp bước này. Thấy đáp án trước là mất tính độc lập.",
     "",
     "Với mỗi dòng:",
     "1. Đọc `cau_hoi` và `ngay_hoi`. Mở `link` (văn bản gốc trên vbpl.vn), tìm đúng điều khoản ở cột `dieu_khoan`.",

@@ -18,8 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REL = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "data/vilextime_dib"
-OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "runs/audit_missed_amendments/candidates.tsv"
-# documentNamesBySource codes: the source acts on the target (data/reference_type_map.json)
+OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "data/labels/missed_amendment_audit/candidates.tsv"
+# documentNamesBySource codes: the source acts on the target (data/vocab/reference_type_map.json)
 ACTING = {"10": "amend", "1": "repeal", "12": "replace", "5": "suspend", "11": "suspend", "6": "correct"}
 TAG = re.compile(r"<[^>]+>")
 NUM = r"(\d{1,4}\s*/\s*\d{4}\s*/\s*[A-ZĐ][A-ZĐ0-9\-]*)"
@@ -146,8 +146,8 @@ def main():
 if __name__ == "__main__":
     res = main()
     # self-check on the uncorrected thesis release: the known F016 miss (NĐ 92/2017 on NĐ 20/2008 Điều 20)
-    # must be caught. Run: audit_missed_amendments.py runs/posthoc_g4_20261113/t1_fix/release /tmp/x.tsv
-    if REL.resolve() == ROOT / "runs/posthoc_g4_20261113/t1_fix/release":
+    # must be caught. Run: audit_missed_amendments.py runs/final/posthoc/t1_fix/release /tmp/x.tsv
+    if REL.resolve() == ROOT / "runs/final/posthoc/t1_fix/release":
         assert any(o["lineage_id"].endswith("7ba9e014-eb7b-11f0-954d-af330569649d") and o["actor_id"] == "146942"
                    and o["strength"] in ("point", "clause", "article") for o in res), "F016 not caught"
         print("self-check: F016 caught")

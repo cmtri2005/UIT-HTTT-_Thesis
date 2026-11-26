@@ -16,7 +16,7 @@ def test_r6_blocks_amendments_and_repeals_before_as_of_but_not_a_supplement(tmp_
     from pending_events import blocked
 
     (tmp_path / "derived").mkdir()
-    (tmp_path / "review").mkdir()
+    (tmp_path / "labels").mkdir()
     events = [
         {"id": "e1", "status": "needs_review", "effective_on": "2020-01-01", "operation": "amend",
          "affected_provision_ids": ["provision:ART"]},
@@ -32,5 +32,5 @@ def test_r6_blocks_amendments_and_repeals_before_as_of_but_not_a_supplement(tmp_
     db.commit()
     rows = [{"id": f"r{x}", "lineage_id": f"provision:{x}", "as_of": "2025-01-01"} for x in "ABC"]
     assert blocked(rows, tmp_path) == {"provision:A"}   # via its Điều; B only gained a sibling; C later
-    (tmp_path / "review/pending_events.tsv").write_text("id\tevent_id\tdecision\nrA\te1\tno_effect\n")
+    (tmp_path / "labels/pending_events.tsv").write_text("id\tevent_id\tdecision\nrA\te1\tno_effect\n")
     assert blocked(rows, tmp_path) == set()

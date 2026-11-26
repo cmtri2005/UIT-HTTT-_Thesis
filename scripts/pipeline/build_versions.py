@@ -23,7 +23,7 @@ contrary (master plan §11).
 Rejected events also go to the review queue (C3, decision Q2), which is *not*
 disposable:
 
-  data/review/provision_events.jsonl   one row per rejected event, with the
+  data/labels/provision_events.jsonl   one row per rejected event, with the
                                        text and the instruction sentence a
                                        reviewer needs to judge it
 
@@ -779,7 +779,7 @@ def main() -> None:
     index_path = args.index or args.data / "temporal.sqlite"
     versions_path = args.out or args.data / "derived" / "versions.jsonl"
     event_log_path = args.event_log or args.data / "derived" / "event_log.jsonl"
-    review_path = args.review or args.data / "review" / "provision_events.jsonl"
+    review_path = args.review or args.data / "labels" / "provision_events.jsonl"
     report = build_version_files(
         args.data,
         index_path,

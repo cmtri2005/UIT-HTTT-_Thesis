@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'review'))
 from ai_labels import load_inputs, read_labels, metric
 from crosscheck import gwet_ac1, specific_agreement
 
-BASE = Path('data/review/ai_research')
+BASE = Path('data/labels/ai_research')
 OUT = Path('docs/reports/g2-co-mau-dong-thuan-20261109.md')
 INPUTS = {}
 CONFIRMED = json.loads((BASE / '2026-11-10_cmt_confirmed/cmt_confirmed.json').read_text())
@@ -35,7 +35,7 @@ def rows(p):
 
 
 def dataset_check():
-    p = Path('data/vilextime_dataset/manifest.json')
+    p = Path('data/benchmark/test_v1/manifest.json')
     m = json.loads(p.read_text()); sha(p)
     counts = {}
     for kind, name in [('main', 'vilextime.jsonl'), ('silver', 'vilextime_silver.jsonl')]:
@@ -68,9 +68,9 @@ def paired(run):
 
 def power(n):
     # Same cluster sandwich estimator as scripts/paper/paper_values.py.
-    rr = [r for r in rows(Path('data/vilextime/test2_release_v2.jsonl'))
+    rr = [r for r in rows(Path('data/benchmark/test2/test2_release_v2.jsonl'))
           if r['as_of_strategy'] == 'giua_khoang' and r['answerable'] and r['group'] != 'T5']
-    pred = {s: {r['id']: r for r in rows(Path(f'runs/E1_test2/test/{s}.jsonl'))}
+    pred = {s: {r['id']: r for r in rows(Path(f'runs/early/retrieval_test2/test/{s}.jsonl'))}
             for s in ('b7', 'b7pp')}
     clusters = collections.defaultdict(lambda: [0, 0])
     for r in rr:
@@ -179,7 +179,7 @@ def main():
               '| Bộ/hướng dẫn | N dòng | AC1 verdict | p_neg verdict |',
               '|---|---:|---:|---:|']
     for stem in ('crosscheck', 'kiem', 'pilot_T6'):
-        paths = [Path(f'data/review/{stem}_{w}.tsv') for w in 'AB']
+        paths = [Path(f'data/labels/{stem}_{w}.tsv') for w in 'AB']
         if not all(p.exists() for p in paths): continue
         sides = []
         for p in paths:
@@ -200,7 +200,7 @@ def main():
     # Test2 is a separate AI round, never part of final sample.
     sides = []
     for w in 'AB':
-        p = Path(f'data/review/test2_llm/test2_LLM_{w}.tsv'); sha(p)
+        p = Path(f'data/labels/test2_llm_labels/test2_LLM_{w}.tsv'); sha(p)
         sides.append({r['lineage_id']: r for r in csv.DictReader(p.open(), delimiter='\t')})
     ids = sorted(i for i in sides[0].keys() & sides[1].keys()
                  if sides[0][i].get('verdict') and sides[1][i].get('verdict'))

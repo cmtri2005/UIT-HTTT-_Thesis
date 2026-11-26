@@ -1,8 +1,8 @@
 # ViLexTime — Datasheet
 
 Theo khung *Datasheets for Datasets* (Gebru và cộng sự, 2021). Tài liệu mô tả
-bản `data/vilextime_dataset/`, schema **2.0.0**, `final: true`, `draft: false`.
-Nguồn số và hash: `data/vilextime_dataset/manifest.json`. Đối chiếu lại 09/11/2026.
+bản `data/benchmark/test_v1/`, schema **2.0.0**, `final: true`, `draft: false`.
+Nguồn số và hash: `data/benchmark/test_v1/manifest.json`. Đối chiếu lại 09/11/2026.
 Có **769 dòng chính, 859 dòng silver**. Trạng thái final của bản này không
 chứng minh bộ test cuối G2 đã hoàn tất. Xem mục 7 và báo cáo G2.
 
@@ -61,12 +61,12 @@ Vai trò của LLM **rộng hơn** câu "LLM chỉ hỗ trợ diễn đạt câu
 
 | Phần | Ai làm | Ghi ở đâu |
 |---|---|---|
-| Câu hỏi | `claude-opus-5-5` viết khoảng hai phần ba, `deepseek-flash` khoảng một phần ba (các lô 07/10 và 11/10: T6 mới, lát gần giống của T2). Một số câu model tự viết lại, một số câu người sửa, một câu do `gpt-oss-120b` (Groq) viết (số liệu ở mục 8) | `question_source`, `data/vilextime/questions.jsonl` |
-| Đáp án ngắn (`short_answer`, được Accuracy/EM/F1/TCS chấm) | `claude-opus-5-5` viết, phải là một đoạn của lời văn gold | `data/vilextime/short_answers.jsonl`, trường `by` |
-| Nhãn ngoài bộ kiểm chéo | model gán trước, người audit theo mẫu và theo luật bắt buộc | `data/review/labels.tsv` |
-| Quyết định loại lineage | model đề xuất, người xác nhận khi audit | `data/vilextime/dropped.jsonl` |
-| Bộ kiểm chéo κ (300 dòng) | chỉ người (A, B), gán mù | `data/review/crosscheck_A/B.tsv` |
-| Phân xử cờ hiệu lực, ngày hết hiệu lực của văn bản | model đề xuất kèm câu nguồn (`method: llm_reviewed`), người audit | `data/review/validity_queue.tsv`, `data/review/temporal_candidates.jsonl` |
+| Câu hỏi | `claude-opus-5-5` viết khoảng hai phần ba, `deepseek-flash` khoảng một phần ba (các lô 07/10 và 11/10: T6 mới, lát gần giống của T2). Một số câu model tự viết lại, một số câu người sửa, một câu do `gpt-oss-120b` (Groq) viết (số liệu ở mục 8) | `question_source`, `data/benchmark/test2/questions.jsonl` |
+| Đáp án ngắn (`short_answer`, được Accuracy/EM/F1/TCS chấm) | `claude-opus-5-5` viết, phải là một đoạn của lời văn gold | `data/benchmark/test2/short_answers.jsonl`, trường `by` |
+| Nhãn ngoài bộ kiểm chéo | model gán trước, người audit theo mẫu và theo luật bắt buộc | `data/labels/labels.tsv` |
+| Quyết định loại lineage | model đề xuất, người xác nhận khi audit | `data/benchmark/test2/dropped.jsonl` |
+| Bộ kiểm chéo κ (300 dòng) | chỉ người (A, B), gán mù | `data/labels/crosscheck_A/B.tsv` |
+| Phân xử cờ hiệu lực, ngày hết hiệu lực của văn bản | model đề xuất kèm câu nguồn (`method: llm_reviewed`), người audit | `data/labels/validity_queue.tsv`, `data/labels/temporal_candidates.jsonl` |
 
 Hệ quả: nếu một baseline dùng model họ Claude, nó trả lời câu hỏi do chính Claude viết
 và bị chấm bằng đáp án ngắn do Claude chọn; với DeepSeek cũng vậy ở các câu nó viết. Người
@@ -89,7 +89,7 @@ khác chủ đề chung số thứ tự, khoảng 7% ở T2) bị loại ở bư
   luật đã ký mà chưa có hiệu lực: câu lệnh sửa đổi tương lai nằm trong lớp A ở cả 153
   dòng, nên baseline không xét ngày bị lừa; bộ lọc cấp văn bản của B7 loại cả 153, nên
   chế độ này không tách B7 với hệ thống đề xuất. Ngày ký lấy từ cổng, 30 dòng đang chờ
-  kiểm tay (`data/review/audit_truoc_hieu_luc.tsv`).
+  kiểm tay (`data/labels/audit_truoc_hieu_luc.tsv`).
 - **Accuracy và TCS dùng bản tương phản** (chốt 29/09): câu trả lời phải chứa đoạn gold
   và không được chứa đoạn chỉ phiên bản khác có. Câu trả lời liệt kê mọi phiên bản
   (probe `hedge`) đạt 0,951 theo định nghĩa cũ nhưng thấp hẳn theo định nghĩa mới.
@@ -166,15 +166,15 @@ Bản UIT đã nộp không sửa được, nên khóa luận phải công bố 
 ## 7. Phân phối, giấy phép, bảo trì
 
 - **Giấy phép:** CC BY 4.0 cho câu hỏi, đáp án ngắn, nhãn và các trường dẫn xuất
-  (`data/vilextime/LICENSE`). Lời văn pháp luật lấy từ vbpl.vn, kể cả văn bản hợp nhất, không
+  (`data/benchmark/test2/LICENSE`). Lời văn pháp luật lấy từ vbpl.vn, kể cả văn bản hợp nhất, không
   thuộc đối tượng bảo hộ theo Điều 15 Luật SHTT; phát hành phần nhóm viết theo CC BY 4.0 và thu
   thập tự động từ vbpl.vn không vướng quy định nào (luật sư xác nhận 12/10/2026).
-- **Tái lập:** bản chính là `data/vilextime_dataset/vilextime.jsonl`; silver là
+- **Tái lập:** bản chính là `data/benchmark/test_v1/vilextime.jsonl`; silver là
   `vilextime_silver.jsonl`. Hash phát hành nằm ở manifest cùng thư mục.
   `data/derived/vilextime/release.jsonl` và manifest cũ chỉ mô tả bản lịch sử.
 - **Phiên bản:** theo ADR 0003 §8. Đổi gold hay chuyển dòng giữa các split là MAJOR; thêm
   trường hay thêm mã là MINOR.
-- **Trạng thái kiểm định (29/10/2026).** Bản phát hành `data/vilextime_dataset/` (schema 2.0.0, `final: true`):
+- **Trạng thái kiểm định (29/10/2026).** Bản phát hành `data/benchmark/test_v1/` (schema 2.0.0, `final: true`):
   769 dòng chính, 859 dòng silver. Tập test, chế độ ranh giới, trong file chính: T1 123, T2 46, T3 12, T6 30,
   T5 0. Nguồn nhãn của 211 dòng này: luật sư 33 dòng (10 dòng hòa giải, có phiếu Claude hỗ trợ; 23 dòng từ lượt
   kiểm nhãn agent), A và B cùng nhãn 88 dòng, nhãn agent 90 dòng (T1, T6).
@@ -193,7 +193,7 @@ Bản UIT đã nộp không sửa được, nên khóa luận phải công bố 
 
 ## 8. Số liệu bản schema 2.0.0
 
-Nguồn: `data/vilextime_dataset/manifest.json`. Bảng sau chép đủ
+Nguồn: `data/benchmark/test_v1/manifest.json`. Bảng sau chép đủ
 `counts_main` và `counts_silver`. Dòng không được liệt kê có số lượng 0.
 T4 là lát của T2, không cộng lần hai. Không dùng bảng 2.730 dòng schema
 1.4.0 ngày 11/10 làm mô tả bản hiện tại.
@@ -233,7 +233,7 @@ AC1 **0,377277**, p_neg **0,394558**, κ **0,235491**. Theo lineage:
 **138**; AC1 **0,389639**, p_neg **0,483516**. Chưa đạt ngưỡng AC1
 0,80 và p_neg 0,60. Không dùng đồng thuận AI–AI thay số này.
 
-Các lô AI và phê duyệt CMT tháng 11 nằm ở `data/review/ai_research/`,
+Các lô AI và phê duyệt CMT tháng 11 nằm ở `data/labels/ai_research/`,
 chưa tích hợp vào manifest bản này. Báo cáo cỡ mẫu G2 tính riêng;
 silver được chấp nhận hàng loạt không được gọi là người kiểm từng dòng.
 

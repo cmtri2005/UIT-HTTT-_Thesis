@@ -8,7 +8,7 @@ from test2_prepare import contrast_audit, contrast_problems, inputs, jsonl, shor
 
 def fixture(tmp_path):
     data = tmp_path / "data"
-    pub = data / "vilextime_dataset"
+    pub = data / "benchmark" / "test_v1"
     pub.mkdir(parents=True)
     with sqlite3.connect(data / "temporal.sqlite") as db:
         db.execute("CREATE TABLE documents (id TEXT, number TEXT, title TEXT, issued_on TEXT, source_url TEXT)")
@@ -52,7 +52,7 @@ def test_shortpack_uses_new_question_and_every_version_without_old_labels(tmp_pa
 
 def test_worksheet_keeps_all_dates_and_provenance_but_no_old_labels(tmp_path):
     data, questions, shorts, evidence = fixture(tmp_path)
-    before = (data / "vilextime_dataset/vilextime.jsonl").read_bytes()
+    before = (data / "benchmark/test_v1/vilextime.jsonl").read_bytes()
     out = tmp_path / "worksheet.jsonl"
     report = worksheet(data, questions, [shorts], [evidence], out)
     assert report["questions"] == 1 and report["boundary_rows"] == 2
@@ -62,7 +62,7 @@ def test_worksheet_keeps_all_dates_and_provenance_but_no_old_labels(tmp_path):
     assert all("review" not in r for r in rows)
     assert all(r["question_source"]["model"] == "fixture-model" for r in rows)
     assert jsonl(out)[0]["sources"]["actors"][0]["source_url"] == "https://example.org/actor"
-    assert (data / "vilextime_dataset/vilextime.jsonl").read_bytes() == before
+    assert (data / "benchmark/test_v1/vilextime.jsonl").read_bytes() == before
     with pytest.raises(FileExistsError, match="giữ nguyên phiếu"):
         worksheet(data, questions, [shorts], [evidence], out)
 

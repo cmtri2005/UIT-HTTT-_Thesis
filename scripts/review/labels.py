@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ViLexTime — every label on a release row, one line per (row, labeler).
 
-`data/review/labels.tsv` holds the labels outside the D4 cross-check:
+`data/labels/labels.tsv` holds the labels outside the D4 cross-check:
 crosscheck_A/B.tsv stay human-only and blind (docs/vilextime-annotation.md §6).
 Labels enter only through `add` or `import-excel`, which check the closed
 vocabulary, so free-text codes cannot creep back in.
@@ -23,10 +23,10 @@ vocabulary, so free-text codes cannot creep back in.
                        question, answer and lead-in beside them, as a workbook;
                        also the dates the same question is asked again (the
                        twin and the row after the document ended), the
-                       validity flags of the lineage (data/review/validity_queue.tsv)
+                       validity flags of the lineage (data/labels/validity_queue.tsv)
                        and the amending documents, since guideline 1.2 asks the
                        auditor to check the gold at those dates too;
-                       a row whose lineage was dropped (data/vilextime/dropped.jsonl)
+                       a row whose lineage was dropped (data/benchmark/test2/dropped.jsonl)
                        is still there, read from its group file, with the drop in `fix`;
                        a label on any other row the release no longer ships is left out
     import-audit XLSX  writes `audit`, `auditor`, `audit_note` filled in that
@@ -41,7 +41,7 @@ A model label must be audited (guideline §6) when it is `khong_dat` or has
 dropped ones).
 
 Usage:
-    python scripts/review/labels.py import-excel "data/review/Gán Nhãn Bộ Dữ Liệu ViLexTime.xlsx"
+    python scripts/review/labels.py import-excel "data/labels/Gán Nhãn Bộ Dữ Liệu ViLexTime.xlsx"
     python scripts/review/labels.py add batch.tsv
     python scripts/review/labels.py report
     python scripts/review/labels.py mark-audit
@@ -120,7 +120,7 @@ def audit_required(label: dict, row: dict | None = None) -> str:
 
 
 def mark_audit(data: Path) -> None:
-    path = data / "review/labels.tsv"
+    path = data / "labels/labels.tsv"
     labels, rows = read(path), release(data)
     added = 0
     for x in labels:
@@ -159,16 +159,16 @@ def blind_rows(data: Path) -> set[str]:
     """Cross-check and T6 pilot rows a model must not see labelled before both people have labelled them."""
     out = set()
     for name in ("crosscheck", "pilot_T6"):
-        if not (data / f"review/{name}_A.tsv").exists():
+        if not (data / f"labels/{name}_A.tsv").exists():
             continue
-        a = {r["id"]: r for r in read(data / f"review/{name}_A.tsv")}
-        b = {r["id"]: r for r in read(data / f"review/{name}_B.tsv")}
+        a = {r["id"]: r for r in read(data / f"labels/{name}_A.tsv")}
+        b = {r["id"]: r for r in read(data / f"labels/{name}_B.tsv")}
         out |= {i for i in a if not (a[i].get("verdict") and b.get(i, {}).get("verdict"))}
     return out
 
 
 def add(data: Path, batch: Path) -> None:
-    path = data / "review/labels.tsv"
+    path = data / "labels/labels.tsv"
     have = read(path)
     seen = {(r["id"], r["labeler"]) for r in have}
     rows, blind = release(data), blind_rows(data)
@@ -239,7 +239,7 @@ def import_excel(data: Path, xlsx: Path, labeler: str) -> None:
         batch.append({"id": rid, "labeler": labeler, "verdict": verdict, "reasons": ",".join(reasons),
                       "meta_issues": ",".join(meta), "note": " · ".join(filter(None, [note, *notes])),
                       "raw_label": raw, "guideline_version": "excel"})
-    out = data / "review/_import_batch.tsv"
+    out = data / "labels/_import_batch.tsv"
     write(out, batch)
     try:
         add(data, out)
@@ -248,7 +248,7 @@ def import_excel(data: Path, xlsx: Path, labeler: str) -> None:
 
 
 def report(data: Path) -> None:
-    labels = read(data / "review/labels.tsv")
+    labels = read(data / "labels/labels.tsv")
     table = collections.Counter((x["labeler"], x["group"], x["verdict"] or "—") for x in labels)
     for labeler in sorted({x["labeler"] for x in labels}):
         print(labeler)
@@ -286,9 +286,9 @@ def audit_sheet(data: Path, out: Path, group: str | None) -> None:
     ws = wb.active
     ws.title = "audit"
     ws.append(SHEET)
-    todo = [x for x in read(data / "review/labels.tsv")
+    todo = [x for x in read(data / "labels/labels.tsv")
             if x["audit_required"] and not x["audit"] and (not group or x["group"] == group)]
-    dropfile = data / "vilextime/dropped.jsonl"
+    dropfile = data / "benchmark/test2/dropped.jsonl"
     dropped = ({d["lineage_id"]: d for d in map(json.loads, dropfile.open(encoding="utf-8"))}
                if dropfile.exists() else {})
     again = collections.defaultdict(list)          # boundary id -> "as_of (mode)" of its twin and after-end row
@@ -296,7 +296,7 @@ def audit_sheet(data: Path, out: Path, group: str | None) -> None:
         if r.get("twin_of"):
             again[r["twin_of"]].append(f"{r['as_of']} ({r['as_of_strategy']})")
     flags = collections.defaultdict(set)
-    for q in read(data / "review/validity_queue.tsv"):
+    for q in read(data / "labels/validity_queue.tsv"):
         if q["active"] == "co":
             flags[q["lineage"]].add(f"{q['kind']} {q['date']} {q['decision'] or 'chờ'}".strip())
 
@@ -337,7 +337,7 @@ def import_audit(data: Path, xlsx: Path) -> None:
 
     rows = list(load_workbook(xlsx, read_only=True, data_only=True).active.iter_rows(values_only=True))
     filled = {(r["id"], r["labeler"]): r for r in (dict(zip(rows[0], v)) for v in rows[1:]) if r.get("audit")}
-    path = data / "review/labels.tsv"
+    path = data / "labels/labels.tsv"
     labels, errors, n = read(path), [], 0
     for x in labels:
         a = filled.pop((x["id"], x["labeler"]), None)
