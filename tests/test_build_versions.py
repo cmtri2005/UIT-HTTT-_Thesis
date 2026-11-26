@@ -1,0 +1,268 @@
+import hashlib
+import json
+from datetime import date
+
+from build_versions import build_version_files, rebase_phrase_edit
+from vilexgraph.build.index import TemporalIndex
+from vilexgraph.build.storage.documents import DocumentStore
+from vilexgraph.build.temporal import (
+    LegalDocument,
+    Provision,
+    ProvisionLevel,
+    ProvisionVersion,
+    TemporalInterval,
+    make_provision_id,
+    make_version_id,
+)
+
+
+def _jsonl(path):
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+
+
+def _sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_builds_subtree_versions_and_audits_every_event_deterministically(tmp_path):
+    data = tmp_path / "data"
+    store = DocumentStore(data)
+    for document_id in ("target", "actor-a"):
+        store.save("raw", document_id, {"title": document_id})
+    store.save(
+        "derived/subtrees",
+        "target",
+        {
+            "nodes": [
+                {
+                    "id": "article-1#clause-1",
+                    "parent_id": "article-1",
+                    "level": "Clause",
+                    "title": "Khoản 1",
+                    "text": "Nội dung khoản ban đầu.",
+                }
+            ]
+        },
+    )
+
+    index_path = data / "temporal.sqlite"
+    with TemporalIndex(index_path) as index:
+        index.put_documents(
+            [
+                LegalDocument(
+                    "target",
+                    "01/2020",
+                    "Văn bản gốc",
+                    effective_from=date(2020, 1, 1),
+                    effective_to=date(2024, 1, 1),
+                ),
+                LegalDocument("actor-a", "01/2022", "Văn bản A"),
+            ]
+        )
+        index.put_provisions(
+            [
+                Provision(
+                    "article-1",
+                    "target",
+                    ProvisionLevel.ARTICLE,
+                    "Điều 1",
+                    None,
+                    0,
+                ),
+                Provision(
+                    "article-1#clause-1",
+                    "target",
+                    ProvisionLevel.CLAUSE,
+                    "Khoản 1",
+                    "article-1",
+                    None,
+                ),
+            ]
+        )
+        index.put_versions(
+            [
+                ProvisionVersion(
+                    "article-1:1",
+                    "article-1",
+                    1,
+                    "Nội dung điều ban đầu.",
+                    TemporalInterval(date(2020, 1, 1), date(2024, 1, 1)),
+                )
+            ]
+        )
+
+    events = [
+        {
+            "id": "event:z-update-first",
+            "actor_id": "actor-a",
+            "operation": "amend",
+            "effective_on": "2022-01-01",
+            "target_document_id": "target",
+            "target_provision_id": "article-1#clause-1",
+            "text_updates": [
+                {
+                    "target_provision_id": "article-1#clause-1",
+                    "new_text": "Nội dung khoản sau sửa đổi.",
+                }
+            ],
+            "status": "auto_accepted",
+            "status_reason": None,
+            "evidence": "Sửa đổi khoản 1.",
+        },
+        {
+            "id": "event:a-update-second",
+            "actor_id": "actor-a",
+            "operation": "amend",
+            "effective_on": "2022-01-01",
+            "target_document_id": "target",
+            "target_provision_id": "article-1#clause-1",
+            "text_updates": [
+                {
+                    "target_provision_id": "article-1#clause-1",
+                    "new_text": "Không được âm thầm áp dụng.",
+                }
+            ],
+            "status": "auto_accepted",
+            "status_reason": None,
+            "evidence": "Sửa đổi trùng ngày.",
+        },
+        {
+            "id": "event:repeal",
+            "actor_id": "actor-a",
+            "operation": "repeal",
+            "effective_on": "2023-01-01",
+            "target_document_id": "target",
+            "target_provision_id": "article-1",
+            "text_updates": [],
+            "status": "verified",
+            "status_reason": None,
+            "evidence": "Bãi bỏ Điều 1.",
+        },
+        {
+            "id": "event:review",
+            "actor_id": "actor-a",
+            "operation": "replace",
+            "effective_on": "2023-06-01",
+            "target_document_id": "target",
+            "target_provision_id": "article-1",
+            "text_updates": [],
+            "status": "needs_review",
+            "status_reason": "missing_resulting_text",
+            "evidence": "Ca chưa đủ bằng chứng.",
+        },
+    ]
+    event_store = data / "derived" / "provision_events.jsonl"
+    event_store.parent.mkdir(parents=True, exist_ok=True)
+    event_store.write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in events),
+        encoding="utf-8",
+    )
+
+    versions_path = data / "derived" / "versions.jsonl"
+    log_path = data / "derived" / "event_log.jsonl"
+    first = build_version_files(data, index_path, versions_path, log_path, verify_pairs=1)
+    first_hashes = (_sha256(versions_path), _sha256(log_path))
+    second = build_version_files(data, index_path, versions_path, log_path, verify_pairs=1)
+
+    assert first == second
+    assert first_hashes == (_sha256(versions_path), _sha256(log_path))
+    assert first["events_applied"] == 2
+    assert first["events_rejected"] == 2
+    assert first["verified_pairs"] >= 1
+
+    versions = _jsonl(versions_path)
+    by_id = {row["id"]: row for row in versions}
+    article_id = make_provision_id("article-1")
+    clause_id = make_provision_id("article-1#clause-1")
+    article_v1 = by_id[make_version_id(article_id, 1)]
+    clause_v1 = by_id[make_version_id(clause_id, 1)]
+    clause_v2 = by_id[make_version_id(clause_id, 2)]
+    assert article_v1["valid_to"] == "2023-01-01"
+    assert article_v1["ended_by_event_id"] == "event:repeal"
+    assert article_v1["effective_from"] == "2020-01-01"
+    assert article_v1["effective_to"] == "2023-01-01"
+    assert clause_v1["valid_to"] == "2022-01-01"
+    assert clause_v2["valid_to"] is None
+    assert clause_v2["effective_from"] == "2022-01-01"
+    assert clause_v2["effective_to"] == "2023-01-01"
+    assert clause_v2["effective_intervals"] == [
+        {"start": "2022-01-01", "end": "2023-01-01"}
+    ]
+    assert clause_v2["created_by_event_id"] == "event:z-update-first"
+
+    logs = {row["event_id"]: row for row in _jsonl(log_path)}
+    assert logs["event:z-update-first"]["outcome"] == "applied"
+    assert logs["event:a-update-second"]["reason"] == "event_not_after_version_start"
+    assert logs["event:repeal"]["outcome"] == "applied"
+    assert logs["event:review"]["reason"] == "status_not_applicable"
+
+
+def test_the_review_queue_keeps_verdicts_across_reruns(tmp_path):
+    """An LLM or human verdict must never fall back to "needs_review"."""
+    import json
+
+    from build_versions import write_review_queue
+
+    path = tmp_path / "provision_events.jsonl"
+    fresh = [{"event_id": e, "method": "auto_rejected", "decision": "needs_review"}
+             for e in ("e1", "e2")]
+    write_review_queue(path, fresh)
+
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+    rows[0] |= {"method": "human_reviewed", "decision": "accept", "note": "đúng"}
+    path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+
+    total, verdicts = write_review_queue(path, fresh)  # the next run meets both again
+
+    after = {r["event_id"]: r for r in
+             (json.loads(line) for line in path.read_text(encoding="utf-8").splitlines())}
+    assert (total, verdicts) == (2, 1)
+    assert after["e1"]["decision"] == "accept" and after["e1"]["note"] == "đúng"
+    assert after["e2"]["decision"] == "needs_review"
+
+
+def test_a_phrase_edit_keeps_an_earlier_amendment_of_the_same_node():
+    pid = make_provision_id("a#k1")
+    base = "Chi cục Hải quan tiếp nhận hồ sơ."
+    amended = "Chi cục Hải quan tiếp nhận và kiểm tra hồ sơ."
+    row = {"evidence": "khoản 1", "phrase_edits": [["Chi cục Hải quan", "Hải quan cửa khẩu"]],
+           "text_updates": [{"target_provision_id": "a#k1", "new_text": "Hải quan cửa khẩu tiếp nhận hồ sơ."}]}
+    initial = {pid: base}
+
+    rebased = rebase_phrase_edit(row, initial, lambda _: amended)
+    assert rebased["text_updates"][0]["new_text"] == "Hải quan cửa khẩu tiếp nhận và kiểm tra hồ sơ."
+    assert rebase_phrase_edit(row, initial, lambda _: base) == row             # nothing changed before it
+    full = {k: v for k, v in row.items() if k != "phrase_edits"}                # not a phrase edit
+    assert rebase_phrase_edit(full, initial, lambda _: amended) == full
+    assert rebase_phrase_edit(row, initial, lambda _: "Cơ quan hải quan tiếp nhận hồ sơ.") == row  # phrase gone
+
+
+def test_apply_document_scope_ends_only_documents_the_portal_left_open(tmp_path):
+    """H5 L2: `documents.effective_to` is where every later step reads a document's end."""
+    import json
+    import sqlite3
+    from apply_document_scope import apply
+
+    db = sqlite3.connect(tmp_path / "t.sqlite")
+    db.execute("CREATE TABLE documents (id TEXT PRIMARY KEY, effective_from TEXT, effective_to TEXT)")
+    db.executemany("INSERT INTO documents VALUES (?, ?, ?)",
+                   [("document:1", "2012-01-01", None), ("document:2", "2010-01-01", "2020-01-01"), ("document:3", "2010-01-01", None),
+                    ("document:4", "2010-01-01", None), ("document:5", None, None), ("document:6", "2022-01-01", None)])
+    db.commit()
+    db.close()
+
+    def event(target, on, status="auto_accepted", locator=None, op="repeal"):
+        return {"id": f"event:{target}:{on}", "actor_id": "document:9", "actor_number": "9/2020", "target_document_id": target,
+                "effective_on": on, "status": status, "operation": op, "locator": locator}
+
+    rows = [event("document:1", "2023-10-01"), event("document:1", "2024-01-01", op="replace"),
+            event("document:2", "2019-01-01"), event("document:3", "2022-01-01", status="needs_review"),
+            event("document:4", "2022-01-01", locator=[["Article", "1"]]),
+            event("document:5", "2022-01-01"), event("document:6", "2022-01-01")]
+    events = tmp_path / "e.jsonl"
+    events.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    assert apply(events, tmp_path / "t.sqlite", tmp_path / "out.jsonl") == 1
+    got = dict(sqlite3.connect(tmp_path / "t.sqlite").execute("SELECT id, effective_to FROM documents"))
+    assert got == {"document:1": "2023-10-01", "document:2": "2020-01-01", "document:3": None, "document:4": None,
+                   "document:5": None, "document:6": None}      # no start date; starts the day it would end
+    assert apply(events, tmp_path / "t.sqlite", tmp_path / "out.jsonl") == 0   # idempotent

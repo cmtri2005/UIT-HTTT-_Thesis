@@ -1,0 +1,111 @@
+# Đăng ký trước: bộ test ViLexTime 7.0 (24/11/2026)
+
+Commit **trước khi rút mẫu**. Sau mốc này mọi thay đổi ghi ở §8 (Sai lệch), kèm ngày và lý do; bài báo cáo cả luật cũ
+lẫn luật mới. Plan: `docs/plans/active/2026-11-24-vilextime-v7-rebuild.md`.
+
+## 0. Người và độ mù
+
+| Vai | Ai | Được làm | Không được làm |
+|---|---|---|---|
+| A, B | Hai sinh viên luật, không phải tác giả, chưa từng mở repo, phiếu hay bản phát hành ViLexTime (S1) | Gán mọi dòng | Mở đáp án kho, nhãn của người kia, hay file nào trong `data/vilextime_v7/` ngoài phiếu của mình trước khi cả hai khóa |
+| CMT, NMT | Hai tác giả | Phân xử ca máy móc (dán thiếu chữ, dán nhầm điểm) sau khi mở | Gán nhãn |
+| Luật sư | Luật sư cộng tác | Chốt mọi xung đột có nội dung pháp lý; xác nhận T5 | — |
+| Claude | Agent | Rút mẫu, sinh câu hỏi, dựng phiếu, so máy, gợi ý tra cứu cho luật sư sau khi khóa | Đứng tên nhãn, chấm thay người |
+
+- A và B chưa từng mở repo, phiếu cũ hay bản phát hành, nên mù với mọi lineage. Trước lô đầu, A và B ký
+  `data/vilextime_v7/attestation.md`.
+- Bài ghi đúng vai: hai sinh viên luật gán; tác giả chỉ phân xử ca máy móc; luật sư chốt ca pháp lý.
+
+## 1. Khung mẫu
+
+- Kho ứng viên `data/derived/vilextime_pool.jsonl` (11.408 lineage; sha256 ghi trong `data/vilextime_v7/frame.json`).
+- Loại: lineage thuộc văn bản của tập dev (S1). Danh sách `data/vilextime_v7/frame_excluded.txt`.
+- Giữ luật cũ của `sample_vilextime.py`: bỏ lineage có `flags`, bỏ T5 loại `correction`/`guidance_in_sync`, bỏ lineage
+  có sự kiện chưa áp (R6), tối đa 2 lineage mỗi văn bản, không cắt một lineage giữa các ngày.
+- Seed `20261124`. Hệ số rút dư như cũ (T1, T2, T5, T6 ×2; T3 ×3). Quota bản phát hành theo định nghĩa §9:
+  T1 150, T2 450 (trong đó T4 150), T3 150 (sàn 120), T5a mọi ca luật sư xác nhận, T6 350 (T6a 100, T6b 250).
+- Thiếu thì rút tiếp theo thứ hạng; không đạt sàn thì giảm quota, không nới điều kiện (§9).
+
+## 2. Câu hỏi
+
+`generate_questions.py` như các bản trước (một câu hỏi mỗi lineage, qua `validate()`). Câu hỏi đã sinh cho lineage
+trong khung được dùng lại. Đáp án ngắn do người gán viết ở giai đoạn 1, không do LLM.
+
+## 3. Gán nhãn hai giai đoạn, mỗi dòng
+
+**Giai đoạn 1, mù đáp án kho.** Phiếu có: câu hỏi, ngày hỏi, văn bản đích và đường dẫn văn bản gốc. Không có lời văn
+kho, không có nhóm, không có ngày chuyển. Người gán tự tra nguồn (văn bản gốc, văn bản sửa đổi, VBHN, Công báo) và
+điền:
+- `hieu_luc` (còn / hết) tại ngày hỏi;
+- `noi_dung`: lời văn đang áp dụng, dán nguyên văn;
+- `dap_an_ngan`: câu trả lời ngắn cho câu hỏi, trích từ `noi_dung`;
+- `van_ban_ap_dung`: số hiệu văn bản đã tạo ra lời văn đó (văn bản gốc hoặc văn bản sửa đổi);
+- `phut`.
+
+Khóa giai đoạn 1 (sha256) rồi mới mở giai đoạn 2.
+
+**Giai đoạn 2, có lời văn mọi phiên bản của kho.** Điền:
+- Q2 `hoi_vao_cho_doi`: có / không / không chắc / không áp dụng (một phiên bản);
+- Q3 `tra_loi_duy_nhat`: có / không / không chắc; `lo_dap_an`: có / không;
+- mã lý do §7 nếu "không".
+
+**Nhãn suy ra (máy):**
+- Q1 = máy so giai đoạn 1 với kho: `hieu_luc` bằng nhau; dòng còn hiệu lực thì `noi_dung` sau chuẩn hóa nằm trong lời văn
+  kho (`machine_agrees`).
+- Q4 = `van_ban_ap_dung` khớp văn bản tạo phiên bản kho, và người gán không ghi quy định khác thay thế.
+- `dat` khi Q1 khớp, Q2 có (hoặc không áp dụng với T1), Q3 có và không lộ, Q4 khớp.
+
+## 4. Hòa giải
+
+- Xung đột: A khác B ở bất kỳ câu nào; hoặc cả hai khác kho.
+- Luật sư chốt mọi xung đột có nội dung pháp lý; Claude được tra và trình trích dẫn, không quyết.
+- Lỗi dán chữ hay dán nhầm điểm: người gán tự sửa sau khi mở, ghi lại bản trước và bản sau.
+- Lỗi kho đã xác nhận: sửa ở tầng kho, đánh cờ `store_corrected`, dòng vẫn được giữ nếu đạt sau sửa.
+
+## 5. Chỉ số
+
+- Đồng thuận A–B **trước hòa giải**, từng câu Q1–Q4 và nhãn suy ra: tỷ lệ khớp thô, Gwet AC1, Cohen κ (ghi "không xác
+  định" khi một bên chỉ có một hạng). Theo nhóm.
+- Tỷ lệ lỗi kho theo nhóm (Wilson 95%), sau hòa giải.
+- Phút trung vị mỗi dòng, theo người và theo giai đoạn.
+- Phễu: rút → có câu hỏi → đạt → bản phát hành, theo nhóm, kèm mã loại.
+
+## 6. Bản phát hành và thực nghiệm
+
+- 7.0 chỉ gồm dòng `dat` sau hòa giải. `check_release.py` đạt.
+- G4 trên 7.0: cùng 12 hệ và cấu hình ADR 0006, chạy một lần (hai lần gọi API như cũ). Cần amendment ADR 0006 được CMT
+  duyệt trước khi chạy.
+
+## 7. Giới hạn biết trước
+
+- Kho chỉ áp 38,7% lệnh sửa đổi; lỗi sót sửa đổi chỉ bắt được qua tra nguồn ở giai đoạn 1.
+- T3 có 446 lineage trong khung, rút được 159 (giới hạn 2 lineage mỗi văn bản); T5 rút được 23.
+
+## 8. Sai lệch so với đăng ký
+
+**S1. Người gán và khung mẫu (24/11, trước khi sinh câu hỏi hay giao phiếu nào).** CMT đổi người gán: A, B là hai
+sinh viên luật chưa xem dữ liệu, thay cho CMT và NMT. Vì họ mù với mọi lineage, khung không còn loại lineage đã xuất
+hiện trong phiếu cũ; chỉ loại lineage thuộc 73 văn bản của tập dev (81 lineage, `data/vilextime_dataset_h6`), để không
+rò rỉ cấu hình. Loại 609/11.408. Rút lại cùng seed `20261124`. Bản rút trước (khung loại 2.004) ở commit trước
+S1; không dùng. Đồng thuận A–B giờ là giữa hai người ngoài nhóm tác giả; giới hạn "người gán là tác giả" ở §7 bỏ.
+
+**S2. Loại khỏi hàng gán các lineage có lời văn là câu lệnh sửa đổi (24/11, trước khi giao phiếu nào).** Khi dựng
+phiếu thấy 93 lineage đã có câu hỏi (87 T6, 6 T1) mà điều khoản đích là câu lệnh sửa đổi văn bản khác ("4. Sửa đổi,
+bổ sung khoản 3 Điều 9 như sau: …"). Khi đã có hiệu lực, nội dung đó nằm trong văn bản được sửa, nên đáp án "không
+còn hiệu lực" ở mốc sau có thể sai. `prompts/vilextime/base.md` vốn yêu cầu từ chối loại này; bước sinh câu hỏi nhanh
+không bắt được. Lọc bằng biểu thức trong `data/vilextime_v7/phieu/build.py` (`AMENDING`), danh sách
+`phieu/excluded_amending.tsv`, mã `other` (amending_instruction), báo trong phễu. Còn đủ quota T6a, T6b.
+
+**S3. Hình thức phiếu (24/11).** Lô thử 20 dòng, các lô sau 50 dòng; hàng gán xếp xen kẽ các phần theo tỷ lệ quota
+§9, trong mỗi phần theo thứ hạng; người gán làm lần lượt và dừng khi mọi phần đủ quota sau hòa giải. Phiếu Giai đoạn
+2 chỉ dựng được khi lô đã có `GD1.locked`.
+
+**S4. Làm lại Giai đoạn 2 cho câu T6 của lo01, lo02 (25/11, CMT duyệt).** Hướng dẫn Giai đoạn 2 viết "Không: … có
+phiên bản không trả lời được điều được hỏi". Với T6, phiên bản sau bãi bỏ có đáp án đúng là "không còn quy định"
+(hướng dẫn gán nhãn, bảng nhóm), nên câu chữ này mâu thuẫn định nghĩa. Hai người gán làm đúng theo chữ và loại mọi
+câu T6 của lo01 (8 câu, 16 dòng) và lo02 (7 câu, 14 dòng). Lô thử không bị: câu T6 ở đó bị loại vì chuyển chỗ.
+Sửa hướng dẫn (phiên bản "(Không còn hiệu lực)" không làm câu thành Không; chuyển chỗ đã kiểm ở Giai đoạn 1) cho mọi
+lô từ lo03. Với lo01, lo02: giao lại Giai đoạn 2 riêng các câu T6 (`build.py gd2b`, phiếu `GD2b_*.xlsx`), cùng mã
+câu; kết quả khóa thành `GD2b.tsv` và thay kết quả cũ của các câu đó khi hòa giải. `GD2.tsv` giữ nguyên để báo.
+Đồng thuận A–B trên các câu này báo cả hai lần. Người gán đã thấy câu trả lời lần đầu của chính mình, không thấy
+của người kia.

@@ -1,0 +1,15 @@
+system b2ctx · 492 rows · 0 already done · 492 to run
+  B2 with the hierarchy header: isolates the ordinary chunk-header gain
+  50/492 · 0.7 rows/s · 0 cached · 0 failed
+  100/492 · 0.9 rows/s · 0 cached · 0 failed
+  150/492 · 0.9 rows/s · 0 cached · 0 failed
+  200/492 · 0.9 rows/s · 0 cached · 0 failed
+  250/492 · 1.0 rows/s · 0 cached · 0 failed
+  300/492 · 1.0 rows/s · 0 cached · 0 failed
+  350/492 · 1.0 rows/s · 0 cached · 0 failed
+  400/492 · 1.0 rows/s · 0 cached · 0 failed
+  450/492 · 1.0 rows/s · 0 cached · 0 failed
+
+runs/E1_test2/test/b2ctx.jsonl: 492 written, 0 from cache, 0 failed in 495.6s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1_test2/test/b2ctx.jsonl --split test

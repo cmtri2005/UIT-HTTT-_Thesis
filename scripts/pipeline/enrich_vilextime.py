@@ -1,0 +1,553 @@
+#!/usr/bin/env python3
+"""ViLexTime — the release file: the selected rows, their mid-interval twins, schema 1.2.
+
+Runs after `sample_vilextime.py --select` and leaves it alone: selection counts
+and picks boundary rows as before; this step reads `selected.jsonl` and writes
+`data/derived/vilextime/release.jsonl` (plan phase-4, decisions of 28/09).
+
+  as_of_strategy, twin_of
+      Every selected row keeps its date on a version boundary ("ranh_gioi") and
+      gets a twin ("giua_khoang"): same question, same gold version, asked on a
+      seeded date at least MARGIN days from both ends of the gold window (its
+      midpoint when the window is shorter). A date on a boundary gives the
+      answer's document away — knowing t alone narrows 17,091 documents to a
+      median of 7 whose effect started the day before — so the headline score is
+      the twin's. T5's later date stays inside the retroactive window; a
+      repealed provision's twin stays after the repeal and before the document
+      ends; windows are capped at the snapshot. The twin's gold is recomputed
+      from the version chain and must equal its boundary row's, or no twin. A
+      date the review found an amendment the chain missed on caps the window
+      (`data/review/validity_queue.tsv`, `missed_event` judged `loi`; 29/09).
+      The third row "sau_het_hieu_luc" (asked after the document ended, no
+      answer) is gone since 20/10: a replacing act usually carries the content on
+      (docs/vilextime-dinh-nghia.md §5), so "no answer" was wrong for most of them.
+      The earlier row of a T2 pair gets one more, "truoc_hieu_luc": asked 30 days
+      before the next version applies, once its amending act is signed — same
+      question and gold, the trap of law signed but not yet in force (11/10).
+  changed_span
+      The words this version has and its neighbouring versions do not.
+  evidence_set
+      The gold unit, the parent's lead-in and the same-document provisions the
+      answer cites ("khoản 2 Điều này", "Điều 5 Nghị định này"), each with the
+      version in force at as_of.
+  accepted_evidence
+      As-published units of corpus layer A that also count as the right
+      evidence: the provision itself ("asis:<provision id>") when the gold is its
+      original wording; the instruction that wrote the gold wording, or repealed
+      a repealed provision ("asis:<event id>"). Instructions are their own units
+      because the provision tree of an amending document drops the quoted wording
+      in about a third of cases (`build_corpus.py`).
+  derivation.transitions[].op
+      The event's operation (amend, supplement, replace, repeal, ...).
+  domain, domain_source
+      The proposal's four fields: from the seed keyword search ("seed"), else
+      from the portal's own classification of the document, its fields
+      ("portal_field") then its sectors ("portal_major"), matched by keyword;
+      a classified document outside the four is "khac", an unclassified one
+      "khac" / "khong_ro". Inheriting the nearest seeds' fields over document
+      relations was dropped on 29/09: a sample found it almost always wrong
+      (JUDGE N5).
+  retrieved_at
+      The corpus snapshot the gold was built from (ADR 0003 §6).
+  split
+      By target document (ADR 0003 §7, decided 28/09): "dev" when the
+      document's seeded hash falls in the first DEV_SHARE, else "test"; a
+      document with a T5 row is always "test". Stable under adding or dropping
+      rows: a document's split never depends on another.
+  legal_markers
+      Heuristics for the checker, not errors: the amending document has a
+      transitional article; its effect clause names more than one date.
+  subgroup
+      The reported slice (docs/vilextime-dinh-nghia.md §4): T1, T2, T4 (a T2 pair
+      with near-identical versions), T3, T5a (retroactive), T5b (a T2 row asked
+      after its amending act was signed and before it applies), T6a (repealed by
+      name), T6b (fell with an ancestor).
+  short_answer
+      From `data/vilextime/short_answers.jsonl`, keyed by (lineage, version),
+      its writer in `by` (a person or a model, audited with the row's label);
+      it must be a span of the answer or lead-in,
+      or several such spans joined by " … ". One that no longer is — a rebuild
+      gave its version id other wording — is dropped and counted, not shipped.
+
+Usage:
+    python scripts/pipeline/enrich_vilextime.py
+"""
+from __future__ import annotations
+
+import argparse
+import collections
+import csv
+import difflib
+import json
+import hashlib
+import random
+import re
+import sqlite3
+import sys
+from datetime import date, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+from vilexgraph.build.extraction.models import (  # noqa: E402
+    ProvisionLocator, ProvisionReferencePart, TargetReference, TargetScope)
+from vilexgraph.build.extraction.provision_ops import parse_locators  # noqa: E402
+from vilexgraph.build.extraction.target_resolver import TargetResolver  # noqa: E402
+from vilexgraph.build.index import TemporalIndex  # noqa: E402
+from vilexgraph.build.temporal.models import ProvisionLevel as L  # noqa: E402
+
+SCHEMA_VERSION = "1.4.0"   # MINOR: as_of_strategy truoc_hieu_luc (1.3.0: min_repr, norm_continuity, chance_accuracy, near_identical)
+SNAPSHOT = date(2026, 9, 17)   # corpus snapshot v2, frozen at M1
+MARGIN = 30                    # days a mid-interval date keeps from either boundary
+SEED = "vilextime-twin-v1"
+SPLIT_SEED = "vilextime-split-v1"
+DEV_SHARE = 0.2
+BEFORE_EFFECT = "truoc_hieu_luc"
+BEFORE_EFFECT_DAYS = 30        # how long before the next version applies a before_effect row is asked
+# the proposal's four fields, by the words of the portal's own classification
+_FIELD_WORDS = (
+    ("thue", ("thuế", "phí", "hải quan", "xuất nhập khẩu")),
+    ("dat_dai", ("đất đai",)),
+    ("doanh_nghiep_dau_tu", ("doanh nghiệp", "đầu tư")),
+    ("giao_thong", ("giao thông", "đường bộ", "đường sắt", "đường thủy", "hàng hải", "hàng không", "vận tải",
+                    "đăng kiểm")),
+)
+_ORDER = (L.ARTICLE, L.CLAUSE, L.POINT)
+_WORD = re.compile(r"\w+", re.UNICODE)
+_DOC_TYPES = r"(?:Bộ luật|Luật|Pháp lệnh|Nghị định|Nghị quyết|Thông tư liên tịch|Thông tư|Quyết định|Quy chế|Quy định|Điều lệ)"
+# "... tại khoản 2 Điều này", "... điểm a khoản này", "... Điều 5 của Luật này"
+_REF = re.compile(rf"(?i)(Điều|khoản)\s+này\b|(?:của\s+)?{_DOC_TYPES}\s+này\b")
+_REF_START = re.compile(r"(?i)\b(?:tại|theo|ở|trong|thuộc|như|quy định)\s+")
+_DATE = re.compile(r"ngày\s+\d{1,2}\s+tháng\s+\d{1,2}\s+năm\s+\d{4}|\d{1,2}/\d{1,2}/\d{4}")
+
+
+def _d(value: str | None) -> date | None:
+    return date.fromisoformat(value) if value else None
+
+
+def norm(text: str) -> str:
+    return " ".join(_WORD.findall((text or "").casefold()))
+
+
+# ------------------------------------------------------------------ dates
+
+def mid_date(start: date, end: date | None, key: str, cap: date = SNAPSHOT) -> date | None:
+    """A seeded date in [start + MARGIN, end - MARGIN), or the midpoint of a short window."""
+    end = min(end, cap) if end else cap
+    span = (end - start).days
+    if span < 2:
+        return None            # a window that opens at or after the snapshot has no inside
+    if span <= 2 * MARGIN:
+        return start + timedelta(days=span // 2)
+    return start + timedelta(days=MARGIN + random.Random(f"{SEED}:{key}").randrange(span - 2 * MARGIN))
+
+
+def in_force_at(versions: list[dict], at: date) -> dict | None:
+    for v in versions:
+        start, end = _d(v["effective_from"]), _d(v["effective_to"])
+        if start and start <= at and (end is None or at < end):
+            return v
+    return None
+
+
+def pending_at(transitions: list[dict], versions: list[dict], at: date,
+               issued_on: dict[str, str]) -> dict | None:
+    """A later version already signed at `at` but not yet in force (build_question_pool.pending_version).
+
+    Recomputed for every row, because it depends on the date and a twin is a copy
+    of its boundary row: copied, 273 of 277 mid-interval twins named an amending
+    act that was not even signed yet at their date (found 11/10).
+    """
+    ids = {v["ordinal"]: v["id"] for v in versions}
+    for t in transitions:
+        start, actor = _d(t["on"]), t["actor"]["document_id"]
+        signed = _d(issued_on.get(actor)) if actor else None
+        if start and start > at and signed and signed <= at:
+            return {"version_id": ids.get(t["to_version"]), "actor_document_id": actor,
+                    "signed_on": signed.isoformat(), "effective_from": t["on"],
+                    "days_until_effect": (start - at).days}
+    return None
+
+
+def window(record: dict, versions: list[dict], document_end: date | None,
+           caps: tuple[date, ...] = ()) -> tuple[date, date | None] | None:
+    """The stretch of time over which this row's gold stays the same.
+
+    `caps` are dates on which review found the chain wrong (an amendment it
+    missed): the window ends at the first one inside it.
+    """
+    if record["version_id"] is None:                         # repealed: after the repeal
+        ends = [_d(v["effective_to"]) for v in versions if v["effective_to"]]
+        return (max(ends), document_end) if ends else None
+    version = next((v for v in versions if v["id"] == record["version_id"]), None)
+    if version is None or not version["effective_from"]:
+        return None
+    start, end = _d(version["effective_from"]), _d(version["effective_to"])
+    retro = record.get("retroactive")
+    if retro and version["effective_from"] == retro["effective_from"]:
+        end = min(filter(None, (end, _d(retro["issued_on"]))))   # stay inside the retroactive window
+    inside = [c for c in caps if start < c and (end is None or c < end)]
+    return start, min(inside, default=end)
+
+
+def twin_of(record: dict, versions: list[dict], document_end: date | None,
+            caps: tuple[date, ...] = ()) -> dict | None:
+    span = window(record, versions, document_end, caps)
+    at = mid_date(*span, record["id"]) if span else None
+    if at is None or at.isoformat() == record["as_of"]:
+        return None
+    hit = in_force_at(versions, at)
+    if (hit["id"] if hit else None) != record["version_id"]:
+        return None                                           # the chain says otherwise: no twin
+    twin = json.loads(json.dumps(record))
+    twin.update(id=f"{record['id'].rsplit(':', 1)[0]}:{at.isoformat()}", as_of=at.isoformat(),
+                as_of_strategy="giua_khoang", twin_of=record["id"])
+    twin["derivation"]["query"] = f"as_of({record['lineage_id']}, {at.isoformat()})"
+    return twin
+
+
+def subgroup(r: dict) -> str:
+    """The slice a row is reported under (docs/vilextime-dinh-nghia.md §4)."""
+    if r["group"] == "T5":
+        return "T5a"
+    if r["group"] == "T6":
+        return "T6b" if r.get("repeal_mode") == "ancestor" else "T6a"
+    if r["group"] == "T2":
+        if r.get("as_of_strategy") == BEFORE_EFFECT:
+            return "T5b"
+        return "T4" if r.get("near_identical") else "T2"
+    return r["group"]
+
+
+def before_effect(record: dict, versions: list[dict], document_end: date | None,
+                  caps: tuple[date, ...], issued_on: dict[str, str]) -> dict | None:
+    """The earlier row of a T2 pair asked BEFORE_EFFECT_DAYS before the next version applies.
+
+    By then the amending act is signed and on the portal, so a system reading it
+    answers with law that is not in force yet (future-law leakage); the gold stays
+    the boundary row's version. At the boundary the same trap is one day wide and
+    mixed with an off-by-one, and mid-interval it almost never exists (4/1,225 rows
+    on 11/10), so it gets a date of its own (reports/Phương án T2 và T5, option b; git e023e55).
+    None when the act is not signed by then, the date leaves the gold window, or
+    the chain disagrees.
+    """
+    k = next((i for i, v in enumerate(versions) if v["id"] == record["version_id"]), None)
+    if k is None or k + 1 >= len(versions) or not versions[k + 1]["effective_from"]:
+        return None
+    nxt = versions[k + 1]
+    at = _d(nxt["effective_from"]) - timedelta(days=BEFORE_EFFECT_DAYS)
+    step = next((s for s in record["derivation"]["transitions"] if s["to_version"] == nxt["ordinal"]), None)
+    actor = step["actor"]["document_id"] if step else None
+    signed = _d(issued_on.get(actor)) if actor else None
+    span = window(record, versions, document_end, caps)
+    if (not signed or signed > at or not span or at < span[0] or (span[1] and at >= span[1])
+            or at.isoformat() == record["as_of"]):
+        return None
+    hit = in_force_at(versions, at)
+    if (hit["id"] if hit else None) != record["version_id"]:
+        return None
+    row = json.loads(json.dumps(record))
+    row.update(id=f"{record['id'].rsplit(':', 1)[0]}:{at.isoformat()}", as_of=at.isoformat(),
+               as_of_strategy=BEFORE_EFFECT, twin_of=record["id"])
+    row["derivation"]["query"] = f"as_of({record['lineage_id']}, {at.isoformat()})"
+    return row
+
+
+def split_of(document_id: str, always_test: set[str]) -> str:
+    if document_id in always_test:
+        return "test"
+    share = int(hashlib.sha1(f"{SPLIT_SEED}:{document_id}".encode()).hexdigest(), 16) / 16 ** 40
+    return "dev" if share < DEV_SHARE else "test"
+
+
+# ------------------------------------------------------------------ text
+
+def changed_span(texts: list[str], k: int) -> str | None:
+    """Words of version k that its neighbouring versions do not have, in order."""
+    if len(texts) < 2:
+        return None
+    mine = _WORD.findall(texts[k])
+    keep = [False] * len(mine)
+    for j in (k - 1, k + 1):
+        if 0 <= j < len(texts):
+            other = _WORD.findall(texts[j])
+            for tag, _, _, b1, b2 in difflib.SequenceMatcher(None, other, mine, autojunk=False).get_opcodes():
+                if tag in ("replace", "insert"):
+                    for i in range(b1, b2):
+                        keep[i] = True
+    spans, run = [], []
+    for word, flag in zip(mine, keep):
+        if flag:
+            run.append(word)
+        elif run:
+            spans.append(" ".join(run))
+            run = []
+    if run:
+        spans.append(" ".join(run))
+    return " … ".join(spans) or None
+
+
+def references(answer: str, target: dict) -> list[dict]:
+    """Same-document provisions an answer cites, as {level: label} with the relative parts filled."""
+    found = []
+    for m in _REF.finditer(answer or ""):
+        before = answer[max(0, m.start() - 160):m.start()]
+        starts = list(_REF_START.finditer(before))
+        segment = before[starts[-1].end():] if starts else before
+        suffix = (m.group(1) or "").casefold()
+        for parts in parse_locators(segment):
+            if suffix == "điều":                                # "khoản 2 Điều này"
+                if L.ARTICLE in parts or not target.get("article_id"):
+                    continue
+                parts[L.ARTICLE] = target["article_id"]
+            elif suffix == "khoản":                             # "điểm a khoản này"
+                if L.CLAUSE in parts or not (target.get("article_id") and target.get("clause_id")):
+                    continue
+                parts.update({L.ARTICLE: target["article_id"], L.CLAUSE: target["clause_id"]})
+            elif L.ARTICLE not in parts:                        # "Điều 5 Nghị định này" must name the Điều
+                continue
+            parts = {lvl: lab for lvl, lab in parts.items() if lvl in _ORDER}
+            mine = {L.ARTICLE: target.get("article_id"), L.CLAUSE: target.get("clause_id"),
+                    L.POINT: target.get("point_id")}
+            if parts and parts != {lvl: lab for lvl, lab in mine.items() if lvl in parts and lab}:
+                found.append(parts)
+    unique = []
+    for parts in found:
+        if parts not in unique:
+            unique.append(parts)
+    return unique
+
+
+def check_short_answer(short: str, answer: str | None, lead_in: str | None) -> bool:
+    """Every span of the short answer (several are joined by " … ") is in the answer or the lead-in."""
+    source = f" {norm(answer)} | {norm(lead_in)} "
+    spans = [norm(s) for s in (short or "").split("…")]
+    return bool(spans) and all(s and f" {s} " in source for s in spans)
+
+
+# ------------------------------------------------------------------ corpus lookups
+
+def load_nodes(data: Path, portal_id: str) -> list[dict]:
+    nodes = []
+    for path in (data / f"provisions/{portal_id}.json", data / f"derived/subtrees/{portal_id}.json"):
+        if path.exists():
+            raw = json.loads(path.read_text(encoding="utf-8"))["nodes"]
+            nodes += raw if isinstance(raw, list) else [dict(v, id=k) for k, v in raw.items()]
+    return nodes
+
+
+def markers(nodes: list[dict]) -> set[str]:
+    out = set()
+    by_parent = collections.defaultdict(list)
+    for n in nodes:
+        by_parent[n.get("parent_id")].append(n)
+    for n in nodes:
+        if n.get("level") != "Article":
+            continue
+        head = (n.get("text") or "")[:120].casefold()
+        if "chuyển tiếp" in head:
+            out.add("actor_has_transitional")
+        if "hiệu lực" in head:
+            stack, text = [n], []
+            while stack:
+                cur = stack.pop()
+                text.append(cur.get("text") or "")
+                stack += by_parent.get(cur["id"], [])
+            sentences = [s for s in re.split(r"[.;]", " ".join(text)) if "có hiệu lực" in s]
+            if len({d for s in sentences for d in _DATE.findall(s)}) > 1:
+                out.add("split_effective_date")
+    return out
+
+
+def domains(data: Path, documents: set[str]) -> dict[str, tuple[list[str], str]]:
+    """document -> (fields, source) — seed fields, else the portal's classification of it."""
+    seed: dict[str, set[str]] = collections.defaultdict(set)
+    for field, rows in json.loads((data / "seeds.json").read_text(encoding="utf-8")).items():
+        for row in rows:
+            seed[row["doc_id"]].add(field)
+    out = {}
+    for doc in documents:
+        portal = doc.split(":", 1)[1]
+        if portal in seed:
+            out[doc] = (sorted(seed[portal]), "seed")
+            continue
+        raw = json.loads((data / f"raw/{portal}.json").read_text(encoding="utf-8"))
+        out[doc] = (["khac"], "khong_ro")
+        for source, key in (("portal_field", "documentFields"), ("portal_major", "documentMajors")):
+            names = " ; ".join(x.get("name") or "" for x in raw.get(key) or ()
+                               if x.get("name") != "Chưa phân loại").casefold()
+            if names.strip(" ;"):
+                found = sorted(code for code, words in _FIELD_WORDS if any(w in names for w in words))
+                out[doc] = (found or ["khac"], source)
+                break
+    return out
+
+
+# ------------------------------------------------------------------ main
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--data", type=Path, default=Path("data"))
+    args = parser.parse_args()
+    data = args.data
+    base = data / "derived/vilextime"
+    rows = [json.loads(line) for line in (base / "selected.jsonl").open(encoding="utf-8")]
+    lineages = {r["lineage_id"] for r in rows}
+    stats: collections.Counter[str] = collections.Counter()
+
+    pool = {}
+    for line in (data / "derived/vilextime_pool.jsonl").open(encoding="utf-8"):
+        row = json.loads(line)
+        if row["provision_id"] in lineages:
+            pool[row["provision_id"]] = sorted(row["versions"], key=lambda v: v["ordinal"])
+    db = sqlite3.connect(data / "temporal.sqlite")
+    document_end = {doc: _d(end) for doc, end in db.execute("SELECT id, effective_to FROM documents")}
+    issued_on = {doc: issued for doc, issued in db.execute("SELECT id, issued_on FROM documents") if issued}
+    steps = {r["lineage_id"]: r["derivation"]["transitions"] for r in rows}
+
+    # Same-document references, resolved once per (document, locator).
+    resolver = TargetResolver(TemporalIndex(data / "temporal.sqlite"))
+    cited: dict[str, list[str]] = {}
+    for r in rows:
+        ids = []
+        for parts in references(r["answer"] or "", r["target"]):
+            locator = ProvisionLocator(tuple(ProvisionReferencePart(lvl, parts[lvl]) for lvl in _ORDER if lvl in parts))
+            result = resolver.resolve(TargetReference(f"{r['id']}:{parts}", str(parts), TargetScope.EXACT,
+                                                      locator=locator), (r["target"]["document_id"],))
+            if result.code.value.startswith("resolved"):
+                ids += list(result.target.target_provision_ids)
+                stats["dẫn chiếu: phân giải được"] += 1
+            else:
+                stats[f"dẫn chiếu: {result.code.value}"] += 1
+        cited[r["id"]] = ids
+
+    # One pass over the ~1 GB versions file for everything a row points at.
+    wanted = {r["target"]["parent_id"] for r in rows if r["target"].get("parent_id")}
+    wanted |= {pid for ids in cited.values() for pid in ids} | lineages
+    chains: dict[str, list[dict]] = collections.defaultdict(list)
+    pattern = re.compile(r'"provision_id"\s*:\s*"([^"]+)"')
+    for line in (data / "derived/versions.jsonl").open(encoding="utf-8"):
+        found = pattern.search(line)
+        if found and found.group(1) in wanted:
+            v = json.loads(line)
+            chains[v["provision_id"]].append(v)
+    for chain in chains.values():
+        chain.sort(key=lambda v: v["ordinal"])
+
+    events = {}
+    want_events = {t["event_id"] for r in rows for t in r["derivation"]["transitions"]}
+    want_events |= {chains[lid][-1]["ended_by_event_id"] for lid in lineages if chains.get(lid)} - {None}
+    want_events |= {r["repealed_by"]["event_id"] for r in rows if r.get("repealed_by")}
+    for line in (data / "derived/provision_events.jsonl").open(encoding="utf-8"):
+        e = json.loads(line)
+        if e["id"] in want_events:
+            events[e["id"]] = e
+    actors = {e["actor_id"] for e in events.values()}
+    actor_nodes = {a: load_nodes(data, a.split(":", 1)[1]) for a in actors}
+    actor_markers = {a: markers(nodes) for a, nodes in actor_nodes.items()}
+    fields = domains(data, {r["target"]["document_id"] for r in rows})
+
+    shorts, stale_shorts = {}, []
+    path = data / "vilextime/short_answers.jsonl"
+    if path.exists():
+        for line in path.open(encoding="utf-8"):
+            s = json.loads(line)
+            shorts[(s["lineage_id"], s["version_id"])] = s
+
+    def at(pid: str, when: str) -> str | None:
+        hit = in_force_at(chains.get(pid, []), date.fromisoformat(when))
+        return hit["id"] if hit else None
+
+    def enrich(r: dict) -> dict:
+        lid, versions = r["lineage_id"], pool[r["lineage_id"]]
+        parent = r["target"].get("parent_id")
+        r["schema_version"] = SCHEMA_VERSION
+        r.setdefault("as_of_strategy", "ranh_gioi")
+        r.setdefault("twin_of", None)
+        if parent and r["as_of_strategy"] in ("giua_khoang", BEFORE_EFFECT):   # the lead-in in force at its date
+            hit = in_force_at(chains.get(parent, []), date.fromisoformat(r["as_of"]))
+            r["target"]["lead_in"] = hit["text"] if hit else None
+        r["pending"] = pending_at(steps[lid], versions, date.fromisoformat(r["as_of"]), issued_on)
+        texts = [v["text"] for v in versions]
+        k = next((i for i, v in enumerate(versions) if v["id"] == r["version_id"]), None)
+        r["changed_span"] = changed_span(texts, k) if k is not None else None
+        r["retrieved_at"] = SNAPSHOT.isoformat()
+        r["split"] = split_of(r["target"]["document_id"], always_test)
+        r["domain"], r["domain_source"] = fields[r["target"]["document_id"]]
+        r["subgroup"] = subgroup(r)
+        evidence = []
+        if r["version_id"]:
+            evidence.append({"provision_id": lid, "version_id": r["version_id"], "role": "gold"})
+        if parent and r["target"].get("lead_in") and (pv := at(parent, r["as_of"])):
+            evidence.append({"provision_id": parent, "version_id": pv, "role": "lead_in"})
+        for pid in cited[r["twin_of"] or r["id"]]:
+            evidence.append({"provision_id": pid, "version_id": at(pid, r["as_of"]), "role": "reference"})
+        r["evidence_set"] = evidence
+        accepted = []
+        if k == 0:
+            accepted.append(f"asis:{lid}")
+        for t in r["derivation"]["transitions"]:
+            e = events.get(t["event_id"])
+            t["op"] = e["operation"] if e else None
+            if e and k is not None and t["to_version"] == versions[k]["ordinal"]:
+                accepted.append(f"asis:{e['id']}")
+        if r["version_id"] is None:     # the repeal: of the provision itself, or of the ancestor it fell with
+            ended = (r.get("repealed_by") or {}).get("event_id") or (chains[lid][-1]["ended_by_event_id"]
+                                                                      if chains.get(lid) else None)
+            if ended in events:
+                accepted.append(f"asis:{ended}")
+        stats["accepted_evidence: " + ("có" if accepted else "rỗng")] += 1
+        r["accepted_evidence"] = accepted
+        acts = {events[t["event_id"]]["actor_id"] for t in r["derivation"]["transitions"] if t["event_id"] in events}
+        r["legal_markers"] = sorted({m for a in acts for m in actor_markers.get(a, ())})
+        s = shorts.get((lid, r["version_id"]))
+        if s and not check_short_answer(s["short_answer"], r["answer"], r["target"].get("lead_in")):
+            # written for the wording this version id held before a rebuild changed it: stale, not wrong
+            stale_shorts.append(r["id"])
+            s = None
+        r["short_answer"] = s["short_answer"] if s else None
+        return r
+
+    always_test = {r["target"]["document_id"] for r in rows if r["group"] == "T5"}
+    caps: dict[str, list[date]] = collections.defaultdict(list)
+    queue = data / "review/validity_queue.tsv"
+    if queue.exists():
+        for q in csv.DictReader(queue.open(encoding="utf-8"), delimiter="\t"):
+            if q["kind"] == "missed_event" and q["decision"] == "loi" and q["strategy"] == "giua_khoang":
+                caps[q["lineage"]].append(date.fromisoformat(q["date"]))
+    out = []
+    for r in rows:
+        doc = r["target"]["document_id"]
+        twin = twin_of(r, pool[r["lineage_id"]], document_end.get(doc), tuple(caps.get(r["lineage_id"], ())))
+        stats["dòng anh em: có" if twin else "dòng anh em: không (cửa sổ rỗng hoặc chuỗi lệch)"] += 1
+        early = None
+        if r["group"] == "T2":
+            early = before_effect(r, pool[r["lineage_id"]], document_end.get(doc),
+                                  tuple(caps.get(r["lineage_id"], ())), issued_on)
+            if early and twin and early["as_of"] == twin["as_of"]:
+                early = None
+            if r["version_id"] != pool[r["lineage_id"]][-1]["id"]:
+                stats["trước hiệu lực: " + ("có dòng" if early else "không (chưa ký, ra ngoài khoảng hoặc chuỗi lệch)")] += 1
+        out.append(enrich(r))
+        for extra in (twin, early):
+            if extra:
+                out.append(enrich(extra))
+    ids = [r["id"] for r in out]
+    if len(ids) != len(set(ids)):
+        raise SystemExit("id trùng trong release.jsonl")
+    target = base / "release.jsonl"
+    with target.open("w", encoding="utf-8") as f:
+        for r in out:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    print(f"{len(out):,} dòng ({len(rows):,} ranh giới + {len(out) - len(rows):,} giữa khoảng/trước/sau hiệu lực) -> {target}")
+    for key, value in sorted(stats.items()):
+        print(f"  {key}: {value:,}")
+    print("  domain_source:", dict(collections.Counter(r["domain_source"] for r in out)))
+    print("  split:", dict(collections.Counter((r["split"], r["group"]) for r in out if r["as_of_strategy"] == "ranh_gioi")))
+    print("  legal_markers:", dict(collections.Counter(m for r in out for m in r["legal_markers"])))
+    print(f"  short_answer: {sum(1 for r in out if r['short_answer'])}/{len(out)}"
+          f" ({len(stale_shorts)} bỏ vì lời văn của phiên bản đã đổi khi dựng lại: {stale_shorts[:3]})")
+
+
+if __name__ == "__main__":
+    main()

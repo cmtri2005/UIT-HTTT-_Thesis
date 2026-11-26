@@ -1,0 +1,474 @@
+from vilexgraph.build.extraction.provision_ops import (
+    _STRUCTURE_HEAD,
+    extract_mentions,
+    normalize_number,
+    parse_locators,
+    title_document,
+)
+from vilexgraph.build.temporal.models import LegalOperation as Op
+from vilexgraph.build.temporal.models import ProvisionLevel as L
+
+
+def paths(mention):
+    return [tuple((p.level.value, p.label) for p in loc.parts) for loc in mention.locators]
+
+
+def summary(paragraphs, title_doc=None):
+    return [
+        (m.operation, normalize_number(m.document_number), paths(m), m.method)
+        for m in extract_mentions(paragraphs, title_doc)
+    ]
+
+
+def test_locator_lists_paths_and_qualifiers():
+    assert parse_locators("khoản 2 Điều 11") == [{L.CLAUSE: "2", L.ARTICLE: "11"}]
+    assert parse_locators("điểm b khoản 1, khoản 2 Điều 5") == [
+        {L.POINT: "b", L.CLAUSE: "1", L.ARTICLE: "5"}, {L.CLAUSE: "2", L.ARTICLE: "5"}]
+    assert parse_locators("Điều 2, khoản 2 Điều 3, Điều 6") == [
+        {L.ARTICLE: "2"}, {L.CLAUSE: "2", L.ARTICLE: "3"}, {L.ARTICLE: "6"}]
+    # Mục/Chương right after an article list qualify it; a second Chương is its own item.
+    assert parse_locators("Điều 20, 21 và 27 Mục 2 Chương IV, Chương V") == [
+        {L.ARTICLE: "20"}, {L.ARTICLE: "21"}, {L.ARTICLE: "27"}, {L.CHAPTER: "V"}]
+    # The portal's own comma-separated path style.
+    assert parse_locators("Khoản 3, Điều 9, Mục 3, Chương II") == [{L.CLAUSE: "3", L.ARTICLE: "9"}]
+    assert parse_locators("từ Điều 5 đến Điều 7") == [{L.ARTICLE: "5"}, {L.ARTICLE: "6"}, {L.ARTICLE: "7"}]
+    assert parse_locators("một số điều của") == []
+
+
+def test_explicit_partial_repeal():
+    got = summary(["2. Bãi bỏ khoản 2 Điều 11 Nghị định số 78/2016/NĐ-CP ngày 01 tháng 7 năm 2016."])
+    assert got == [(Op.REPEAL, "78/2016/nd/cp", [(("Article", "11"), ("Clause", "2"))], "explicit")]
+
+
+def test_amending_article_items_inherit_the_heading_document():
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Nghị định số 21/2016/NĐ-CP như sau:",
+        "1. Sửa đổi khoản 2 Điều 5 như sau:",
+        "“2. Nội dung mới có Điều 9 và khoản 3.”",
+        "2. Bãi bỏ khoản 3 Điều 7.",
+        "3. Thay thế cụm từ “A” bằng cụm từ “B” tại khoản 1 Điều 9.",
+        "Điều 2. Hiệu lực thi hành",
+        "Nghị định này có hiệu lực từ ngày 01 tháng 01 năm 2018.",
+    ])
+    assert got == [
+        (Op.AMEND, "21/2016/nd/cp", [(("Article", "5"), ("Clause", "2"))], "intro"),
+        (Op.REPEAL, "21/2016/nd/cp", [(("Article", "7"), ("Clause", "3"))], "intro"),
+        (Op.AMEND, "21/2016/nd/cp", [(("Article", "9"), ("Clause", "1"))], "intro"),
+    ]
+
+
+def test_sub_items_inherit_the_parent_items_article():
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 12/2018/TT-BGDĐT như sau:",
+        "1. Sửa đổi, bổ sung Điều 5 như sau:",
+        "a) Sửa đổi khoản 2 như sau:",
+        "“2. mới”",
+        "b) Bãi bỏ điểm c khoản 3.",
+    ])
+    assert [(op, p) for op, _, p, _ in got] == [
+        (Op.AMEND, [(("Article", "5"),)]),
+        (Op.AMEND, [(("Article", "5"), ("Clause", "2"))]),
+        (Op.REPEAL, [(("Article", "5"), ("Clause", "3"), ("Point", "c"))]),
+    ]
+
+
+def test_passive_expiry_after_the_citation():
+    got = summary([
+        "2. Điều 20, 21 và 27 Mục 2 Chương IV, Chương V của Nghị định số 79/2006/NĐ-CP ngày 09 tháng 8 "
+        "năm 2006 của Chính phủ quy định chi tiết thi hành một số điều của Luật dược hết hiệu lực kể từ "
+        "ngày Nghị định này có hiệu lực thi hành.",
+    ])
+    assert got == [(Op.REPEAL, "79/2006/nd/cp",
+                    [(("Article", "20"),), (("Article", "21"),), (("Article", "27"),), (("Chapter", "V"),)],
+                    "explicit")]
+
+
+def test_inline_list_after_colon_one_target_per_statement():
+    got = summary([
+        "2. Bãi bỏ: Điều 2, khoản 2 Điều 3, Điều 6 Nghị định số 141/2013/NĐ-CP ngày 24 tháng 10 năm 2013; "
+        "Nghị định số 73/2015/NĐ-CP ngày 08 tháng 9 năm 2015; Quyết định số 70/2014/QĐ-TTg.",
+    ])
+    assert got == [
+        (Op.REPEAL, "141/2013/nd/cp", [(("Article", "2"),), (("Article", "3"), ("Clause", "2")), (("Article", "6"),)], "explicit"),
+        (Op.REPEAL, "73/2015/nd/cp", [], "explicit"),
+        (Op.REPEAL, "70/2014/qd/ttg", [], "explicit"),
+    ]
+
+
+def test_a_documents_title_is_not_an_instruction():
+    # "…09/2001/NĐ-CP … sửa đổi Điều 21 Nghị định số 05-CP" describes 09/2001; 05-CP is untouched here.
+    got = summary([
+        "Điều 1. Bãi bỏ các văn bản quy phạm pháp luật sau đây:",
+        "6. Nghị định số 09/2001/NĐ-CP ngày 02 tháng 3 năm 2001 của Chính phủ sửa đổi Điều 21 "
+        "Nghị định số 05-CP ngày 20 tháng 01 năm 1995 của Chính phủ.",
+    ])
+    assert got == [(Op.REPEAL, "9/2001/nd/cp", [], "explicit")]
+
+
+def test_references_to_the_acting_document_itself_are_skipped():
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 01/2020/TT-BTC như sau:",
+        "3. Bãi bỏ khoản 4 Điều này.",
+        "Điều 3. Hiệu lực thi hành",
+        "Quy định tại Điều 24 của Nghị định này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2028.",
+        "Các quy định trước đây trái với Thông tư này đều bãi bỏ.",
+    ])
+    assert got == []
+
+
+def test_citation_only_at_the_end_of_a_letter_list():
+    got = summary([
+        "Điều 16. Hiệu lực thi hành",
+        "2. Bãi bỏ các quy định sau đây:",
+        "a) Mục 3 Chương II; Điều 21; khoản 1, khoản 2 Điều 43 Thông tư số 06/2010/TT-NHNN.",
+    ])
+    assert got == [(Op.REPEAL, "6/2010/tt/nhnn",
+                    [(("Chapter", "II"), ("Section", "3"))], "forward"),
+                   (Op.REPEAL, "6/2010/tt/nhnn", [(("Article", "21"),)], "forward"),
+                   (Op.REPEAL, "6/2010/tt/nhnn",
+                    [(("Article", "43"), ("Clause", "1")), (("Article", "43"), ("Clause", "2"))], "explicit")]
+
+
+def test_the_acting_documents_own_chapter_heading_is_not_a_target():
+    # Pilot T6 row 6: 151/2018 repealed points b, đ, g only; its next "Chương II" is its own heading.
+    got = summary([
+        "Điều 3. Bãi bỏ một số điều của Nghị định số 17/2012/NĐ-CP như sau:",
+        "2. Bãi bỏ các điểm b, đ, g khoản 1 Điều 11.",
+        "Chương II",
+        "LĨNH VỰC XỔ SỐ",
+        "Phần C: TỔ CHỨC THỰC HIỆN",
+    ])
+    assert [p for _, _, p, _ in got if p] == [[(("Article", "11"), ("Clause", "1"), ("Point", p)) for p in "bđg"]]
+    # A listed chapter is still a target.
+    got = summary([
+        "1. Bãi bỏ các quy định sau của Thông tư số 07/2014/TT-BTP:",
+        "c) Chương III (bao gồm tên chương; Điều 11; Điều 12);",
+    ])
+    assert [(("Chapter", "III"),)] in [p for _, _, p, _ in got]
+    # "Mục II.3.a - …" is a path into the old text, not a heading.
+    assert _STRUCTURE_HEAD.match("Phần C: TỔ CHỨC THỰC HIỆN") and _STRUCTURE_HEAD.match("Mục VI.")
+    assert not _STRUCTURE_HEAD.match("Mục II.3.a - Chi phí khấu hao") and not _STRUCTURE_HEAD.match("Chương 2.002")
+
+
+def test_a_documents_amendment_history_is_not_the_current_act():
+    # Hand-check sample row 9: the list header says "Bãi bỏ"; "được sửa đổi, bổ sung tại …
+    # Nghị định số 35/2023" only recounts who amended 11/2013 before.
+    got = summary([
+        "2. Bãi bỏ các quy định sau đây:",
+        "a) Khoản 9, 10 Điều 2, Điều 4 của Nghị định số 11/2013/NĐ-CP ngày 14 tháng 01 năm 2013 "
+        "được sửa đổi, bổ sung tại Điều 4 của Nghị định số 35/2023/NĐ-CP;",
+    ])
+    assert got == [(Op.REPEAL, "11/2013/nd/cp",
+                    [(("Article", "2"), ("Clause", "9")), (("Article", "2"), ("Clause", "10")), (("Article", "4"),)],
+                    "explicit")]
+
+
+def test_parenthetical_history_is_not_a_target():
+    # Sample row 31: the target is khoản 1 Điều 9 of the heading's circular, not 38/2015.
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 22/2018/TT-NHNN như sau:",
+        "1. Sửa đổi, bổ sung khoản 1 Điều 9 (đã được sửa đổi, bổ sung bởi khoản 16 Điều 1 "
+        "Thông tư 38/2015/TT-NHNN) như sau:",
+    ])
+    assert got == [(Op.AMEND, "22/2018/tt/nhnn", [(("Article", "9"), ("Clause", "1"))], "intro")]
+
+
+def test_phrase_and_subject_edits_rewrite_a_provision_they_do_not_remove_it():
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Nghị định số 139/2021/NĐ-CP như sau:",
+        "3. Bãi bỏ cụm từ “ủy quyền” tại Điều 41.",
+        "4. Thay cụm từ “A” bằng cụm từ “B” tại khoản 2 Điều 16.",
+        "Điều 2. Hiệu lực thi hành",
+        "6. Bãi bỏ quy định tại Điều 5 Nghị định số 61/2006/NĐ-CP.",
+        "7. Bãi bỏ quy định về phụ cấp đặc thù quy định tại Điều 4, Điều 5 Nghị định số 113/2015/NĐ-CP.",
+    ])
+    assert [(op, n, p) for op, n, p, _ in got] == [
+        (Op.AMEND, "139/2021/nd/cp", [(("Article", "41"),)]),
+        (Op.AMEND, "139/2021/nd/cp", [(("Article", "16"), ("Clause", "2"))]),
+        (Op.REPEAL, "61/2006/nd/cp", [(("Article", "5"),)]),
+        (Op.AMEND, "113/2015/nd/cp", [(("Article", "4"),), (("Article", "5"),)]),
+    ]
+
+
+def test_number_normalisation_and_title_document():
+    assert normalize_number("14-CP") == normalize_number("14/CP")
+    assert normalize_number("64 TC/TCT") == normalize_number("64/TC-TCT")
+    assert normalize_number("47/2000/QĐ-BGD&ĐT") == normalize_number("47/2000/QĐ-BGDĐT")
+    assert normalize_number("33/2018/TT- BGTVT") == normalize_number("33/2018/TT-BGTVT")
+    # Look-alikes found in the portal's own docNum fields.
+    assert normalize_number("89/2015/NÐ-CP") == normalize_number("89/2015/NĐ-CP")  # Latin Eth
+    assert normalize_number("51/2025/TT-BTС") == normalize_number("51/2025/TT-BTC")  # Cyrillic Es
+    assert normalize_number("9/2019/TT-BTC") == normalize_number("09/2019/TT-BTC")
+    assert normalize_number("22/2021/QD-TTg") == normalize_number("22/2021/QĐ-TTg")
+    assert title_document("Nghị định số 161/2017/NĐ-CP Sửa đổi Điều 12 Nghị định số 21/2016/NĐ-CP") == "21/2016/NĐ-CP"
+    assert title_document("Nghị định số 42/2018/NĐ-CP Bãi bỏ một số Nghị định của Chính phủ") is None
+
+
+def test_second_hand_check_error_classes():
+    # Row 23: numbers after "Phụ lục" are not articles.
+    assert parse_locators("khoản 2 Điều 12, Điều 19, Phụ lục 1, 2 và 3 ban hành kèm theo") == [
+        {L.CLAUSE: "2", L.ARTICLE: "12"}, {L.ARTICLE: "19"}]
+    # Row 2: an unbalanced quote leaves a citation inside the replaced phrase; the edit acts "tại".
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Nghị định số 108/2024/NĐ-CP như sau:",
+        "5. Thay thế cụm từ “các khoản 3 và 9 Điều 26 Nghị định số 151/2017/NĐ-CP bằng cụm từ X tại khoản 4 Điều 16.",
+    ])
+    assert got == [(Op.AMEND, "108/2024/nd/cp", [(("Article", "16"), ("Clause", "4"))], "intro")]
+    # Row 30: repealing the guidance of Điều 41 inside another circular does not touch Điều 41.
+    assert summary(["Bãi bỏ những quy định hướng dẫn thực hiện Điều 41 Nghị định số 197/2004/NĐ-CP "
+                    "tại Thông tư số 116/2004/TT-BTC."]) == []
+    # Row 51: a quoted paragraph's leftover "." must not drop the parent item's article.
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 25/2022/TT-BNNPTNT như sau:",
+        "2. Sửa đổi, bổ sung khoản 1 và điểm b khoản 8 Điều 3 như sau:",
+        "a) Sửa đổi, bổ sung khoản 1 như sau:",
+        "“1. mới”.",
+        "b) Sửa đổi, bổ sung điểm b khoản 8 như sau:",
+    ])
+    assert got[-1][2] == [(("Article", "3"), ("Clause", "8"), ("Point", "b"))]
+    # Sample row 17: "Ðiều" spelled with the Latin Eth is still an article.
+    got = summary(["Bãi bỏ khoản 3 Ðiều 28 của Luật Thương mại số 36/2005/QH11."])
+    assert got == [(Op.REPEAL, "36/2005/qh11", [(("Article", "28"), ("Clause", "3"))], "explicit")]
+
+
+def test_third_hand_check_error_classes():
+    # Row 5: the phrase edit acts at the first "tại"; "được bổ sung tại … 129/2021" is history.
+    got = summary(["Bãi bỏ cụm từ “x” tại khoản 2 Điều 11 Nghị định số 38/2021/NĐ-CP, điểm e khoản 10 Điều 11 "
+                   "Nghị định số 38/2021/NĐ-CP được bổ sung tại khoản 4 Điều 4 Nghị định số 129/2021/NĐ-CP."])
+    assert got == [(Op.AMEND, "38/2021/nd/cp", [(("Article", "11"), ("Clause", "2"))], "explicit")]
+    # Row 9: "vào sau Điều 5" is where Điều 5a goes, not a provision being changed.
+    got = summary(["Bổ sung Điều 5a vào sau Điều 5 Thông tư số 22/2018/TT-NHNN như sau:"])
+    assert got == [(Op.SUPPLEMENT, "22/2018/tt/nhnn", [(("Article", "5a"),)], "explicit")]
+    # Rows 18, 22: a neutral list header ("một số nội dung … sau", "nội dung quy định tại") repeals its items whole.
+    for header in ("5. Bãi bỏ một số nội dung của các Thông tư sau:", "2. Bãi bỏ các nội dung quy định tại:"):
+        got = summary([header, "h) Khoản 2 Điều 4 Thông tư số 08/2014/TT-BNV."])
+        assert got == [(Op.REPEAL, "8/2014/tt/bnv", [(("Article", "4"), ("Clause", "2"))], "explicit")]
+    # Row 50: an unmarked line under a numbered header belongs to that header's document.
+    got = summary([
+        "Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 24/2013/TT-BKHCN như sau:",
+        "2. Thay thế một số cụm từ tại Thông tư số 23/2013/TT-BKHCN như sau:",
+        "Thay thế cụm từ “Tổng cục” bằng cụm từ “Ủy ban” tại khoản 2 Điều 7.",
+    ])
+    assert got == [(Op.AMEND, "23/2013/tt/bkhcn", [(("Article", "7"), ("Clause", "2"))], "intro")]
+
+
+def test_parts_of_an_appendix_are_not_the_bodys_provisions():
+    assert summary(["17. Sửa đổi Khoản 2 Điều 2 Hợp đồng mua bán điện mẫu ban hành kèm theo Thông tư số 56/2014/TT-BCT như sau:"]) == []
+    assert summary(["Bãi bỏ Phụ lục IV - Danh mục hàng hóa tại khoản 4 Điều 2 Thông tư số 22/2016/TT-BCT."]) == []
+    assert summary(["Thay thế Mục 5 Chương trình khung tại Phụ lục IV Nghị định 44/2016/NĐ-CP bằng Mục IV."]) == []
+    # An attached regulation's articles are in the tree: "ban hành kèm theo" alone is fine.
+    assert summary(["Sửa đổi khoản 1 Điều 3 Quy chế ban hành kèm theo Quyết định số 12/2010/QĐ-TTg."]) == [
+        (Op.AMEND, "12/2010/qd/ttg", [(("Article", "3"), ("Clause", "1"))], "explicit")]
+
+
+def test_the_displayed_number_loses_the_portal_s_quoting_artefacts():
+    """9 documents carry a spreadsheet's text marker inside `docNum` itself."""
+    from vilexgraph.build.ingest import document_number
+
+    assert document_number("'42/2022/TT-BCT") == "42/2022/TT-BCT"
+    assert document_number("24/2025/TT-BCT'") == "24/2025/TT-BCT"
+    assert document_number("22'/2025/QĐ-UBND") == "22/2025/QĐ-UBND"
+    assert document_number("22’/2025/QĐ-UBND") == "22/2025/QĐ-UBND"
+    assert document_number(None) == ""
+    # Nothing else moves, and matching still agrees with display.
+    assert document_number("47/2000/QĐ-BGD&ĐT") == "47/2000/QĐ-BGD&ĐT"
+    assert normalize_number(document_number("'42/2022/TT-BCT")) == normalize_number("42/2022/TT-BCT")
+
+
+def test_a_phrase_edit_keeps_its_quoted_payload_in_the_evidence():
+    """`extract_mentions` masks “…” as «Q»; for a phrase edit that is the payload."""
+    from extract_provision_events import evidence_of
+
+    body = ["Sửa đổi Thông tư số 36/2013/TT-BGTVT như sau:",
+            "Thay thế cụm từ “được tổ chức hoa tiêu nơi thực tập xác nhận” tại các Điều 11, "
+            "16, 18 bằng cụm từ “được tổ chức hoa tiêu nơi thực tập sát hạch xác nhận”."]
+    [mention] = extract_mentions(body)
+    assert "«Q»" in mention.evidence  # the mask is still what keys the event id
+    restored = evidence_of(mention, body)
+    assert "«Q»" not in restored
+    assert "thực tập sát hạch" in restored
+
+    class _Plain:
+        evidence, paragraph = "Bãi bỏ Điều 5.", 0
+
+    assert evidence_of(_Plain(), ["Bãi bỏ Điều 5."]) == "Bãi bỏ Điều 5."
+
+
+def test_a_part_of_the_act_starting_later_dates_only_its_own_mentions():
+    """TT 17/2023/TT-BGTVT: khoản 12 Điều 1 (sửa Điều 18) starts 01/01/2024, the act 15/08/2023 (D5 §5.1)."""
+    from datetime import date
+
+    from extract_provision_events import deferred_dates, paragraph_positions
+    from vilexgraph.build.extraction.wording import wording_blocks
+
+    body = ["Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 40/2016/TT-BGTVT",
+            "11. Sửa đổi khoản 2 Điều 16 như sau:",
+            "“2. Khoản 2 Điều 24 Thông tư này có hiệu lực từ ngày 01 tháng 3 năm 2030.”",
+            "12. Sửa đổi, bổ sung Điều 18 như sau:",
+            "d) Sửa đổi, bổ sung khoản 5 Điều 18 như sau:",
+            "“5. Chi cục Đăng kiểm cấp Giấy chứng nhận.”",
+            "Điều 2. Bãi bỏ Điều 7 Thông tư số 51/2017/TT-BGTVT.",
+            "Điều 3. Hiệu lực thi hành",
+            "1. Thông tư này có hiệu lực thi hành từ ngày 15 tháng 8 năm 2023. Các khoản 4, khoản 5, "
+            "khoản 11 và khoản 12 Điều 1 Thông tư này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2024."]
+    blocks = wording_blocks(body)
+    quoted = {j for k, b in blocks.items() for j in range(b.start, b.end + 1) if j != k}
+    later = deferred_dates(body, quoted)
+    assert later == {("1", c): date(2024, 1, 1) for c in ("4", "5", "11", "12")}, \
+        "a sentence inside quoted wording belongs to the amended act"
+    where = paragraph_positions(body, quoted)
+    assert where[4] == ("1", "12")          # the point d) under khoản 12
+    assert where[6] == ("2", None)          # Điều 2 keeps the act's own date
+
+
+def test_a_date_for_part_of_what_a_provision_says_is_not_read_as_the_provisions_date():
+    """Seen in the corpus (19/10): 21/2026/TT-BKHCN, 107/2021/NĐ-CP, 188/2025/NĐ-CP."""
+    from datetime import date
+
+    from extract_provision_events import deferred_dates
+
+    partial = ["Thẩm quyền giải quyết các thủ tục hành chính quy định tại Điều 1, Điều 2 Thông tư này "
+               "có hiệu lực kể từ ngày 29 tháng 5 năm 2026.",
+               "Khoản 11 Điều 1 của Nghị định này có hiệu lực thi hành kể từ ngày 01 tháng 6 năm 2022 "
+               "đối với thủ tục hành chính thuộc phạm vi tiếp nhận của Bộ phận Một cửa cấp bộ;"]
+    assert deferred_dates(partial, set()) == {}
+    ranged = ["Các điều từ Điều 1 đến Điều 3, các điều 14 và 15 của Nghị định này có hiệu lực từ ngày "
+              "01 tháng 7 năm 2025."]
+    assert deferred_dates(ranged, set()) == {(str(n), None): date(2025, 7, 1) for n in (1, 2, 3, 14, 15)}
+
+
+def test_an_amending_act_is_recognised_by_its_title():
+    """NĐ 115/2016/NĐ-CP had no portal relation and was never read (D5 §5.6)."""
+    from extract_provision_events import _ACTS_ON_ANOTHER
+
+    assert _ACTS_ON_ANOTHER.search("Nghị định số 115/2016/NĐ-CP Sửa đổi, bổ sung một số điều của Nghị định số 163/2013/NĐ-CP")
+    assert _ACTS_ON_ANOTHER.search("Nghị quyết số 399/2003/NQ-UBTVQH11 Về việc sửa đổi, bổ sung biểu thuế")
+    assert not _ACTS_ON_ANOTHER.search("Quyết định số 616/PLDS Về kế hoạch triển khai thực hiện Luật sửa đổi, bổ sung")
+    assert not _ACTS_ON_ANOTHER.search("Nghị định số 168/2025/NĐ-CP Về đăng ký doanh nghiệp")
+
+
+def test_partial_repeal_is_not_a_whole_node_repeal():
+    from extract_provision_events import _PARTIAL_REPEAL
+
+    partial = [
+        "Bãi bỏ nội dung sau đây tại khoản 2 Điều 2",  # TT 01/2023/TT-BCT, D5 §5
+        "d) Bãi bỏ đoạn «Q» tại điểm d khoản 1",
+        "Bãi bỏ số thứ tự 19 tại Biểu phí, lệ phí quy định tại khoản 1 Điều 1 Thông tư số 43/2024/TT-BTC",
+        "Bãi bỏ tiết c điểm 3.2 Điều 4.",
+        "Bãi bỏ nội dung quy định tại gạch đầu dòng thứ 3 Khoản 1 Điều 27.",
+        "Bãi bỏ các nội dung liên quan đến thuế giá trị gia tăng hướng dẫn tại Điều 16",
+        "Bãi bỏ quy định giảm 50% mức thu lệ phí tại số thứ tự 30",
+    ]
+    whole = [
+        "Bãi bỏ nội dung quy định tại khoản 5 Điều 4 Nghị định số 91/2015/NĐ-CP",
+        "Bãi bỏ từ khoản 1 đến khoản 11 Điều 1",
+        "Bãi bỏ khoản 2 Điều 11 Nghị định số 12/2020/NĐ-CP",
+        "Bãi bỏ Mục 2 Chương II Nghị định số 84/2006/NĐ-CP",
+    ]
+    assert all(_PARTIAL_REPEAL.search(t) for t in partial)
+    assert not any(_PARTIAL_REPEAL.search(t) for t in whole)
+
+
+def test_an_omnibus_act_names_the_amended_document_in_each_chapter_title():
+    # NĐ 14/2026/NĐ-CP: Điều 59 NĐ 05/2021 was repealed from 15/01/2026 (D5 §5.5).
+    got = summary([
+        "Chương XXV",
+        "SỬA ĐỔI, BỔ SUNG MỘT SỐ ĐIỀU CỦA NGHỊ ĐỊNH SỐ 05/2021/NĐ-CP NGÀY 25 THÁNG 01 NĂM 2021 CỦA CHÍNH PHỦ",
+        "Điều 127. Sửa đổi, bổ sung khoản 3 Điều 10 như sau:",
+        "Điều 128. Bãi bỏ điều, điểm và biểu mẫu tại Phụ lục ban hành kèm theo Nghị định số 05/2021/NĐ-CP",
+        "1. Điểm c khoản 1 Điều 57, Điều 59.",
+        "Điều 126. Sửa đổi, bổ sung một số khoản của Điều 51",
+        "1. Sửa đổi, bổ sung khoản 6 như sau:",
+        "2. Mẫu số 07, Mẫu số 08 quy định tại Phụ lục ban hành kèm theo Nghị định này.",
+        "Chương XXVII",
+        "TỔ CHỨC THI HÀNH",
+        "Điều 131. Bãi bỏ khoản 2 Điều 3.",
+    ])
+    assert got == [
+        (Op.AMEND, "5/2021/nd/cp", [(("Article", "10"), ("Clause", "3"))], "part_context"),
+        (Op.REPEAL, "5/2021/nd/cp", [(("Article", "57"), ("Clause", "1"), ("Point", "c")), (("Article", "59"),)],
+         "part_context"),
+        (Op.AMEND, "5/2021/nd/cp", [(("Article", "51"), ("Clause", "6"))], "part_context"),
+    ]
+
+
+def _loc(*parts):
+    return [[level, label] for level, label in parts]
+
+
+G108 = ("Các nội dung liên quan đến chi phí lập đề án phân loại đô thị, lập chương trình phát triển đô thị tại Điều 1, "
+        "Điều 2, Điều 3, khoản 2 Điều 4, khoản 3 Điều 5, khoản 5 Điều 5, khoản 2 Điều 6, khoản 3 Điều 6 "
+        "Thông tư số 12/2017/TT-BXD ngày 30 tháng 11 năm 2017 của Bộ Xây dựng.")
+
+
+def test_partial_branch_reads_a_list_sentence_locator_by_locator():
+    """H5 L1: the verb is lost from a list item, and one sentence names whole and partial branches."""
+    from extract_provision_events import _status, partial_branch
+
+    # the 8 events of TT 16/2026/TT-BXD -> TT 12/2017/TT-BXD (G108)
+    for loc in (_loc(("Article", "1")), _loc(("Article", "3")), _loc(("Article", "4"), ("Clause", "2")),
+                _loc(("Article", "5"), ("Clause", "3")), _loc(("Article", "6"), ("Clause", "3"))):
+        assert partial_branch(G108, loc)
+    wrong = [
+        ("Quyết định 24/2000", "nội dung tại các gạch đầu dòng thứ nhất, thứ ba, thứ tư và thứ năm khoản 2 Điều 1 Quyết định số 24/2000/QĐ-BVHTT",
+         _loc(("Article", "1"), ("Clause", "2"))),
+        ("NĐ 135/2018 Đ20", "gạch đầu dòng thứ hai và thứ ba điểm d khoản 3 Điều 20",
+         _loc(("Article", "20"), ("Clause", "3"), ("Point", "d"))),
+        ("NĐ 135/2018 Đ21", "gạch đầu dòng thứ hai điểm b khoản 3 Điều 21",
+         _loc(("Article", "21"), ("Clause", "3"), ("Point", "b"))),
+        ("NĐ 72/2017", '"Thành viên Hội đồng quản lý được hưởng chế độ thù lao do Thủ tướng quy định” tại khoản 9 Điều 4 Nghị định số 01/2016/NĐ-CP',
+         _loc(("Article", "4"), ("Clause", "9"))),
+        ("NĐ 118/2015 k3", 'Khoản 4 Điều 19 và quy định "Danh mục địa bàn được hưởng ưu đãi" tại Khoản 3 Điều 19 Nghị định số 46/2014/NĐ-CP',
+         _loc(("Article", "19"), ("Clause", "3"))),
+    ]
+    for name, evidence, loc in wrong:
+        assert partial_branch(evidence, loc), name
+    # the four events that really end their node
+    assert not partial_branch('Khoản 4 Điều 19 và quy định "Danh mục địa bàn được hưởng ưu đãi" tại Khoản 3 Điều 19 Nghị định số 46/2014/NĐ-CP',
+                              _loc(("Article", "19"), ("Clause", "4")))
+    nd155 = '52. Điểm a, c, d và đoạn “Bộ trưởng Bộ Y tế quy định cụ thể danh mục dược liệu.” tại khoản 1 Điều 93.'
+    for letter in "acd":
+        assert not partial_branch(nd155, _loc(("Article", "93"), ("Clause", "1"), ("Point", letter)))
+    # a dash named next to whole nodes trims only its own locator
+    sentence = "Bãi bỏ điểm c khoản 5 Điều 9, gạch đầu dòng thứ tư điểm a, điểm b khoản 1 Điều 56."
+    assert not partial_branch(sentence, _loc(("Article", "9"), ("Clause", "5"), ("Point", "c")))
+    assert partial_branch(sentence, _loc(("Article", "56"), ("Clause", "1"), ("Point", "a")))
+    # the status gate: partial -> needs_review/partial_repeal, whole stays auto_accepted
+    row = {"operation": "repeal", "code": "resolved_exact", "locator": _loc(("Article", "20"), ("Clause", "3"), ("Point", "d")),
+           "effective_on": "2018-11-20", "evidence": "gạch đầu dòng thứ hai và thứ ba điểm d khoản 3 Điều 20",
+           "target_document_id": "document:1", "affected_provision_ids": ["provision:x"], "text_updates": []}
+    assert _status(row, False, set()) == ("needs_review", "partial_repeal")
+    assert _status(row, False, {("document:1", "provision:x")}) == ("needs_review", "partial_repeal")  # portal-listed too
+    whole = dict(row, evidence="Khoản 4 Điều 19", locator=_loc(("Article", "19"), ("Clause", "4")))
+    assert _status(whole, False, set()) == ("auto_accepted", None)
+
+
+def test_document_scope_is_applied_only_when_the_lead_in_says_the_whole_text_goes():
+    """H5 L2: TT 12/2023/TT-BNV repeals TT 15/2012/TT-BNV; vbpl has no effTo."""
+    from datetime import date
+    from extract_provision_events import document_scope_verdict, effective_clause_dates
+
+    item = "Thông tư số 15/2012/TT-BNV ngày 25 tháng 12 năm 2012 của Bộ trưởng Bộ Nội vụ hướng dẫn về chức danh"
+    body = ["Điều 1. Bãi bỏ toàn bộ các Thông tư sau đây:", "1. Thông tư số 01/2010/TT-BNV ngày 1 tháng 1 năm 2010 về x;",
+            f"7. {item};", "Điều 2. Hiệu lực thi hành", "Thông tư này có hiệu lực thi hành từ ngày 01 tháng 10 năm 2023."]
+
+    def verdict(paragraphs, evidence=item, on="2023-10-01", target_end=None, n=1):
+        return document_scope_verdict(paragraphs, evidence, on, target_end, n, effective_clause_dates(paragraphs))
+
+    assert effective_clause_dates(body) == {"2023-10-01"}
+    assert verdict(body) == ("auto_accepted", None)
+    assert verdict(body, on="2023-11-01") is None                       # the act's own clause says otherwise
+    assert verdict(body, target_end=date(2023, 10, 1)) is None          # the portal already dates it
+    assert verdict(body, n=2) is None                                   # two candidates
+    # Q2 #29: "các quy định tại các văn bản sau đây" -> not called whole
+    partial_list = ["2. Bãi bỏ các quy định tại các văn bản sau đây:", f"d) {item}."]
+    assert verdict(partial_list) is None
+    # Q2 #24: topic-limited repeal -> partial_repeal, never applied
+    topic = [f"3. Bãi bỏ các quy định vế thuế xuất khẩu, thuế nhập khẩu tại Thông tư số 98/2002/TT-BTC ngày 1/1/2002; {item}."]
+    assert verdict(topic) == ("needs_review", "partial_repeal")
+    # counted from the Công báo, or a clause dated otherwise: a person decides
+    assert verdict(body + ["Thông tư này có hiệu lực sau 15 ngày kể từ ngày đăng Công báo."]) is None
+    assert verdict(body + ["Điều 3. Điều khoản chuyển tiếp có hiệu lực từ ngày 01 tháng 01 năm 2024."]) is None
+    # the act ends itself
+    ends = [f"2. {item} hết hiệu lực thi hành kể từ ngày Thông tư này có hiệu lực thi hành."]
+    assert verdict(ends, evidence=item + " hết hiệu lực thi hành kể từ ngày Thông tư này có hiệu lực thi hành") == ("auto_accepted", None)

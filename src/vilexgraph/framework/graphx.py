@@ -1,0 +1,256 @@
+"""One-hop graph expansion of retrieved units (plan phase-5-6, P5; B5, B6, proposed, A2).
+
+Two edge sets of Definition 2 (`docs/graph_justification.md` §4), each used by
+a different system:
+
+    part   𝓔_part  the legal hierarchy: a unit's parent and its direct children
+                   (Điều → Khoản → Điểm). B6, the Vietnamese hierarchical KG.
+    rel    𝓔_rel   the typed relation that matters to *what a unit says at t*:
+                   the amending or repealing instruction aimed at its provision.
+                   B5 and the proposed system.
+
+Both read the stores that already exist — `provisions` in `data/temporal.sqlite`
+for the tree, and the `instruction` units of the retrieval index for the
+commands — so there is no graph database to run and nothing to reload. ADR 0001
+makes Neo4j the derived store for these edges; at one hop with these two edge
+kinds a SQL join returns the same neighbours, and Neo4j stays the place for the
+multi-hop closure of formula (2) if a later experiment needs it.
+
+**Expansion honours the system's tier.** Formula (4) narrows the search space
+to 𝒰ₜ before ranking, and a neighbour is part of the search space, so a
+temporal system only admits neighbours that pass its own predicate. A
+non-temporal system (tier `none`, B5/B6) admits all of them — that is exactly
+what makes it the non-temporal baseline. An instruction unit has no version
+window, so under a temporal tier it is judged by its acting document alone: a
+command takes effect once the document that issues it starts, and keeps that
+effect after the document lapses (12/11/2026, see `Graph.rel`).
+
+Parameters are deliberately small and fixed; they are not part of any result and
+may be tuned on `dev` only (ADR 0003 §7):
+
+    SEEDS    expand only the top-ranked hits, so the prompt stays bounded
+    FANOUT   neighbours taken per seed per edge kind
+"""
+from __future__ import annotations
+
+import sqlite3
+import json
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
+
+from .retrieve import Hit
+from .systems import SystemSpec
+from .temporal import predicate
+
+SEEDS = 5
+FANOUT = 3
+TEMPORAL_DB = Path("data/temporal.sqlite")
+SIGNAL = "graph"
+MAX_DEPTH = 8     # Điều → Khoản → Điểm is three deep; the cap only guards a malformed tree
+EVENTS = Path("data/derived/provision_events.jsonl")
+
+
+@dataclass(frozen=True, slots=True)
+class RepealNote:
+    unit_id: str
+    seed: str
+    target: str
+    effective_on: str
+
+    def prompt_line(self, label: int) -> str:
+        return (f"[{label}] BÃI BỎ | điều khoản hạt giống: {self.seed} | "
+                f"đích bị bãi bỏ: {self.target} | ngày hiệu lực: {self.effective_on}")
+
+
+@lru_cache(maxsize=4)
+def _repeals(path: Path) -> dict:
+    """Typed resolved events, never benchmark labels or text-based guesses."""
+    with path.open(encoding="utf-8") as source:
+        return {f"asis:{e['id']}": e for e in map(json.loads, source)
+                if e.get("operation") == "repeal" and e.get("target_provision_id")
+                and e.get("effective_on")}
+
+
+def repeal_notes(corpus, spec: SystemSpec, question: str, as_of: str, hits: list[Hit], *,
+                 temporal_db: Path | str = TEMPORAL_DB, events: Path = EVENTS,
+                 fast: bool = False, enabled: bool | None = None, seed_search=None) -> list[RepealNote]:
+    """Link only rel_up-added, effective repeals to its original unfiltered seeds.
+
+    `enabled` lets the demo display links for proposed2 without changing its prompt.
+    A supplied seed lookup reuses the searcher's work, including on hits-cache reads.
+    Without it, reconstruct lexical seeds for callers using only a saved ranking.
+    The acting document must still pass the existing expansion predicate.
+    """
+    if not (spec.repeal_note if enabled is None else enabled):
+        return []
+    if not spec.expand or spec.expand_edges != "rel_up":
+        return []
+    commands = [h.unit_id for h in hits if SIGNAL in h.signals]
+    if not commands:
+        return []
+    events_by_id = _repeals(Path(events))
+    commands = [u for u in commands if u in events_by_id
+                and events_by_id[u]["effective_on"] <= as_of]
+    if not commands:
+        return []
+    from .retrieve import lexical
+    seeds = (seed_search(question, as_of) if seed_search is not None else
+             lexical(corpus, question, as_of, layer=spec.layer, tier="none",
+                     context=spec.context, k=SEEDS, fast=fast))
+    graph = Graph(corpus, temporal_db)
+    try:
+        commands = graph._admit(commands, spec.temporal, as_of)
+
+        @lru_cache(maxsize=None)
+        def describe(pid):
+            chain = graph.up(pid)
+            titles = [graph.tree.execute("SELECT title FROM provisions WHERE id=?", (p,)).fetchone()
+                      for p in reversed(chain)]
+            doc = graph.tree.execute(
+                "SELECT d.number FROM provisions p JOIN documents d ON d.id=p.document_id "
+                "WHERE p.id=?", (pid,)).fetchone()
+            label = " › ".join(([doc[0]] if doc else []) + [r[0] for r in titles if r and r[0]])
+            return f"{label} ({pid})"
+
+        notes = []
+        seen = set()
+        for hit in seeds:
+            seed = corpus.unit(hit.unit_id)
+            if seed is None or seed.provision_id is None:
+                continue
+            ancestors = graph.up(seed.provision_id)
+            for uid in commands:
+                event, command = events_by_id[uid], corpus.unit(uid)
+                target = event["target_provision_id"]
+                key = (uid, seed.provision_id)
+                if (command is not None and command.kind == "instruction"
+                        and command.provision_id == target and target in ancestors and key not in seen):
+                    seen.add(key)
+                    notes.append(RepealNote(uid, describe(seed.provision_id), describe(target),
+                                            event["effective_on"]))
+        return notes
+    finally:
+        graph.close()
+
+
+class Graph:
+    """Neighbour lookup over `part` and `rel`."""
+
+    def __init__(self, corpus, temporal_db: Path | str = TEMPORAL_DB) -> None:
+        self.corpus = corpus
+        path = Path(temporal_db)
+        if not path.exists():
+            raise FileNotFoundError(f"no provision tree at {path}; `part` expansion reads it")
+        self.tree = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+
+    def close(self) -> None:
+        self.tree.close()
+
+    # -- edges ---------------------------------------------------------------------------
+
+    def part(self, provision_id: str) -> list[str]:
+        """The parent, then the direct children, of one provision."""
+        row = self.tree.execute(
+            "SELECT parent_id FROM provisions WHERE id=?", (provision_id,)).fetchone()
+        out = [row[0]] if row and row[0] else []
+        out += [r[0] for r in self.tree.execute(
+            "SELECT id FROM provisions WHERE parent_id=? ORDER BY order_index LIMIT ?",
+            (provision_id, FANOUT))]
+        return out[:FANOUT + 1]
+
+    def rel(self, provision_id: str, *, tier: str = "none", as_of: str | None = None) -> list[str]:
+        """Instructions for this target, applying effectivity before the fanout cap.
+
+        Instruction units use their acting document at every temporal tier.
+        Tier none preserves the non-temporal baseline's original ordering/cap.
+        """
+        if tier != "none" and as_of is None:
+            raise ValueError("temporal relation lookup requires as_of")
+        # A command keeps its effect after the document that issued it lapses: a repealed
+        # provision does not come back when the repealing act expires (Luật 80/2015 Điều 154,
+        # Luật 64/2025 Điều 57 list no revival; vn-law-verifier 12/11/2026). So a temporal tier
+        # only asks that the acting document has *started*, never that it is still in force.
+        where, params = ("", []) if tier == "none" else (f" AND {_ISSUED}", [as_of])
+        return [r[0] for r in self.corpus.db.execute(
+            "SELECT u.unit_id FROM units u LEFT JOIN documents d ON d.document_id=u.document_id"
+            " WHERE u.kind='instruction' AND u.provision_id=?"
+            f"{where} ORDER BY u.unit_id LIMIT ?", [provision_id, *params, FANOUT])]
+
+    def up(self, provision_id: str) -> list[str]:
+        """The provision, then its ancestors: a repeal aimed at an ancestor ends this one too."""
+        out = [provision_id]
+        while len(out) <= MAX_DEPTH:
+            row = self.tree.execute("SELECT parent_id FROM provisions WHERE id=?", (out[-1],)).fetchone()
+            if not row or not row[0] or row[0] in out:
+                break
+            out.append(row[0])
+        return out
+
+    # -- units ---------------------------------------------------------------------------
+
+    def _units_of(self, provision_ids: list[str], layer: str) -> list[str]:
+        """The units that stand for these provisions in `layer`."""
+        if not provision_ids:
+            return []
+        marks = ",".join("?" * len(provision_ids))
+        kind = "provision" if layer == "asis" else "version"
+        return [r[0] for r in self.corpus.db.execute(
+            f"SELECT unit_id FROM units WHERE layer=? AND kind=? AND provision_id IN ({marks})",
+            [layer, kind, *provision_ids])]
+
+    def _admit(self, unit_ids: list[str], tier: str, as_of: str) -> list[str]:
+        """Keep the units this tier admits at `as_of`, in the order given."""
+        if not unit_ids or tier == "none":
+            return unit_ids
+        marks = ",".join("?" * len(unit_ids))
+        kept = set()
+        for kind, use in (("instruction", None), (None, tier)):
+            clause, params = (_ISSUED, [as_of]) if use is None else predicate(use, as_of)
+            rows = self.corpus.db.execute(
+                "SELECT u.unit_id FROM units u"
+                " LEFT JOIN documents d ON d.document_id = u.document_id"
+                f" WHERE u.unit_id IN ({marks}) AND u.kind {'=' if kind else '!='} ?"
+                f" AND {clause}", [*unit_ids, kind or "instruction", *params])
+            kept.update(r[0] for r in rows)
+        return [u for u in unit_ids if u in kept]
+
+
+# A command is admitted once its acting document has started; it is never dropped for lapsing.
+_ISSUED = "d.effective_from IS NOT NULL AND d.effective_from <= ?"
+
+
+def expand(graph: Graph, spec: SystemSpec, hits: list[Hit], as_of: str,
+           seeds: list[Hit] | None = None) -> list[Hit]:
+    """`hits` followed by their admitted neighbours, each with a `graph` signal.
+
+    A neighbour already among the hits is not added again, and its first
+    appearance keeps the signal it was ranked with.
+
+    With `rel_up` the repeal of an ancestor ends a provision too, so
+    the instruction is looked up on the whole chain, and `seeds` — the best matches
+    *before* the date filter — start the walk: the provision a question is about
+    has already been filtered out of `hits` once something repealed it, and then
+    there is nothing left to expand from. Other edge sets are unchanged.
+    """
+    if not spec.expand or spec.expand_edges == "none" or not (hits or seeds):
+        return hits
+    corpus = graph.corpus
+    seen = {h.unit_id for h in hits}
+    extra: list[Hit] = []
+    source = seeds if spec.expand_edges == "rel_up" and seeds is not None else hits
+    for rank, hit in enumerate(source[:SEEDS]):
+        unit = corpus.unit(hit.unit_id)
+        if unit is None or unit.provision_id is None:
+            continue
+        found: list[str] = []
+        if spec.expand_edges == "part":
+            found += graph._units_of(graph.part(unit.provision_id), spec.layer)
+        if spec.expand_edges in ("rel", "rel_up"):
+            for target in (graph.up(unit.provision_id) if spec.expand_edges == "rel_up" else [unit.provision_id]):
+                found += graph.rel(target, tier=spec.temporal, as_of=as_of)
+        for unit_id in graph._admit(found, spec.temporal, as_of):
+            if unit_id not in seen:
+                seen.add(unit_id)
+                extra.append(Hit(unit_id, {SIGNAL: 1.0 / (1 + rank)}))
+    return hits + extra

@@ -1,0 +1,741 @@
+=== retrieval b2ctx 14:08:21
+system b2ctx · 361 rows · 0 already done · 361 to run
+  B2 with the hierarchy header: isolates the ordinary chunk-header gain
+  50/361 · 0.1 rows/s · 0 cached · 0 failed
+  100/361 · 0.2 rows/s · 0 cached · 0 failed
+  150/361 · 0.2 rows/s · 0 cached · 0 failed
+  200/361 · 0.2 rows/s · 0 cached · 0 failed
+  250/361 · 0.2 rows/s · 0 cached · 0 failed
+  300/361 · 0.2 rows/s · 0 cached · 0 failed
+  350/361 · 0.2 rows/s · 0 cached · 0 failed
+
+runs/final_g4_20261112/retrieval/b2ctx.jsonl: 361 written, 0 from cache, 0 failed in 1480.0s
+score it:
+  python scripts/eval/score_vilextime.py runs/final_g4_20261112/retrieval/b2ctx.jsonl --split test
+=== retrieval b7 14:34:08
+system b7-lex · 361 rows · 0 already done · 361 to run
+  B7 — document-level date filter, no graph (the main control)
+  50/361 · 0.2 rows/s · 0 cached · 0 failed
+  100/361 · 0.2 rows/s · 0 cached · 0 failed
+  150/361 · 0.2 rows/s · 0 cached · 0 failed
+  200/361 · 0.2 rows/s · 0 cached · 0 failed
+  250/361 · 0.2 rows/s · 0 cached · 0 failed
+  300/361 · 0.2 rows/s · 0 cached · 0 failed
+  350/361 · 0.2 rows/s · 0 cached · 0 failed
+
+runs/final_g4_20261112/retrieval/b7.jsonl: 361 written, 0 from cache, 0 failed in 1641.9s
+score it:
+  python scripts/eval/score_vilextime.py runs/final_g4_20261112/retrieval/b7.jsonl --split test
+=== retrieval b7plus 15:02:38
+system b7plus-lex · 361 rows · 0 already done · 361 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+  50/361 · 0.3 rows/s · 0 cached · 0 failed
+  100/361 · 0.3 rows/s · 0 cached · 0 failed
+  150/361 · 0.3 rows/s · 0 cached · 0 failed
+  200/361 · 0.3 rows/s · 0 cached · 0 failed
+  250/361 · 0.3 rows/s · 0 cached · 0 failed
+  300/361 · 0.3 rows/s · 0 cached · 0 failed
+  350/361 · 0.3 rows/s · 0 cached · 0 failed
+
+runs/final_g4_20261112/retrieval/b7plus.jsonl: 361 written, 0 from cache, 0 failed in 1413.7s
+score it:
+  python scripts/eval/score_vilextime.py runs/final_g4_20261112/retrieval/b7plus.jsonl --split test
+=== retrieval b7pp 15:27:03
+system b7pp-lex · 361 rows · 0 already done · 361 to run
+  B7+ with propagated windows: the ladder's top rung, no online graph (K-07)
+  50/361 · 0.2 rows/s · 0 cached · 0 failed
+  100/361 · 0.2 rows/s · 0 cached · 0 failed
+  150/361 · 0.2 rows/s · 0 cached · 0 failed
+  200/361 · 0.2 rows/s · 0 cached · 0 failed
+  250/361 · 0.2 rows/s · 0 cached · 0 failed
+  300/361 · 0.2 rows/s · 0 cached · 0 failed
+  350/361 · 0.2 rows/s · 0 cached · 0 failed
+
+runs/final_g4_20261112/retrieval/b7pp.jsonl: 361 written, 0 from cache, 0 failed in 2072.6s
+score it:
+  python scripts/eval/score_vilextime.py runs/final_g4_20261112/retrieval/b7pp.jsonl --split test
+=== check 16:02:38
+[check]
+OK: 722 dòng ({'ranh_gioi': 361, 'giua_khoang': 361}); 360 đơn vị lớp A và 621 phiên bản lớp B đều có trong corpus
+  T1: dev 0.0% số dòng ranh giới
+  T2: dev 0.0% số dòng ranh giới
+  T3: dev 0.0% số dòng ranh giới
+  T6: dev 0.0% số dòng ranh giới
+=== export 16:05:54
+[export]
+runs/final_g4_20261112/r1/prompts/b1.jsonl: 361 gold-free b1 prompts, sha256=588e28b89601d59494a395b7954214edf310d5267dc01c2784ecf5ae08bd15c0
+runs/final_g4_20261112/r1/prompts/b2ctx.jsonl: 361 gold-free b2ctx prompts, sha256=189f8e22bf1f00fd05b988016aec7fe17ae175ee74c1f1116188fb15c1f862ae
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   1%|          | 2/199 [00:00<00:26,  7.55it/s]Loading weights:   2%|▏         | 3/199 [00:00<00:29,  6.58it/s]Loading weights:   3%|▎         | 6/199 [00:00<00:17, 10.93it/s]Loading weights:   6%|▌         | 11/199 [00:00<00:10, 18.75it/s]Loading weights:  17%|█▋        | 33/199 [00:00<00:02, 67.95it/s]Loading weights:  22%|██▏       | 43/199 [00:01<00:03, 51.65it/s]Loading weights:  39%|███▊      | 77/199 [00:01<00:01, 109.03it/s]Loading weights:  47%|████▋     | 93/199 [00:01<00:01, 71.23it/s] Loading weights:  70%|███████   | 140/199 [00:01<00:00, 111.53it/s]Loading weights:  78%|███████▊  | 155/199 [00:02<00:00, 103.08it/s]Loading weights:  88%|████████▊ | 176/199 [00:02<00:00, 103.78it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 87.13it/s] 
+runs/final_g4_20261112/r1/prompts/b3.jsonl: 361 gold-free b3 prompts, sha256=c5bcdb3a25a72c6e86cab9349003e2998b48d57f75dec5906b853516f1ab8611
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  90%|█████████ | 180/199 [00:00<00:00, 1798.69it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1931.28it/s]
+runs/final_g4_20261112/r1/prompts/b4.jsonl: 361 gold-free b4 prompts, sha256=7caa1e4818dac5619ae4f21db1b03a21c8a87e8b1b63d0c37f02a66a26a91fe2
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  37%|███▋      | 74/199 [00:00<00:00, 730.81it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1421.31it/s]
+runs/final_g4_20261112/r1/prompts/b5.jsonl: 361 gold-free b5 prompts, sha256=9db758db92f963c9486a98b45a01fd4b05d0b10dca1f2bd8b4b562f156319c78
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  44%|████▍     | 88/199 [00:00<00:00, 874.44it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1759.75it/s]
+runs/final_g4_20261112/r1/prompts/b6.jsonl: 361 gold-free b6 prompts, sha256=dadeed4cb201beff0839d97ceb3f747ba42fb4ade3f4b525a07bf7f6943d63ef
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  40%|███▉      | 79/199 [00:00<00:00, 785.63it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1438.67it/s]
+runs/final_g4_20261112/r1/prompts/b7.jsonl: 361 gold-free b7 prompts, sha256=2259cdc7fb08d9cf30ed1943e9ffcd51e2e606bcadaefa5c369199e19494b4b9
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2210.49it/s]
+runs/final_g4_20261112/r1/prompts/b7plus.jsonl: 361 gold-free b7plus prompts, sha256=0d0842e3895bdc413e48920fc4fede6258465bed29b0a605ef46d8767f0527cc
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  58%|█████▊    | 115/199 [00:00<00:00, 1126.66it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1446.47it/s]
+runs/final_g4_20261112/r1/prompts/b7pp.jsonl: 361 gold-free b7pp prompts, sha256=86601bb68b80e3d64f1ae8ede20de7cb476a62a280392b0baec7efed37b5d385
+runs/final_g4_20261112/r1/prompts/oracle.jsonl: 361 gold-free oracle prompts, sha256=8c32422598835e319be27ca0ce8fcec59fdcee4ba64337f34c7bd77659ce1d5b
+runs/final_g4_20261112/r1/prompts/oracle_now.jsonl: 361 gold-free oracle_now prompts, sha256=022863695acf42f489bc72033f4b4b4ec79064827fc5a38fcf2feada8f459708
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  40%|████      | 80/199 [00:00<00:00, 798.29it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1314.02it/s]
+runs/final_g4_20261112/r1/prompts/proposed2.jsonl: 361 gold-free proposed2 prompts, sha256=ed3b6f08ccdd777a7a8c591f32932181c6f23f7e61cf9514f979411d80e58f10
+=== api r1 b1 21:58:58
+b1 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b1__gpt-4o-mini-2024-07-18__588e28b89601.r1.jsonl: 361 written, 361/361 answered, 107777 input and 34487 output tokens this run
+=== api r1 b2ctx 22:03:23
+b2ctx test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b2ctx__gpt-4o-mini-2024-07-18__189f8e22bf1f.r1.jsonl: 361 written, 361/361 answered, 1939435 input and 33335 output tokens this run
+=== api r1 b3 22:09:01
+b3 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b3__gpt-4o-mini-2024-07-18__c5bcdb3a25a7.r1.jsonl: 361 written, 361/361 answered, 1692164 input and 36870 output tokens this run
+=== api r1 b4 22:14:01
+b4 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b4__gpt-4o-mini-2024-07-18__7caa1e4818da.r1.jsonl: 361 written, 361/361 answered, 1781385 input and 37262 output tokens this run
+=== api r1 b5 22:18:36
+b5 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b5__gpt-4o-mini-2024-07-18__9db758db92f9.r1.jsonl: 361 written, 361/361 answered, 1800333 input and 37902 output tokens this run
+=== api r1 b6 22:23:25
+b6 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b6__gpt-4o-mini-2024-07-18__dadeed4cb201.r1.jsonl: 361 written, 361/361 answered, 1987303 input and 38363 output tokens this run
+=== api r1 b7 22:28:16
+b7 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b7__gpt-4o-mini-2024-07-18__2259cdc7fb08.r1.jsonl: 361 written, 361/361 answered, 1815825 input and 36474 output tokens this run
+=== api r1 b7plus 22:33:47
+b7plus test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b7plus__gpt-4o-mini-2024-07-18__0d0842e3895b.r1.jsonl: 361 written, 361/361 answered, 1812466 input and 36977 output tokens this run
+=== api r1 b7pp 22:38:49
+b7pp test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b7pp__gpt-4o-mini-2024-07-18__86601bb68b80.r1.jsonl: 361 written, 361/361 answered, 1821377 input and 36859 output tokens this run
+=== api r1 oracle 22:43:49
+oracle test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/oracle__gpt-4o-mini-2024-07-18__8c3242259883.r1.jsonl: 361 written, 361/361 answered, 299015 input and 29353 output tokens this run
+=== api r1 oracle_now 22:47:31
+oracle_now test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/oracle_now__gpt-4o-mini-2024-07-18__022863695acf.r1.jsonl: 361 written, 361/361 answered, 301993 input and 32277 output tokens this run
+=== api r1 proposed2 22:51:56
+proposed2 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/proposed2__gpt-4o-mini-2024-07-18__ed3b6f08ccdd.r1.jsonl: 361 written, 361/361 answered, 1883211 input and 37355 output tokens this run
+=== api r2 b1 22:57:46
+b1 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b1__gpt-4o-mini-2024-07-18__588e28b89601.r2.jsonl: 361 written, 361/361 answered, 107777 input and 35124 output tokens this run
+=== api r2 b2ctx 23:02:03
+b2ctx test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b2ctx__gpt-4o-mini-2024-07-18__189f8e22bf1f.r2.jsonl: 361 written, 361/361 answered, 1939435 input and 34291 output tokens this run
+=== api r2 b3 23:09:36
+b3 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b3__gpt-4o-mini-2024-07-18__c5bcdb3a25a7.r2.jsonl: 361 written, 361/361 answered, 1692164 input and 36831 output tokens this run
+=== api r2 b4 23:15:44
+b4 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b4__gpt-4o-mini-2024-07-18__7caa1e4818da.r2.jsonl: 361 written, 361/361 answered, 1781385 input and 37816 output tokens this run
+=== api r2 b5 23:21:25
+b5 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b5__gpt-4o-mini-2024-07-18__9db758db92f9.r2.jsonl: 361 written, 361/361 answered, 1800333 input and 38471 output tokens this run
+=== api r2 b6 23:26:11
+b6 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b6__gpt-4o-mini-2024-07-18__dadeed4cb201.r2.jsonl: 361 written, 361/361 answered, 1987303 input and 37735 output tokens this run
+=== api r2 b7 23:31:31
+b7 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b7__gpt-4o-mini-2024-07-18__2259cdc7fb08.r2.jsonl: 361 written, 361/361 answered, 1815825 input and 36692 output tokens this run
+=== api r2 b7plus 23:37:13
+b7plus test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b7plus__gpt-4o-mini-2024-07-18__0d0842e3895b.r2.jsonl: 361 written, 361/361 answered, 1812466 input and 36557 output tokens this run
+=== api r2 b7pp 23:42:51
+b7pp test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/b7pp__gpt-4o-mini-2024-07-18__86601bb68b80.r2.jsonl: 361 written, 361/361 answered, 1821377 input and 36557 output tokens this run
+=== api r2 oracle 23:48:16
+oracle test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+runs/final_g4_20261112/raw/oracle__gpt-4o-mini-2024-07-18__8c3242259883.r2.jsonl: 258 written, 258/361 answered, 213139 input and 21253 output tokens this run
+stopped: openai 429: {
+    "error": {
+        "message": "You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
+        "type": "insufficient_quota",
+        "param": null,
+        "code": "credit_balance_exhausted"
+    }
+}
+
+The same command continues without paying twice.
+=== RESUME after OpenAI credit top-up 00:12:42
+=== api r1 b1 00:12:42
+b1 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b1__gpt-4o-mini-2024-07-18__588e28b89601.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b2ctx 00:12:42
+b2ctx test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b2ctx__gpt-4o-mini-2024-07-18__189f8e22bf1f.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b3 00:12:42
+b3 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b3__gpt-4o-mini-2024-07-18__c5bcdb3a25a7.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b4 00:12:42
+b4 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b4__gpt-4o-mini-2024-07-18__7caa1e4818da.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b5 00:12:43
+b5 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b5__gpt-4o-mini-2024-07-18__9db758db92f9.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b6 00:12:43
+b6 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b6__gpt-4o-mini-2024-07-18__dadeed4cb201.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b7 00:12:43
+b7 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b7__gpt-4o-mini-2024-07-18__2259cdc7fb08.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b7plus 00:12:44
+b7plus test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b7plus__gpt-4o-mini-2024-07-18__0d0842e3895b.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b7pp 00:12:44
+b7pp test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b7pp__gpt-4o-mini-2024-07-18__86601bb68b80.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 oracle 00:12:44
+oracle test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/oracle__gpt-4o-mini-2024-07-18__8c3242259883.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 oracle_now 00:12:44
+oracle_now test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/oracle_now__gpt-4o-mini-2024-07-18__022863695acf.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 proposed2 00:12:44
+proposed2 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/proposed2__gpt-4o-mini-2024-07-18__ed3b6f08ccdd.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b1 00:12:45
+b1 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b1__gpt-4o-mini-2024-07-18__588e28b89601.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b2ctx 00:12:45
+b2ctx test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b2ctx__gpt-4o-mini-2024-07-18__189f8e22bf1f.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b3 00:12:45
+b3 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b3__gpt-4o-mini-2024-07-18__c5bcdb3a25a7.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b4 00:12:45
+b4 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b4__gpt-4o-mini-2024-07-18__7caa1e4818da.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b5 00:12:46
+b5 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b5__gpt-4o-mini-2024-07-18__9db758db92f9.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b6 00:12:46
+b6 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b6__gpt-4o-mini-2024-07-18__dadeed4cb201.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b7 00:12:46
+b7 test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b7__gpt-4o-mini-2024-07-18__2259cdc7fb08.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b7plus 00:12:46
+b7plus test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b7plus__gpt-4o-mini-2024-07-18__0d0842e3895b.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 b7pp 00:12:47
+b7pp test: 361 prompts, 361 already answered, 0 to request
+runs/final_g4_20261112/raw/b7pp__gpt-4o-mini-2024-07-18__86601bb68b80.r2.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r2 oracle 00:12:47
+oracle test: 361 prompts, 258 already answered, 103 to request
+  50/103
+  100/103
+runs/final_g4_20261112/raw/oracle__gpt-4o-mini-2024-07-18__8c3242259883.r2.jsonl: 103 written, 361/361 answered, 85876 input and 8159 output tokens this run
+=== api r2 oracle_now 00:14:00
+oracle_now test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/oracle_now__gpt-4o-mini-2024-07-18__022863695acf.r2.jsonl: 361 written, 361/361 answered, 301993 input and 32313 output tokens this run
+=== api r2 proposed2 00:18:39
+proposed2 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/final_g4_20261112/raw/proposed2__gpt-4o-mini-2024-07-18__ed3b6f08ccdd.r2.jsonl: 361 written, 361/361 answered, 1883211 input and 37260 output tokens this run
+=== score r1 00:24:28
+[check]
+OK: 722 dòng ({'ranh_gioi': 361, 'giua_khoang': 361}); 360 đơn vị lớp A và 621 phiên bản lớp B đều có trong corpus
+  T1: dev 0.0% số dòng ranh giới
+  T2: dev 0.0% số dòng ranh giới
+  T3: dev 0.0% số dòng ranh giới
+  T6: dev 0.0% số dòng ranh giới
+[import]
+runs/final_g4_20261112/r1/test/b1.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 299/96; generation 985s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b1.sample.jsonl
+runs/final_g4_20261112/r1/test/b2ctx.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5372/92; generation 1272s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b2ctx.sample.jsonl
+runs/final_g4_20261112/r1/test/b3.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 4687/102; generation 1131s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b3.sample.jsonl
+runs/final_g4_20261112/r1/test/b4.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 4935/103; generation 1039s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b4.sample.jsonl
+runs/final_g4_20261112/r1/test/b5.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 4987/105; generation 1085s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b5.sample.jsonl
+runs/final_g4_20261112/r1/test/b6.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5505/106; generation 1102s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b6.sample.jsonl
+runs/final_g4_20261112/r1/test/b7.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5030/101; generation 1241s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b7.sample.jsonl
+runs/final_g4_20261112/r1/test/b7plus.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5021/102; generation 1136s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b7plus.sample.jsonl
+runs/final_g4_20261112/r1/test/b7pp.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5045/102; generation 1125s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/b7pp.sample.jsonl
+runs/final_g4_20261112/r1/test/oracle.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 828/81; generation 840s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/oracle.sample.jsonl
+runs/final_g4_20261112/r1/test/oracle_now.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 837/89; generation 999s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/oracle_now.sample.jsonl
+runs/final_g4_20261112/r1/test/proposed2.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5217/103; generation 1316s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r1/test/proposed2.sample.jsonl
+[score]
+ViLexTime · 722 dòng · split test · 74 mã đơn vị không có trong corpus · 0/0 trích dẫn chữ không phân giải được
+                                           R@1      TV-R@1         MRR         Acc   Acc(lỏng)          F1        TVER    TVER(ng)         VCR    phủ tr.d   sai b.bản         TCS
+b1 · giua_khoang                         0.000       0.000       0.000       0.006       0.006       0.310           —       1.000           —       0.000       0.008       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.02   0.00…0.02   0.29…0.33           —   1.00…1.00           —   0.00…0.00   0.00…0.02   0.00…0.00
+b1 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b2ctx · giua_khoang                      0.311       0.151       0.401       0.302       0.324       0.476       0.535       0.535       0.201       1.000       0.253       0.063
+  95%                                0.24…0.39   0.12…0.19   0.33…0.47   0.26…0.35   0.28…0.37   0.43…0.52   0.48…0.59   0.48…0.59   0.16…0.24   1.00…1.00   0.21…0.30   0.02…0.11
+b2ctx · ranh_gioi                        0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b3 · giua_khoang                         0.258       0.126       0.346       0.283       0.305       0.455       0.601       0.601       0.223       1.000       0.264       0.039
+  95%                                0.19…0.33   0.09…0.16   0.28…0.41   0.24…0.33   0.26…0.35   0.41…0.50   0.55…0.65   0.55…0.65   0.18…0.26   1.00…1.00   0.22…0.31   0.01…0.08
+b3 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b4 · giua_khoang                         0.340       0.164       0.445       0.324       0.352       0.508       0.544       0.544       0.255       1.000       0.291       0.071
+  95%                                0.27…0.42   0.13…0.20   0.38…0.51   0.28…0.37   0.30…0.40   0.47…0.55   0.50…0.59   0.50…0.59   0.21…0.30   1.00…1.00   0.25…0.34   0.03…0.12
+b4 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b5 · giua_khoang                         0.340       0.164       0.445       0.311       0.336       0.507       0.566       0.566       0.261       1.000       0.294       0.071
+  95%                                0.27…0.42   0.13…0.20   0.38…0.51   0.26…0.36   0.29…0.39   0.46…0.55   0.52…0.62   0.52…0.62   0.22…0.30   1.00…1.00   0.25…0.34   0.03…0.12
+b5 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b6 · giua_khoang                         0.340       0.164       0.447       0.340       0.365       0.511       0.553       0.553       0.242       1.000       0.283       0.087
+  95%                                0.27…0.42   0.13…0.20   0.38…0.51   0.29…0.39   0.32…0.41   0.47…0.55   0.50…0.61   0.50…0.61   0.20…0.28   1.00…1.00   0.24…0.33   0.04…0.14
+b6 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7 · giua_khoang                         0.371       0.242       0.493       0.487       0.487       0.580       0.248       0.248       0.176       1.000       0.177       0.315
+  95%                                0.30…0.44   0.19…0.29   0.43…0.56   0.43…0.55   0.43…0.55   0.54…0.62   0.21…0.29   0.21…0.29   0.14…0.21   1.00…1.00   0.14…0.22   0.24…0.40
+b7 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7plus · giua_khoang                     0.340       0.336       0.456       0.654       0.654       0.611       0.022       0.022       0.016       1.000       0.008       0.654
+  95%                                0.27…0.41   0.27…0.41   0.39…0.52   0.58…0.72   0.58…0.72   0.56…0.66   0.01…0.04   0.01…0.04   0.00…0.03   1.00…1.00   0.00…0.02   0.57…0.74
+b7plus · ranh_gioi                       0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7pp · giua_khoang                       0.336       0.336       0.450       0.660       0.660       0.617       0.000       0.000       0.000       1.000       0.008       0.646
+  95%                                0.27…0.41   0.27…0.41   0.39…0.51   0.59…0.73   0.59…0.73   0.57…0.66   0.00…0.00   0.00…0.00   0.00…0.00   1.00…1.00   0.00…0.02   0.56…0.73
+b7pp · ranh_gioi                         0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle · giua_khoang                     1.000       1.000       1.000       0.956       0.956       0.793       0.000       0.000       0.000       1.000       0.000       0.961
+  95%                                1.00…1.00   1.00…1.00   1.00…1.00   0.93…0.98   0.93…0.98   0.76…0.83   0.00…0.00   0.00…0.00   0.00…0.00   1.00…1.00   0.00…0.00   0.92…0.99
+oracle · ranh_gioi                       0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle_now · giua_khoang                 1.000       0.484       1.000       0.456       0.478       0.679       0.516       0.516       0.516       1.000       0.502       0.000
+  95%                                1.00…1.00   0.47…0.50   1.00…1.00   0.43…0.48   0.45…0.51   0.65…0.71   0.50…0.53   0.50…0.53   0.50…0.53   1.00…1.00   0.48…0.52   0.00…0.00
+oracle_now · ranh_gioi                   0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+proposed2 · giua_khoang                  0.336       0.336       0.453       0.667       0.670       0.609       0.013       0.013       0.000       1.000       0.008       0.661
+  95%                                0.27…0.41   0.27…0.41   0.39…0.51   0.60…0.73   0.60…0.74   0.56…0.65   0.00…0.03   0.00…0.03   0.00…0.00   1.00…1.00   0.00…0.02   0.58…0.74
+proposed2 · ranh_gioi                    0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b2ctx − b1 · giua_khoang                 0.311       0.151       0.401       0.296       0.318       0.166           —      -0.465           —       1.000       0.245       0.063
+  95%                                0.24…0.39   0.12…0.19   0.33…0.47   0.25…0.34   0.27…0.37   0.12…0.21           — -0.52…-0.41           —   1.00…1.00   0.20…0.30   0.02…0.11
+b2ctx − b1 · ranh_gioi                   0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b3 − b2ctx · giua_khoang                -0.053      -0.025      -0.056      -0.019      -0.019      -0.021       0.066       0.066       0.022       0.000       0.011      -0.024
+  95%                               -0.13…0.03  -0.06…0.01  -0.12…0.01  -0.07…0.04  -0.08…0.04  -0.07…0.02   0.00…0.13   0.00…0.13  -0.02…0.07   0.00…0.00  -0.04…0.06  -0.07…0.02
+b3 − b2ctx · ranh_gioi                   0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b4 − b3 · giua_khoang                    0.082       0.038       0.099       0.041       0.047       0.053      -0.057      -0.057       0.031       0.000       0.026       0.031
+  95%                                0.01…0.15   0.00…0.07   0.05…0.15  -0.01…0.09   0.00…0.09   0.02…0.09 -0.11…-0.00 -0.11…-0.00  -0.00…0.07   0.00…0.00  -0.02…0.07  -0.01…0.08
+b4 − b3 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b5 − b4 · giua_khoang                    0.000       0.000       0.000      -0.013      -0.016      -0.002       0.022       0.022       0.006       0.000       0.004       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00 -0.03…-0.00 -0.03…-0.00  -0.01…0.00   0.00…0.04   0.00…0.04  -0.01…0.02   0.00…0.00   0.00…0.01   0.00…0.00
+b5 − b4 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b6 − b5 · giua_khoang                    0.000       0.000       0.001       0.028       0.028       0.005      -0.013      -0.013      -0.019       0.000      -0.011       0.016
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.01…0.05   0.01…0.05  -0.01…0.02  -0.04…0.02  -0.04…0.02  -0.05…0.01   0.00…0.00  -0.04…0.01  -0.02…0.05
+b6 − b5 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7 − b6 · giua_khoang                    0.031       0.079       0.046       0.148       0.123       0.069      -0.305      -0.305      -0.066       0.000      -0.106       0.228
+  95%                               -0.01…0.07   0.05…0.11   0.01…0.08   0.09…0.20   0.07…0.18   0.05…0.09 -0.36…-0.25 -0.36…-0.25 -0.11…-0.02   0.00…0.00 -0.16…-0.05   0.15…0.31
+b7 − b6 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7plus − b7 · giua_khoang               -0.031       0.094      -0.037       0.167       0.167       0.030      -0.226      -0.226      -0.160       0.000      -0.170       0.339
+  95%                              -0.06…-0.01   0.06…0.13 -0.06…-0.02   0.12…0.21   0.12…0.21   0.01…0.05 -0.27…-0.19 -0.27…-0.19 -0.20…-0.12   0.00…0.00 -0.21…-0.13   0.25…0.43
+b7plus − b7 · ranh_gioi                  0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7pp − b7plus · giua_khoang             -0.003       0.000      -0.005       0.006       0.006       0.006      -0.022      -0.022      -0.016       0.000       0.000      -0.008
+  95%                               -0.01…0.00   0.00…0.00  -0.01…0.00  -0.01…0.03  -0.01…0.03  -0.00…0.02 -0.04…-0.01 -0.04…-0.01 -0.03…-0.00   0.00…0.00   0.00…0.00  -0.03…0.00
+b7pp − b7plus · ranh_gioi                0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle − b7pp · giua_khoang              0.664       0.664       0.550       0.296       0.296       0.176       0.000       0.000       0.000       0.000      -0.008       0.315
+  95%                                0.59…0.73   0.59…0.73   0.49…0.61   0.23…0.36   0.23…0.36   0.13…0.22   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00  -0.02…0.00   0.23…0.40
+oracle − b7pp · ranh_gioi                0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle_now − oracle · giua_khoang        0.000      -0.516       0.000      -0.500      -0.478      -0.113       0.516       0.516       0.516       0.000       0.502      -0.961
+  95%                                0.00…0.00 -0.53…-0.50   0.00…0.00 -0.52…-0.48 -0.50…-0.45 -0.13…-0.10   0.50…0.53   0.50…0.53   0.50…0.53   0.00…0.00   0.48…0.52 -0.99…-0.92
+oracle_now − oracle · ranh_gioi          0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+proposed2 − oracle_now · giua_khoang      -0.664      -0.148      -0.547       0.211       0.192      -0.070      -0.503      -0.503      -0.516       0.000      -0.494       0.661
+  95%                              -0.73…-0.59 -0.22…-0.08 -0.61…-0.49   0.14…0.28   0.12…0.26 -0.12…-0.03 -0.52…-0.49 -0.52…-0.49 -0.53…-0.50   0.00…0.00 -0.52…-0.47   0.58…0.74
+proposed2 − oracle_now · ranh_gioi       0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+-> runs/final_g4_20261112/r1/test/all.score.json
+[confirm]
+ADR 0005 · split test · 10,000 lần lấy mẫu lại · Holm trên 7/7 kiểm định
+Họ final (ADR 0006): công cụ chờ ADR được Accepted và commit; dev chỉ tập dượt.
+F8 (TVER) luôn ngoài Holm: kiểm nhất quán nội bộ, dùng chung cửa sổ đồ thị với gold.
+F1 RQ2: lai ghép: proposed2 − b4 · accuracy · all: +0.343 [+0.283; +0.401] p=0.0000 p_Holm=0.0000 → ủng hộ (all 318 dòng/156 lineage)
+F2 RQ2: đồ thị phi thời gian: proposed2 − b5 · accuracy · all: +0.355 [+0.297; +0.414] p=0.0000 p_Holm=0.0000 → ủng hộ (all 318 dòng/156 lineage)
+F3 RQ2: lỗi sai phiên bản: proposed2 − b4 · wrong_version · all: -0.283 [-0.330; -0.237] p=0.0000 p_Holm=0.0000 → ủng hộ (all 318 dòng/156 lineage)
+F4 RQ3: lọc văn bản: b7 − b2ctx · tv_recall@1 · all_answerable: +0.078 [+0.049; +0.110] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 295 dòng/156 lineage)
+F5 RQ3: phiên bản: b7plus − b7 · tv_recall@1 · all_answerable: +0.115 [+0.076; +0.156] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 295 dòng/156 lineage)
+F6 H0: truy xuất: b7pp − b7 · tv_recall@1 · all_answerable: +0.115 [+0.076; +0.156] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 295 dòng/156 lineage)
+F7 T6: không đáp án: proposed2 − b7pp · accuracy · t6_unanswerable: +0.087 [+0.000; +0.217] p=0.2600 p_Holm=0.2600 → không đủ bằng chứng (t6_unanswerable 23 dòng/23 lineage)
+F8 Nhất quán nội bộ: TVER: b7pp − b7 · tver · all: -0.248 [-0.288; -0.210] p=0.0000 p_Holm=— → thăm dò (all 318 dòng/156 lineage)
+T1 không làm hại (ADR 0006 §4, ngoài Holm, δ=0.05): 43 dòng/43 lineage
+  proposed2 − b2ctx · accuracy · t1_control: +0.023 [-0.070; +0.116] → không chứng minh được không làm hại
+  b7 − b2ctx · accuracy · t1_control: +0.023 [-0.070; +0.116] → không chứng minh được không làm hại
+  b7pp − b2ctx · accuracy · t1_control: +0.000 [-0.093; +0.093] → không chứng minh được không làm hại
+  b1: 0/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.000–0.082)
+  b2ctx: 11/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.149–0.402)
+  b3: 5/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.051–0.245)
+  b4: 6/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.066–0.273)
+  b5: 7/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.081–0.300)
+  b6: 9/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.114–0.352)
+  b7: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+  b7plus: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+  b7pp: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+  oracle: 0/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.000–0.082)
+  oracle_now: 0/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.000–0.082)
+  proposed2: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+-> runs/final_g4_20261112/r1/confirm.json
+[report]
+=== score r2 00:31:28
+[check]
+OK: 722 dòng ({'ranh_gioi': 361, 'giua_khoang': 361}); 360 đơn vị lớp A và 621 phiên bản lớp B đều có trong corpus
+  T1: dev 0.0% số dòng ranh giới
+  T2: dev 0.0% số dòng ranh giới
+  T3: dev 0.0% số dòng ranh giới
+  T6: dev 0.0% số dòng ranh giới
+[export]
+[import]
+runs/final_g4_20261112/r2/test/b1.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 299/97; generation 969s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b1.sample.jsonl
+runs/final_g4_20261112/r2/test/b2ctx.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5372/95; generation 1706s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b2ctx.sample.jsonl
+runs/final_g4_20261112/r2/test/b3.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 4687/102; generation 1388s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b3.sample.jsonl
+runs/final_g4_20261112/r2/test/b4.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 4935/105; generation 1275s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b4.sample.jsonl
+runs/final_g4_20261112/r2/test/b5.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 4987/107; generation 1085s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b5.sample.jsonl
+runs/final_g4_20261112/r2/test/b6.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5505/105; generation 1208s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b6.sample.jsonl
+runs/final_g4_20261112/r2/test/b7.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5030/102; generation 1294s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b7.sample.jsonl
+runs/final_g4_20261112/r2/test/b7plus.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5021/101; generation 1275s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b7plus.sample.jsonl
+runs/final_g4_20261112/r2/test/b7pp.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5045/101; generation 1208s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/b7pp.sample.jsonl
+runs/final_g4_20261112/r2/test/oracle.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 828/81; generation 987s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/oracle.sample.jsonl
+runs/final_g4_20261112/r2/test/oracle_now.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 837/90; generation 1055s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/oracle_now.sample.jsonl
+runs/final_g4_20261112/r2/test/proposed2.jsonl: 361 rows, format 361/361 (100.0%), truncated 0; mean input/output tokens 5217/103; generation 1340s; model ('gpt-4o-mini-2024-07-18', 'gpt-4o-mini-2024-07-18')
+20-answer review sample: runs/final_g4_20261112/r2/test/proposed2.sample.jsonl
+[score]
+ViLexTime · 722 dòng · split test · 74 mã đơn vị không có trong corpus · 0/0 trích dẫn chữ không phân giải được
+                                           R@1      TV-R@1         MRR         Acc   Acc(lỏng)          F1        TVER    TVER(ng)         VCR    phủ tr.d   sai b.bản         TCS
+b1 · giua_khoang                         0.000       0.000       0.000       0.006       0.006       0.307           —       1.000           —       0.000       0.008       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.02   0.00…0.02   0.29…0.33           —   1.00…1.00           —   0.00…0.00   0.00…0.02   0.00…0.00
+b1 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b2ctx · giua_khoang                      0.311       0.151       0.401       0.321       0.343       0.471       0.519       0.519       0.208       1.000       0.242       0.094
+  95%                                0.24…0.39   0.12…0.19   0.33…0.47   0.27…0.37   0.29…0.39   0.43…0.52   0.47…0.57   0.47…0.57   0.17…0.25   1.00…1.00   0.20…0.29   0.05…0.15
+b2ctx · ranh_gioi                        0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b3 · giua_khoang                         0.258       0.126       0.346       0.283       0.302       0.459       0.591       0.591       0.211       1.000       0.249       0.031
+  95%                                0.19…0.33   0.09…0.16   0.28…0.41   0.24…0.33   0.25…0.35   0.42…0.50   0.54…0.64   0.54…0.64   0.17…0.25   1.00…1.00   0.20…0.30   0.01…0.06
+b3 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b4 · giua_khoang                         0.340       0.164       0.445       0.296       0.318       0.502       0.560       0.560       0.267       1.000       0.294       0.047
+  95%                                0.27…0.42   0.13…0.20   0.38…0.51   0.25…0.34   0.27…0.36   0.46…0.54   0.51…0.61   0.51…0.61   0.23…0.31   1.00…1.00   0.25…0.34   0.02…0.09
+b4 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b5 · giua_khoang                         0.340       0.164       0.445       0.311       0.336       0.508       0.544       0.544       0.239       1.000       0.279       0.055
+  95%                                0.27…0.42   0.13…0.20   0.38…0.51   0.27…0.35   0.29…0.38   0.46…0.55   0.50…0.59   0.50…0.59   0.20…0.28   1.00…1.00   0.23…0.32   0.02…0.10
+b5 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b6 · giua_khoang                         0.340       0.164       0.447       0.324       0.349       0.513       0.550       0.550       0.255       1.000       0.306       0.047
+  95%                                0.27…0.42   0.13…0.20   0.38…0.51   0.28…0.37   0.30…0.39   0.47…0.56   0.50…0.60   0.50…0.60   0.22…0.29   1.00…1.00   0.26…0.35   0.02…0.09
+b6 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7 · giua_khoang                         0.371       0.242       0.493       0.509       0.509       0.585       0.242       0.242       0.164       1.000       0.162       0.346
+  95%                                0.30…0.44   0.19…0.29   0.43…0.56   0.45…0.57   0.45…0.57   0.54…0.63   0.20…0.28   0.20…0.28   0.13…0.20   1.00…1.00   0.12…0.20   0.26…0.43
+b7 · ranh_gioi                           0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7plus · giua_khoang                     0.340       0.336       0.456       0.648       0.651       0.610       0.022       0.022       0.013       1.000       0.011       0.646
+  95%                                0.27…0.41   0.27…0.41   0.39…0.52   0.58…0.71   0.58…0.72   0.57…0.65   0.01…0.04   0.01…0.04   0.00…0.03   1.00…1.00   0.00…0.03   0.56…0.73
+b7plus · ranh_gioi                       0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7pp · giua_khoang                       0.336       0.336       0.450       0.664       0.667       0.616       0.000       0.000       0.000       1.000       0.011       0.646
+  95%                                0.27…0.41   0.27…0.41   0.39…0.51   0.60…0.73   0.60…0.73   0.57…0.66   0.00…0.00   0.00…0.00   0.00…0.00   1.00…1.00   0.00…0.03   0.56…0.73
+b7pp · ranh_gioi                         0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle · giua_khoang                     1.000       1.000       1.000       0.959       0.959       0.794       0.000       0.000       0.000       1.000       0.000       0.969
+  95%                                1.00…1.00   1.00…1.00   1.00…1.00   0.93…0.98   0.93…0.98   0.76…0.83   0.00…0.00   0.00…0.00   0.00…0.00   1.00…1.00   0.00…0.00   0.93…0.99
+oracle · ranh_gioi                       0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle_now · giua_khoang                 1.000       0.484       1.000       0.456       0.478       0.681       0.516       0.516       0.516       1.000       0.502       0.000
+  95%                                1.00…1.00   0.47…0.50   1.00…1.00   0.43…0.48   0.45…0.51   0.65…0.71   0.50…0.53   0.50…0.53   0.50…0.53   1.00…1.00   0.48…0.52   0.00…0.00
+oracle_now · ranh_gioi                   0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+proposed2 · giua_khoang                  0.336       0.336       0.453       0.664       0.664       0.609       0.003       0.003       0.000       1.000       0.008       0.646
+  95%                                0.27…0.41   0.27…0.41   0.39…0.51   0.60…0.73   0.60…0.73   0.56…0.65   0.00…0.01   0.00…0.01   0.00…0.00   1.00…1.00   0.00…0.02   0.56…0.73
+proposed2 · ranh_gioi                    0.000       0.000       0.000       0.000       0.000       0.000           —       1.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   1.00…1.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b2ctx − b1 · giua_khoang                 0.311       0.151       0.401       0.314       0.336       0.164           —      -0.481           —       1.000       0.234       0.094
+  95%                                0.24…0.39   0.12…0.19   0.33…0.47   0.27…0.36   0.29…0.39   0.12…0.20           — -0.53…-0.43           —   1.00…1.00   0.19…0.28   0.05…0.15
+b2ctx − b1 · ranh_gioi                   0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b3 − b2ctx · giua_khoang                -0.053      -0.025      -0.056      -0.038      -0.041      -0.013       0.072       0.072       0.003       0.000       0.008      -0.063
+  95%                               -0.13…0.03  -0.06…0.01  -0.12…0.01  -0.09…0.02  -0.10…0.02  -0.06…0.03   0.01…0.14   0.01…0.14  -0.04…0.05   0.00…0.00  -0.05…0.06 -0.12…-0.02
+b3 − b2ctx · ranh_gioi                   0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b4 − b3 · giua_khoang                    0.082       0.038       0.099       0.013       0.016       0.043      -0.031      -0.031       0.057       0.000       0.045       0.016
+  95%                                0.01…0.15   0.00…0.07   0.05…0.15  -0.03…0.06  -0.03…0.06   0.01…0.08  -0.08…0.02  -0.08…0.02   0.02…0.09   0.00…0.00   0.00…0.09  -0.02…0.05
+b4 − b3 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b5 − b4 · giua_khoang                    0.000       0.000       0.000       0.016       0.019       0.006      -0.016      -0.016      -0.028       0.000      -0.015       0.008
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.03   0.01…0.03  -0.00…0.01  -0.04…0.00  -0.04…0.00 -0.05…-0.01   0.00…0.00  -0.03…0.00   0.00…0.02
+b5 − b4 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b6 − b5 · giua_khoang                    0.000       0.000       0.001       0.013       0.013       0.006       0.006       0.006       0.016       0.000       0.026      -0.008
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00  -0.01…0.03  -0.01…0.03  -0.01…0.02  -0.02…0.03  -0.02…0.03  -0.01…0.04   0.00…0.00   0.01…0.05  -0.04…0.02
+b6 − b5 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7 − b6 · giua_khoang                    0.031       0.079       0.046       0.186       0.160       0.072      -0.308      -0.308      -0.091       0.000      -0.143       0.299
+  95%                               -0.01…0.07   0.05…0.11   0.01…0.08   0.13…0.24   0.11…0.21   0.04…0.10 -0.37…-0.25 -0.37…-0.25 -0.14…-0.04   0.00…0.00 -0.20…-0.09   0.22…0.38
+b7 − b6 · ranh_gioi                      0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7plus − b7 · giua_khoang               -0.031       0.094      -0.037       0.138       0.142       0.025      -0.220      -0.220      -0.151       0.000      -0.151       0.299
+  95%                              -0.06…-0.01   0.06…0.13 -0.06…-0.02   0.10…0.18   0.10…0.18   0.01…0.04 -0.26…-0.18 -0.26…-0.18 -0.19…-0.12   0.00…0.00 -0.19…-0.11   0.21…0.38
+b7plus − b7 · ranh_gioi                  0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+b7pp − b7plus · giua_khoang             -0.003       0.000      -0.005       0.016       0.016       0.006      -0.022      -0.022      -0.013       0.000       0.000       0.000
+  95%                               -0.01…0.00   0.00…0.00  -0.01…0.00  -0.00…0.03  -0.00…0.03  -0.00…0.02 -0.04…-0.01 -0.04…-0.01 -0.03…-0.00   0.00…0.00   0.00…0.00  -0.02…0.02
+b7pp − b7plus · ranh_gioi                0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle − b7pp · giua_khoang              0.664       0.664       0.550       0.296       0.292       0.177       0.000       0.000       0.000       0.000      -0.011       0.323
+  95%                                0.59…0.73   0.59…0.73   0.49…0.61   0.23…0.36   0.23…0.36   0.14…0.22   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00  -0.03…0.00   0.24…0.41
+oracle − b7pp · ranh_gioi                0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+oracle_now − oracle · giua_khoang        0.000      -0.516       0.000      -0.503      -0.481      -0.113       0.516       0.516       0.516       0.000       0.502      -0.969
+  95%                                0.00…0.00 -0.53…-0.50   0.00…0.00 -0.52…-0.48 -0.51…-0.45 -0.13…-0.10   0.50…0.53   0.50…0.53   0.50…0.53   0.00…0.00   0.48…0.52 -0.99…-0.93
+oracle_now − oracle · ranh_gioi          0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+proposed2 − oracle_now · giua_khoang      -0.664      -0.148      -0.547       0.208       0.186      -0.071      -0.513      -0.513      -0.516       0.000      -0.494       0.646
+  95%                              -0.73…-0.59 -0.22…-0.08 -0.61…-0.49   0.14…0.28   0.11…0.26 -0.12…-0.03 -0.53…-0.50 -0.53…-0.50 -0.53…-0.50   0.00…0.00 -0.52…-0.47   0.56…0.73
+proposed2 − oracle_now · ranh_gioi       0.000       0.000       0.000       0.000       0.000       0.000           —       0.000           —       0.000       0.000       0.000
+  95%                                0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00   0.00…0.00           —   0.00…0.00           —   0.00…0.00   0.00…0.00   0.00…0.00
+-> runs/final_g4_20261112/r2/test/all.score.json
+[confirm]
+ADR 0005 · split test · 10,000 lần lấy mẫu lại · Holm trên 7/7 kiểm định
+Họ final (ADR 0006): công cụ chờ ADR được Accepted và commit; dev chỉ tập dượt.
+F8 (TVER) luôn ngoài Holm: kiểm nhất quán nội bộ, dùng chung cửa sổ đồ thị với gold.
+F1 RQ2: lai ghép: proposed2 − b4 · accuracy · all: +0.368 [+0.312; +0.422] p=0.0000 p_Holm=0.0000 → ủng hộ (all 318 dòng/156 lineage)
+F2 RQ2: đồ thị phi thời gian: proposed2 − b5 · accuracy · all: +0.352 [+0.297; +0.409] p=0.0000 p_Holm=0.0000 → ủng hộ (all 318 dòng/156 lineage)
+F3 RQ2: lỗi sai phiên bản: proposed2 − b4 · wrong_version · all: -0.287 [-0.334; -0.239] p=0.0000 p_Holm=0.0000 → ủng hộ (all 318 dòng/156 lineage)
+F4 RQ3: lọc văn bản: b7 − b2ctx · tv_recall@1 · all_answerable: +0.078 [+0.049; +0.110] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 295 dòng/156 lineage)
+F5 RQ3: phiên bản: b7plus − b7 · tv_recall@1 · all_answerable: +0.115 [+0.076; +0.156] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 295 dòng/156 lineage)
+F6 H0: truy xuất: b7pp − b7 · tv_recall@1 · all_answerable: +0.115 [+0.076; +0.156] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 295 dòng/156 lineage)
+F7 T6: không đáp án: proposed2 − b7pp · accuracy · t6_unanswerable: +0.043 [+0.000; +0.130] p=0.7130 p_Holm=0.7130 → không đủ bằng chứng (t6_unanswerable 23 dòng/23 lineage)
+F8 Nhất quán nội bộ: TVER: b7pp − b7 · tver · all: -0.242 [-0.281; -0.204] p=0.0000 p_Holm=— → thăm dò (all 318 dòng/156 lineage)
+T1 không làm hại (ADR 0006 §4, ngoài Holm, δ=0.05): 43 dòng/43 lineage
+  proposed2 − b2ctx · accuracy · t1_control: +0.023 [-0.070; +0.116] → không chứng minh được không làm hại
+  b7 − b2ctx · accuracy · t1_control: +0.023 [-0.070; +0.116] → không chứng minh được không làm hại
+  b7pp − b2ctx · accuracy · t1_control: +0.023 [-0.070; +0.116] → không chứng minh được không làm hại
+  b1: 0/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.000–0.082)
+  b2ctx: 11/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.149–0.402)
+  b3: 4/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.037–0.216)
+  b4: 6/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.066–0.273)
+  b5: 6/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.066–0.273)
+  b6: 8/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.097–0.326)
+  b7: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+  b7plus: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+  b7pp: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+  oracle: 0/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.000–0.082)
+  oracle_now: 0/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.000–0.082)
+  proposed2: 1/43 dòng T1 trả HIỆU LỰC không (Wilson 95% 0.004–0.121)
+-> runs/final_g4_20261112/r2/confirm.json
+[report]
+=== compare 00:35:38
+F1: lần 1 ủng hộ · lần 2 ủng hộ → ổn định: ủng hộ
+F2: lần 1 ủng hộ · lần 2 ủng hộ → ổn định: ủng hộ
+F3: lần 1 ủng hộ · lần 2 ủng hộ → ổn định: ủng hộ
+F4: lần 1 ủng hộ · lần 2 ủng hộ → ổn định: ủng hộ
+F5: lần 1 ủng hộ · lần 2 ủng hộ → ổn định: ủng hộ
+F6: lần 1 ủng hộ · lần 2 ủng hộ → ổn định: ủng hộ
+F7: lần 1 không đủ bằng chứng · lần 2 không đủ bằng chứng → ổn định: không đủ bằng chứng
+b1         all: 223/318 câu đổi (0.701), đúng→sai 0, sai→đúng 0
+b2ctx      all: 69/318 câu đổi (0.217), đúng→sai 5, sai→đúng 11
+b3         all: 61/318 câu đổi (0.192), đúng→sai 4, sai→đúng 3
+b4         all: 49/318 câu đổi (0.154), đúng→sai 12, sai→đúng 1
+b5         all: 58/318 câu đổi (0.182), đúng→sai 4, sai→đúng 4
+b6         all: 66/318 câu đổi (0.208), đúng→sai 8, sai→đúng 3
+b7         all: 62/318 câu đổi (0.195), đúng→sai 1, sai→đúng 8
+b7plus     all: 61/318 câu đổi (0.192), đúng→sai 4, sai→đúng 3
+b7pp       all: 58/318 câu đổi (0.182), đúng→sai 1, sai→đúng 3
+oracle     all: 12/318 câu đổi (0.038), đúng→sai 0, sai→đúng 1
+oracle_now all: 21/318 câu đổi (0.066), đúng→sai 1, sai→đúng 1
+proposed2  all: 39/318 câu đổi (0.123), đúng→sai 3, sai→đúng 1
+-> runs/final_g4_20261112/compare_runs.json
+=== DONE 00:35:41

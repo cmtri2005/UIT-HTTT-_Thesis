@@ -1,0 +1,20 @@
+system proposed-hyb · 151 rows · 0 already done · 151 to run
+  L4–L5: 𝒰ₜ by formula (3), hybrid ranking, citation-constrained answer, Verifier
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  14%|█▍        | 28/199 [00:00<00:00, 227.71it/s]Loading weights:  26%|██▌       | 51/199 [00:00<00:00, 223.27it/s]Loading weights:  37%|███▋      | 74/199 [00:00<00:00, 211.01it/s]Loading weights:  48%|████▊     | 96/199 [00:00<00:00, 165.92it/s]Loading weights:  58%|█████▊    | 116/199 [00:00<00:00, 152.17it/s]Loading weights:  73%|███████▎  | 145/199 [00:00<00:00, 181.00it/s]Loading weights:  87%|████████▋ | 173/199 [00:00<00:00, 195.52it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 212.56it/s]
+  50/151 · 0.1 rows/s · 0 cached · 0 failed
+  100/151 · 0.0 rows/s · 0 cached · 0 failed
+  150/151 · 0.0 rows/s · 0 cached · 0 failed
+
+runs/hybrid_20261105/dev_graph2/proposed-hyb.jsonl: 151 written, 0 from cache, 0 failed in 3494.2s
+score it:
+  python scripts/eval/score_vilextime.py runs/hybrid_20261105/dev_graph2/proposed-hyb.jsonl --split dev
+system proposed-lex · 151 rows · 0 already done · 151 to run
+  L4–L5: 𝒰ₜ by formula (3), hybrid ranking, citation-constrained answer, Verifier
+  50/151 · 0.1 rows/s · 0 cached · 0 failed
+  100/151 · 0.1 rows/s · 0 cached · 0 failed
+  150/151 · 0.1 rows/s · 0 cached · 0 failed
+
+runs/hybrid_20261105/dev_graph2/proposed-lex.jsonl: 151 written, 0 from cache, 0 failed in 1643.2s
+score it:
+  python scripts/eval/score_vilextime.py runs/hybrid_20261105/dev_graph2/proposed-lex.jsonl --split dev
+RUN2 DONE

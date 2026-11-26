@@ -1,0 +1,15 @@
+system b7plus-lex · 492 rows · 0 already done · 492 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+  50/492 · 0.3 rows/s · 0 cached · 0 failed
+  100/492 · 0.3 rows/s · 0 cached · 0 failed
+  150/492 · 0.3 rows/s · 0 cached · 0 failed
+  200/492 · 0.3 rows/s · 0 cached · 0 failed
+  250/492 · 0.3 rows/s · 0 cached · 0 failed
+  300/492 · 0.3 rows/s · 0 cached · 0 failed
+  350/492 · 0.3 rows/s · 0 cached · 0 failed
+  400/492 · 0.3 rows/s · 0 cached · 0 failed
+  450/492 · 0.3 rows/s · 0 cached · 0 failed
+
+runs/E1_test2/test/b7plus.jsonl: 492 written, 0 from cache, 0 failed in 1592.1s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1_test2/test/b7plus.jsonl --split test

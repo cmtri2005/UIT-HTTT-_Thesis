@@ -1,0 +1,238 @@
+=== api r1 b1 13:43:44
+b1 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/b1__Qwen__Qwen3.8-27B-TEE__588e28b89601.r1.jsonl: 361 written, 361/361 answered, 104736 input and 47188 output tokens this run
+=== api r1 b2ctx 13:48:34
+b2ctx test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/b2ctx__Qwen__Qwen3.8-27B-TEE__189f8e22bf1f.r1.jsonl: 361 written, 361/361 answered, 1755053 input and 24663 output tokens this run
+=== api r1 b3 13:52:46
+b3 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/b3__Qwen__Qwen3.8-27B-TEE__c5bcdb3a25a7.r1.jsonl: 361 written, 361/361 answered, 1555090 input and 24292 output tokens this run
+=== api r1 b4 13:56:21
+b4 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/b4__Qwen__Qwen3.8-27B-TEE__7caa1e4818da.r1.jsonl: 361 written, 361/361 answered, 1626742 input and 26110 output tokens this run
+=== api r1 b5 14:00:54
+b5 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/b5__Qwen__Qwen3.8-27B-TEE__9db758db92f9.r1.jsonl: 354 written, 354/361 answered, 1615244 input and 26031 output tokens this run
+stopped: HTTPSConnectionPool(host='llm.chutes.ai', port=443): Read timed out. (read timeout=90)
+The same command continues without paying twice.
+=== api r1 b1 14:09:51
+b1 test: 361 prompts, 361 already answered, 0 to request
+runs/qwen_chutes_20261116/test/raw/b1__Qwen__Qwen3.8-27B-TEE__588e28b89601.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b2ctx 14:09:52
+b2ctx test: 361 prompts, 361 already answered, 0 to request
+runs/qwen_chutes_20261116/test/raw/b2ctx__Qwen__Qwen3.8-27B-TEE__189f8e22bf1f.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b3 14:09:52
+b3 test: 361 prompts, 361 already answered, 0 to request
+runs/qwen_chutes_20261116/test/raw/b3__Qwen__Qwen3.8-27B-TEE__c5bcdb3a25a7.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b4 14:09:52
+b4 test: 361 prompts, 361 already answered, 0 to request
+runs/qwen_chutes_20261116/test/raw/b4__Qwen__Qwen3.8-27B-TEE__7caa1e4818da.r1.jsonl: 0 written, 361/361 answered, 0 input and 0 output tokens this run
+=== api r1 b5 14:09:53
+b5 test: 361 prompts, 354 already answered, 7 to request
+runs/qwen_chutes_20261116/test/raw/b5__Qwen__Qwen3.8-27B-TEE__9db758db92f9.r1.jsonl: 7 written, 361/361 answered, 28982 input and 306 output tokens this run
+=== api r1 b6 14:10:00
+b6 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+runs/qwen_chutes_20261116/test/raw/b6__Qwen__Qwen3.8-27B-TEE__dadeed4cb201.r1.jsonl: 118 written, 118/361 answered, 568765 input and 7663 output tokens this run
+stopped: HTTPSConnectionPool(host='llm.chutes.ai', port=443): Read timed out. (read timeout=90)
+The same command continues without paying twice.
+retry 1
+b6 test: 361 prompts, 118 already answered, 243 to request
+  50/243
+  100/243
+  150/243
+  200/243
+runs/qwen_chutes_20261116/test/raw/b6__Qwen__Qwen3.8-27B-TEE__dadeed4cb201.r1.jsonl: 243 written, 361/361 answered, 1243039 input and 19187 output tokens this run
+=== api r1 b7 14:17:11
+b7 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/b7__Qwen__Qwen3.8-27B-TEE__2259cdc7fb08.r1.jsonl: 361 written, 361/361 answered, 1652469 input and 26689 output tokens this run
+=== api r1 b7plus 14:24:40
+b7plus test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+runs/qwen_chutes_20261116/test/raw/b7plus__Qwen__Qwen3.8-27B-TEE__0d0842e3895b.r1.jsonl: 137 written, 137/361 answered, 597010 input and 9312 output tokens this run
+stopped: HTTPSConnectionPool(host='llm.chutes.ai', port=443): Read timed out. (read timeout=90)
+The same command continues without paying twice.
+retry 1
+b7plus test: 361 prompts, 137 already answered, 224 to request
+  50/224
+  100/224
+  150/224
+  200/224
+runs/qwen_chutes_20261116/test/raw/b7plus__Qwen__Qwen3.8-27B-TEE__0d0842e3895b.r1.jsonl: 224 written, 361/361 answered, 1050514 input and 16727 output tokens this run
+=== api r1 b7pp 14:33:35
+b7pp test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+runs/qwen_chutes_20261116/test/raw/b7pp__Qwen__Qwen3.8-27B-TEE__86601bb68b80.r1.jsonl: 165 written, 165/361 answered, 718766 input and 11561 output tokens this run
+stopped: HTTPSConnectionPool(host='llm.chutes.ai', port=443): Read timed out. (read timeout=90)
+The same command continues without paying twice.
+retry 1
+b7pp test: 361 prompts, 165 already answered, 196 to request
+  50/196
+runs/qwen_chutes_20261116/test/raw/b7pp__Qwen__Qwen3.8-27B-TEE__86601bb68b80.r1.jsonl: 68 written, 233/361 answered, 313686 input and 4958 output tokens this run
+stopped: HTTPSConnectionPool(host='llm.chutes.ai', port=443): Read timed out. (read timeout=90)
+The same command continues without paying twice.
+retry 2
+b7pp test: 361 prompts, 233 already answered, 128 to request
+  50/128
+  100/128
+runs/qwen_chutes_20261116/test/raw/b7pp__Qwen__Qwen3.8-27B-TEE__86601bb68b80.r1.jsonl: 128 written, 361/361 answered, 623117 input and 9152 output tokens this run
+=== api r1 oracle 14:42:19
+oracle test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/oracle__Qwen__Qwen3.8-27B-TEE__8c3242259883.r1.jsonl: 361 written, 361/361 answered, 275653 input and 25456 output tokens this run
+=== api r1 oracle_now 14:47:07
+oracle_now test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/oracle_now__Qwen__Qwen3.8-27B-TEE__022863695acf.r1.jsonl: 361 written, 361/361 answered, 278224 input and 27235 output tokens this run
+=== api r1 proposed2 14:50:24
+proposed2 test: 361 prompts, 0 already answered, 361 to request
+  50/361
+runs/qwen_chutes_20261116/test/raw/proposed2__Qwen__Qwen3.8-27B-TEE__ed3b6f08ccdd.r1.jsonl: 54 written, 54/361 answered, 235180 input and 3374 output tokens this run
+stopped: chutes 429: <html>
+<head><title>429 Too Many Requests</title></head>
+<body>
+<center><h1>429 Too Many Requests</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+The same command continues without paying twice.
+retry 1
+proposed2 test: 361 prompts, 54 already answered, 307 to request
+runs/qwen_chutes_20261116/test/raw/proposed2__Qwen__Qwen3.8-27B-TEE__ed3b6f08ccdd.r1.jsonl: 36 written, 90/361 answered, 159245 input and 2756 output tokens this run
+stopped: chutes 502: <html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+The same command continues without paying twice.
+retry 2
+proposed2 test: 361 prompts, 90 already answered, 271 to request
+  50/271
+  100/271
+  150/271
+  200/271
+  250/271
+runs/qwen_chutes_20261116/test/raw/proposed2__Qwen__Qwen3.8-27B-TEE__ed3b6f08ccdd.r1.jsonl: 271 written, 361/361 answered, 1317959 input and 19846 output tokens this run
+=== api r1 bvnone 14:55:38
+bvnone test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/bvnone__Qwen__Qwen3.8-27B-TEE__4fcac6d07f8f.r1.jsonl: 361 written, 361/361 answered, 1595588 input and 26864 output tokens this run
+=== api r1 bvdate 14:58:28
+bvdate test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/bvdate__Qwen__Qwen3.8-27B-TEE__9fc919aa3503.r1.jsonl: 361 written, 361/361 answered, 1818465 input and 24285 output tokens this run
+=== api r1 lightrag 15:01:50
+lightrag test: 361 prompts, 0 already answered, 361 to request
+  50/361
+  100/361
+  150/361
+  200/361
+  250/361
+  300/361
+  350/361
+runs/qwen_chutes_20261116/test/raw/lightrag__Qwen__Qwen3.8-27B-TEE__4ef1497c8cbe.r1.jsonl: 361 written, 361/361 answered, 9913866 input and 30415 output tokens this run
+runs/qwen_chutes_20261116/test/r1/b1.jsonl: 361 rows, format 352/361 (97.5%), truncated 9; mean input/output tokens 290/131; generation 1627s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b1.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b2ctx.jsonl: 361 rows, format 266/361 (73.7%), truncated 0; mean input/output tokens 4862/68; generation 1295s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b2ctx.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b3.jsonl: 361 rows, format 284/361 (78.7%), truncated 0; mean input/output tokens 4308/67; generation 1228s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b3.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b4.jsonl: 361 rows, format 295/361 (81.7%), truncated 0; mean input/output tokens 4506/72; generation 1556s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b4.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b5.jsonl: 361 rows, format 295/361 (81.7%), truncated 0; mean input/output tokens 4555/73; generation 1812s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b5.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b6.jsonl: 361 rows, format 303/361 (83.9%), truncated 0; mean input/output tokens 5019/74; generation 2190s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b6.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b7.jsonl: 361 rows, format 324/361 (89.8%), truncated 0; mean input/output tokens 4577/74; generation 2352s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b7.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b7plus.jsonl: 361 rows, format 318/361 (88.1%), truncated 0; mean input/output tokens 4564/72; generation 2766s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b7plus.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/b7pp.jsonl: 361 rows, format 312/361 (86.4%), truncated 0; mean input/output tokens 4586/71; generation 2042s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/b7pp.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/oracle.jsonl: 361 rows, format 346/361 (95.8%), truncated 0; mean input/output tokens 764/71; generation 1620s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/oracle.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/oracle_now.jsonl: 361 rows, format 347/361 (96.1%), truncated 0; mean input/output tokens 771/75; generation 1125s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/oracle_now.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/proposed2.jsonl: 361 rows, format 314/361 (87.0%), truncated 0; mean input/output tokens 4743/72; generation 1343s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/proposed2.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/bvnone.jsonl: 361 rows, format 298/361 (82.5%), truncated 0; mean input/output tokens 4420/74; generation 966s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/bvnone.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/bvdate.jsonl: 361 rows, format 293/361 (81.2%), truncated 0; mean input/output tokens 5037/67; generation 954s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/bvdate.sample.jsonl
+runs/qwen_chutes_20261116/test/r1/lightrag.jsonl: 361 rows, format 168/361 (46.5%), truncated 0; mean input/output tokens 27462/84; generation 1693s; model ('Qwen/Qwen3.8-27B-TEE', 'Qwen/Qwen3.8-27B-TEE')
+20-answer review sample: runs/qwen_chutes_20261116/test/r1/lightrag.sample.jsonl
+exit=0 done 2026-11-16T15:09:49Z

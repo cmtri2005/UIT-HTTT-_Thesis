@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""LightRAG thật làm baseline "GraphRAG phi thời gian" (REFACTOR_PLAN 3.3). Gói cho Colab và đường về.
+
+Kho: lời văn gốc (lớp A, chỉ đơn vị điều khoản, theo thứ tự đọc) của văn bản mà dev và bộ cuối hỏi tới,
+cộng các lệnh sửa đổi/bãi bỏ nhắm vào chúng (chỉ lệnh, không cả văn bản tác động). Không có thông tin thời gian: đúng vai baseline.
+Truy xuất do LightRAG (Colab, `colab_upload/lightrag/lightrag_colab.py`); câu trả lời sinh bằng ĐÚNG prompt
+và generator của các hệ khác, nên chỉ cách truy xuất khác. LightRAG trả đoạn văn, không trả mã đơn vị, nên
+các chỉ số dựa trên trích dẫn (TVER, phủ trích dẫn, VCR) không xác định.
+
+    python scripts/eval/lightrag_package.py corpus  --out colab_upload/lightrag/corpus.jsonl
+    python scripts/eval/lightrag_package.py queries --out colab_upload/lightrag/queries.jsonl
+    python scripts/eval/lightrag_package.py prompts --contexts <contexts.jsonl> --split dev --out <dir>/lightrag.jsonl
+    python scripts/eval/lightrag_package.py diag    --prompts <dir>/lightrag.jsonl <dir>/b4.jsonl --out <dir>/diag.json
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import sqlite3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+import colab_b1  # noqa: E402
+from vilexgraph.framework import generate  # noqa: E402
+
+NAME = "lightrag"
+CONTEXT_ID = "lightrag:context"     # the one evidence block; not a corpus unit, so citations stay unresolved
+INDEX = Path("data/derived/corpus/index.sqlite")
+RELEASES = {"dev": Path("data/vilextime_dataset_h6/vilextime.jsonl"),
+            "test": Path("data/vilextime_final/vilextime.jsonl")}
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def rows_of(split: str) -> list[dict]:
+    rows = [json.loads(line) for line in RELEASES[split].open(encoding="utf-8")]
+    return [r for r in rows if r.get("split") == split and r["as_of_strategy"] == "giua_khoang"]
+
+
+def target_documents() -> set[str]:
+    docs = set()
+    for split, release in RELEASES.items():
+        keep = {r["id"] for r in rows_of(split)}
+        for line in release.with_name("vilextime_meta.jsonl").open(encoding="utf-8"):
+            meta = json.loads(line)
+            if meta["id"] in keep:
+                docs.add(meta["target"]["document_id"])
+    return docs
+
+
+def corpus(args) -> None:
+    db = sqlite3.connect(f"file:{args.index}?mode=ro", uri=True)
+    targets = sorted(target_documents())
+    marks = ",".join("?" * len(targets))
+    acting = {d for (d,) in db.execute(
+        "SELECT DISTINCT u.document_id FROM units u WHERE u.kind='instruction' AND u.provision_id IN "
+        f"(SELECT provision_id FROM units WHERE layer='asis' AND kind='provision' AND document_id IN ({marks}))",
+        targets)}
+    target_set = set(targets)
+    target_provisions = {p for (p,) in db.execute(
+        f"SELECT provision_id FROM units WHERE layer='asis' AND kind='provision' AND document_id IN ({marks})", targets)}
+    out, chars = [], 0
+    for doc in sorted(set(targets) | acting):
+        title = db.execute("SELECT title FROM documents WHERE document_id=?", (doc,)).fetchone()
+        if doc in target_set:
+            body = "\n".join(t for (t,) in db.execute(
+                "SELECT text FROM units WHERE layer='asis' AND kind='provision' AND document_id=? ORDER BY rowid", (doc,)) if t)
+        else:     # văn bản tác động: chỉ lệnh sửa đổi/bãi bỏ nhắm vào văn bản đích (bớt 35% kho, xem REFACTOR_PLAN 3.3)
+            body = "\n".join(t for (t, prov) in db.execute(
+                "SELECT text, provision_id FROM units WHERE kind='instruction' AND document_id=? ORDER BY rowid", (doc,))
+                if t and prov in target_provisions)
+        if not body:
+            continue
+        text = f"{(title[0] if title else doc).strip()}\n{body}"
+        chars += len(text)
+        out.append({"id": doc, "role": "target" if doc in target_set else "acting", "text": text})
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text("".join(json.dumps(d, ensure_ascii=False) + "\n" for d in out), encoding="utf-8")
+    print(f"{args.out}: {len(out)} văn bản ({sum(d['role'] == 'target' for d in out)} đích, "
+          f"{sum(d['role'] == 'acting' for d in out)} văn bản tác động), {chars:,} ký tự; sha256 {sha(args.out)}")
+
+
+def queries(args) -> None:
+    out = [{"id": r["id"], "split": split, "as_of": r["as_of"], "question": r["question"],
+            "query": f"Mốc thời gian: {r['as_of']}. {r['question']}"}
+           for split in ("dev", "test") for r in rows_of(split)]
+    args.out.write_text("".join(json.dumps(q, ensure_ascii=False) + "\n" for q in out), encoding="utf-8")
+    print(f"{args.out}: {len(out)} truy vấn; sha256 {sha(args.out)}")
+
+
+def prompts(args) -> None:
+    """Contexts from Colab -> the scorer's prompt file, through the shared `generate.build_prompt`."""
+    contexts = {c["id"]: c for c in map(json.loads, args.contexts.open(encoding="utf-8"))}
+    rows = rows_of(args.split)
+    missing = [r["id"] for r in rows if r["id"] not in contexts]
+    if missing:
+        raise SystemExit(f"{len(missing)} {args.split} rows have no LightRAG context, e.g. {missing[:3]}")
+
+    class Block:      # duck-types corpus.Unit for build_prompt
+        def __init__(self, text):
+            self.unit_id, self.text = CONTEXT_ID, text
+
+        def retrieval_text(self, with_context):
+            return self.text
+
+    out = []
+    for r in rows:
+        context = (contexts[r["id"]].get("context") or "").strip()
+        units = [Block(context)] if context else []
+        system, user, ids = generate.build_prompt(r["question"], r["as_of"], units, with_context=True)
+        row = {"id": r["id"], "system": system, "user": user, "ids": ids, "retrieved": [],
+               "system_name": NAME, "split": args.split, "as_of": r["as_of"], "signals": {}}
+        row["prompt_sha256"] = colab_b1.digest(row)
+        out.append(row)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in out), encoding="utf-8")
+    record = {"system": NAME, "spec": None, "split": args.split, "as_of_strategy": "giua_khoang", "rows": len(out),
+              "release_sha256": sha(RELEASES[args.split]), "contexts_sha256": sha(args.contexts),
+              "empty_contexts": sum(not o["ids"] for o in out), "prompt_file_sha256": sha(args.out)}
+    args.out.with_suffix(".export.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n",
+                                                    encoding="utf-8")
+    print(f"{args.out}: {len(out)} prompt {args.split}, {record['empty_contexts']} ngữ cảnh rỗng")
+
+
+EVIDENCE = "CÁC ĐOẠN CĂN CỨ:"     # generate.USER: everything after it is evidence
+
+
+def coverage(rows: list[dict], evidence: dict[str, str]) -> dict:
+    """What a prompt lets the generator copy, with the scorer's own span matching and no model call.
+
+    `gold`: answerable rows whose evidence holds every gold span. `other`: contrast rows (those with
+    `_distractors`) whose evidence holds a span only another version has. Not Accuracy: a span in a
+    100,000-character context still has to be found and chosen by the generator.
+    """
+    import score_vilextime as sv
+    out = {"rows": 0, "gold": 0, "contrast_rows": 0, "other": 0, "gold_and_other": 0, "chars": []}
+    for r in rows:
+        if not r["answerable"]:
+            continue
+        text = evidence[r["id"]].replace("\\n", "\n").replace('\\"', '"')    # LightRAG chunks arrive JSON-escaped
+        padded = f" {sv.norm(text)} "
+        gold = sv.contains(text, r["short_answer"] or "")
+        other = any(f" {s} " in padded for s in r.get("_distractors", ()))
+        out["rows"] += 1
+        out["gold"] += gold
+        out["contrast_rows"] += bool(r.get("_distractors"))
+        out["other"] += other
+        out["gold_and_other"] += gold and other
+        out["chars"].append(len(text))
+    chars = sorted(out.pop("chars"))
+    out["median_evidence_chars"] = chars[len(chars) // 2] if chars else 0
+    return out
+
+
+def diag(args) -> None:
+    """`coverage` of several prompt files on dev, overall and per group. Dev only: the final test needs ADR 0006."""
+    import score_vilextime as sv
+    rows = sv.load_rows(RELEASES["dev"])
+    extra = sv.distractors(rows)
+    rows = [{**r, "_distractors": extra.get(r["id"], [])} for r in rows
+            if r.get("split") == "dev" and r["as_of_strategy"] == "giua_khoang"]
+    report = {"release": str(RELEASES["dev"]), "release_sha256": sha(RELEASES["dev"]), "split": "dev",
+              "as_of_strategy": "giua_khoang", "systems": {}}
+    for path in args.prompts:
+        prompts = [json.loads(line) for line in path.open(encoding="utf-8")]
+        if {p["split"] for p in prompts} != {"dev"}:
+            raise SystemExit(f"{path}: diag is dev-only")
+        evidence = {p["id"]: p["user"].split(EVIDENCE, 1)[-1] for p in prompts}
+        groups = {"all": rows, **{g: [r for r in rows if r["group"] == g] for g in sorted({r["group"] for r in rows})}}
+        report["systems"][path.stem] = {"prompt_file": str(path), "prompt_file_sha256": sha(path),
+                                        **{g: coverage(part, evidence) for g, part in groups.items()}}
+        a = report["systems"][path.stem]["all"]
+        print(f"{path.stem}: đáp án đúng mốc có trong căn cứ {a['gold']}/{a['rows']}; lời văn bản khác có trong căn cứ "
+              f"{a['other']}/{a['contrast_rows']}; trung vị {a['median_evidence_chars']:,} ký tự")
+    args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    c = sub.add_parser("corpus")
+    c.add_argument("--index", type=Path, default=INDEX)
+    c.add_argument("--out", type=Path, required=True)
+    q = sub.add_parser("queries")
+    q.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("prompts")
+    p.add_argument("--contexts", type=Path, required=True)
+    p.add_argument("--split", choices=("dev", "test"), required=True)
+    p.add_argument("--out", type=Path, required=True)
+    d = sub.add_parser("diag")
+    d.add_argument("--prompts", type=Path, nargs="+", required=True)
+    d.add_argument("--out", type=Path, required=True)
+    args = ap.parse_args()
+    {"corpus": corpus, "queries": queries, "prompts": prompts, "diag": diag}[args.cmd](args)
+
+
+if __name__ == "__main__":
+    main()

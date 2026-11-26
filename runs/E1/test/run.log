@@ -1,0 +1,40 @@
+== b2ctx
+system b2ctx · 441 rows · 0 already done · 441 to run
+  B2 with the hierarchy header: isolates the ordinary chunk-header gain
+
+runs/E1/test/b2ctx.jsonl: 441 written, 0 from cache, 0 failed in 922.3s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1/test/b2ctx.jsonl --split test
+== b7
+system b7-lex · 441 rows · 0 already done · 441 to run
+  B7 — document-level date filter, no graph (the main control)
+
+runs/E1/test/b7.jsonl: 441 written, 0 from cache, 0 failed in 1915.1s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1/test/b7.jsonl --split test
+== b7v
+system b7v-lex · 441 rows · 0 already done · 441 to run
+  B7 over layer B: consolidated version texts, still the document filter. Separates the wording L3 consolidated from the version window (K-07)
+
+runs/E1/test/b7v.jsonl: 441 written, 0 from cache, 0 failed in 2355.4s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1/test/b7v.jsonl --split test
+== b7plus
+system b7plus-lex · 441 rows · 0 already done · 441 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+
+runs/E1/test/b7plus.jsonl: 441 written, 0 from cache, 0 failed in 1990.9s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1/test/b7plus.jsonl --split test
+== b7pp
+system b7pp-lex · 441 rows · 0 already done · 441 to run
+  B7+ with propagated windows: the ladder's top rung, no online graph (K-07)
+
+runs/E1/test/b7pp.jsonl: 441 written, 0 from cache, 0 failed in 2520.5s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1/test/b7pp.jsonl --split test
+
+
+runs/E1/test/b7pp.jsonl: 47 written, 0 from cache, 0 failed in 317.7s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1/test/b7pp.jsonl --split test

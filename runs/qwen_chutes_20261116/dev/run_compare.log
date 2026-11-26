@@ -1,0 +1,11 @@
+b4 dev: 151 prompts, 0 already answered, 151 to request
+  50/151
+  100/151
+  150/151
+runs/qwen_chutes_20261116/dev/raw/b4__Qwen__Qwen3.8-27B-TEE__5c497de1ff3b.r1.jsonl: 151 written, 151/151 answered, 716897 input and 14445 output tokens this run
+b7plus dev: 151 prompts, 0 already answered, 151 to request
+  50/151
+  100/151
+  150/151
+runs/qwen_chutes_20261116/dev/raw/b7plus__Qwen__Qwen3.8-27B-TEE__84aea4ee3f87.r1.jsonl: 151 written, 151/151 answered, 676494 input and 13435 output tokens this run
+done

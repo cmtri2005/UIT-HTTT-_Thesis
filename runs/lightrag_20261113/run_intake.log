@@ -1,0 +1,59 @@
+=== copy 2026-11-15T05:46:03Z
+=== intake 2026-11-15T05:46:03Z
+{
+ "source_dir": "lightrag_work",
+ "build_done": {
+  "docs": 608,
+  "limit": 0,
+  "llm": "qwen",
+  "model_env": "Qwen/Qwen2.5-14B-Instruct",
+  "embed": "AITeamVN/Vietnamese_Embedding",
+  "seconds": 38907.64833235741
+ },
+ "queries": 512,
+ "contexts": 512,
+ "unique_context_ids": 512,
+ "missing_ids": [],
+ "extra_ids": [],
+ "by_split": {
+  "dev": 151,
+  "test": 361
+ },
+ "modes": {
+  "mix": 512
+ },
+ "empty_contexts": 0,
+ "context_chars": {
+  "min": 87918,
+  "median": 99267,
+  "max": 107887,
+  "total": 50795152
+ },
+ "corpus_docs": 608,
+ "docs_processed": 606,
+ "docs_skipped_as_duplicate_content": {
+  "document:25059": "document:113590",
+  "document:b9957300-7f70-11f1-a8d8-27dc586a4c2b": "document:284a9850-80d6-11f1-80a6-c751c94f32dc"
+ },
+ "docs_failed_other": [],
+ "chunks": 5069,
+ "graph_nodes": 101330,
+ "graph_edges": 35460,
+ "not_in_upload": [
+  "vllm.log",
+  "pip freeze (phiên bản lightrag-hku, vllm, sentence-transformers)",
+  "revision của model"
+ ]
+}
+=== prompts dev 2026-11-15T05:46:07Z
+runs/lightrag_20261113/dev/prompts/lightrag.jsonl: 151 prompt dev, 0 ngữ cảnh rỗng
+=== diag dev 2026-11-15T05:46:08Z
+lightrag: đáp án đúng mốc có trong căn cứ 123/130; lời văn bản khác có trong căn cứ 81/85; trung vị 98,955 ký tự
+b4: đáp án đúng mốc có trong căn cứ 115/130; lời văn bản khác có trong căn cứ 78/85; trung vị 13,235 ký tự
+b5: đáp án đúng mốc có trong căn cứ 117/130; lời văn bản khác có trong căn cứ 80/85; trung vị 13,235 ký tự
+b7: đáp án đúng mốc có trong căn cứ 122/130; lời văn bản khác có trong căn cứ 42/85; trung vị 11,971 ký tự
+b7plus: đáp án đúng mốc có trong căn cứ 125/130; lời văn bản khác có trong căn cứ 4/85; trung vị 11,887 ký tự
+proposed2: đáp án đúng mốc có trong căn cứ 125/130; lời văn bản khác có trong căn cứ 8/85; trung vị 12,098 ký tự
+bvnone: đáp án đúng mốc có trong căn cứ 117/130; lời văn bản khác có trong căn cứ 79/85; trung vị 12,540 ký tự
+=== DONE 2026-11-15T05:46:27Z
+exit=0

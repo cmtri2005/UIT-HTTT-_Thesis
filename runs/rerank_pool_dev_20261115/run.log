@@ -1,0 +1,51 @@
+=== b4 2026-11-15T10:29:03Z
+system b4 · 151 rows · 0 already done · 151 to run
+  B4 — BM25 + dense by reciprocal rank fusion (k=60), no reranker
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2004.95it/s]
+  50/151 · 0.1 rows/s · 0 cached · 0 failed
+  100/151 · 0.1 rows/s · 0 cached · 0 failed
+  150/151 · 0.2 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/pool/b4.jsonl: 151 written, 0 from cache, 0 failed in 921.6s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/pool/b4.jsonl --split dev
+=== b7plus 2026-11-15T10:45:19Z
+system b7plus-hyb · 151 rows · 0 already done · 151 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  33%|███▎      | 65/199 [00:00<00:00, 579.70it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 998.34it/s]
+  50/151 · 0.1 rows/s · 0 cached · 0 failed
+  100/151 · 0.1 rows/s · 0 cached · 0 failed
+  150/151 · 0.1 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/pool/b7plus.jsonl: 151 written, 0 from cache, 0 failed in 1096.9s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/pool/b7plus.jsonl --split dev
+=== b7 2026-11-15T11:04:20Z
+system b7-hyb · 151 rows · 0 already done · 151 to run
+  B7 — document-level date filter, no graph (the main control)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 55/199 [00:00<00:00, 541.93it/s]Loading weights:  62%|██████▏   | 124/199 [00:00<00:00, 624.86it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 948.28it/s]
+  50/151 · 0.1 rows/s · 0 cached · 0 failed
+  100/151 · 0.1 rows/s · 0 cached · 0 failed
+  150/151 · 0.1 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/pool/b7.jsonl: 151 written, 0 from cache, 0 failed in 1161.4s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/pool/b7.jsonl --split dev
+=== bvnone 2026-11-15T11:24:23Z
+system bvnone · 151 rows · 0 already done · 151 to run
+  post hoc — layer B, no temporal filter: flat RAG over the version store
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  37%|███▋      | 73/199 [00:00<00:00, 726.82it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1269.82it/s]
+  50/151 · 0.1 rows/s · 0 cached · 0 failed
+  100/151 · 0.2 rows/s · 0 cached · 0 failed
+  150/151 · 0.1 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/pool/bvnone.jsonl: 151 written, 0 from cache, 0 failed in 1058.4s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/pool/bvnone.jsonl --split dev
+=== score 2026-11-15T11:42:48Z
+b4       all n=151 MRR 0.554 | recall@ 1:0.424 5:0.755 10:0.854 20:0.874 50:0.960 100:0.974 | tv_recall@ 1:0.219 5:0.550 10:0.669 20:0.748 50:0.821 100:0.861
+b7       all n=151 MRR 0.603 | recall@ 1:0.483 5:0.768 10:0.854 20:0.901 50:0.974 100:0.987 | tv_recall@ 1:0.331 5:0.616 10:0.709 20:0.768 50:0.841 100:0.874
+b7plus   all n=151 MRR 0.575 | recall@ 1:0.464 5:0.728 10:0.815 20:0.861 50:0.940 100:0.954 | tv_recall@ 1:0.424 5:0.662 10:0.742 20:0.788 50:0.848 100:0.854
+bvnone   all n=151 MRR 0.579 | recall@ 1:0.464 5:0.742 10:0.841 20:0.874 50:0.974 100:0.974 | tv_recall@ 1:0.232 5:0.556 10:0.702 20:0.762 50:0.834 100:0.834
+exit=0 done 2026-11-15T11:42:58Z
+exit=0

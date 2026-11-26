@@ -1,0 +1,18 @@
+[project]
+name = "vilexgraph"
+version = "0.1.0"
+description = "Temporal-aware GraphRAG for Vietnamese legal text: vbpl.vn crawler, versioned legal graph, retrieval and ViLexTime benchmark"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "markdown-it-py>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+# pymilvus is pinned to the server in docker-compose.yml (Milvus v2.4.15)
+graph = ["neo4j>=5.24", "pymilvus>=2.4,<2.5"]
+embed = ["sentence-transformers>=3.0", "pyvi>=0.1.1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

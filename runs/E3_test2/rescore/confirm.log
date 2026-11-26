@@ -1,0 +1,12 @@
+ADR 0005 · split test · 10,000 lần lấy mẫu lại · Holm trên 6/6 kiểm định
+XN1 H0, truy xuất: b7pp − b7 · tv_recall@1 · all_answerable: +0.028 [-0.014; +0.072] p=0.2298 p_Holm=0.4596 → không đủ bằng chứng (all_answerable 211 dòng/101 lineage)
+XN2 H0, câu trả lời: b7pp − b7 · tver · all: -0.219 [-0.273; -0.165] p=0.0000 p_Holm=0.0000 → ủng hộ (all 227 dòng/101 lineage)
+XN3 RQ3: siêu dữ liệu cấp văn bản: b7 − b2ctx · tv_recall@1 · all_answerable: +0.047 [+0.023; +0.078] p=0.0000 p_Holm=0.0000 → ủng hộ (all_answerable 211 dòng/101 lineage)
+XN4 RQ3: chuỗi phiên bản: b7plus − b7 · tv_recall@1 · all_answerable: +0.028 [-0.014; +0.072] p=0.2348 p_Holm=0.4596 → không đủ bằng chứng (all_answerable 211 dòng/101 lineage)
+XN5 H3: lan truyền: b7pp − b7plus · accuracy · t6_ancestor_repealed: chưa chạy
+XN6 H1: b2ctx · vcr · t2_near/t2_regular: +0.100 [-0.067; +0.278] p=0.2706 p_Holm=— → thăm dò (t2_near 30 dòng/15 lineage, t2_regular 90 dòng/45 lineage)
+XN7 H2: proposed − b7 · accuracy · t6/t2_t3: -0.031 [-0.078; +0.015] p=0.2314 p_Holm=— → thăm dò (t6 32 dòng/16 lineage, t2_t3 195 dòng/85 lineage)
+XN8 RQ2: đồ thị phi thời gian: proposed − b5 · accuracy · all: +0.185 [+0.127; +0.246] p=0.0000 p_Holm=0.0000 → ủng hộ (all 227 dòng/101 lineage)
+XN9 RQ1: giá trị của truy xuất: b2ctx − b1 · accuracy · all: +0.150 [+0.109; +0.195] p=0.0000 p_Holm=0.0000 → ủng hộ (all 227 dòng/101 lineage)
+H0: nhánh điểm quyết định B7 (XN1 không được ủng hộ)
+-> runs/E3_test2/rescore/confirm.json

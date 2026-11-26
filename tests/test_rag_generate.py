@@ -1,0 +1,219 @@
+"""Prompt, answer parsing, and the guarantee that no gold field reaches a prompt."""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import pytest
+
+from vilexgraph import llm
+from vilexgraph.framework import generate
+from vilexgraph.framework.corpus import Unit
+
+import run_vilextime  # scripts/eval, put on the path by conftest
+
+SENTINEL = "ZZQQ-gold-must-never-be-prompted-7f3a"
+
+
+def unit(n: int) -> Unit:
+    return Unit(f"version:p{n}:1", "version", "version", f"provision:p{n}", "document:d",
+                "Clause", 1, f"nội dung {n}", "Thông tư X › Điều 2. Giải thích")
+
+
+def test_prompt_labels_units_and_maps_tags_back() -> None:
+    _, user, ids = generate.build_prompt("Hỏi gì?", "2024-05-01", [unit(1), unit(2)],
+                                         with_context=True)
+    assert "MỐC THỜI GIAN: 2024-05-01" in user
+    assert "[1]" in user and "[2]" in user
+    assert ids == ["version:p1:1", "version:p2:1"]
+
+
+def test_context_is_opt_in() -> None:
+    _, with_ctx, _ = generate.build_prompt("q", "2024-05-01", [unit(1)], with_context=True)
+    _, without, _ = generate.build_prompt("q", "2024-05-01", [unit(1)], with_context=False)
+    assert "Điều 2. Giải thích" in with_ctx
+    assert "Điều 2. Giải thích" not in without
+
+
+def test_no_evidence_gets_its_own_system_message() -> None:
+    """B1 must not abstain merely because it was handed nothing to read, and the
+    permission to use its own knowledge must not fight a system rule forbidding it."""
+    system, _, ids = generate.build_prompt("q", "2024-05-01", [], with_context=True)
+    assert ids == []
+    assert system == generate.SYSTEM_NO_EVIDENCE
+    assert "Không dùng kiến thức ngoài" not in system
+    assert generate.build_prompt("q", "2024-05-01", [unit(1)], with_context=True)[0] == generate.SYSTEM
+
+
+@pytest.mark.parametrize("raw, answerable, text, cites", [
+    ("TRẢ LỜI: nội dung A\nHIỆU LỰC: còn\nCĂN CỨ: [2]", True, "nội dung A", ("version:p2:1",)),
+    ("TRẢ LỜI:\nHIỆU LỰC: không\nCĂN CỨ: [1]", False, "", ("version:p1:1",)),
+    ("TRẢ LỜI: x\nHIỆU LỰC:  KHÔNG \nCĂN CỨ:", False, "", ()),
+    ("TRẢ LỜI: a\nHIỆU LỰC: [2], [2], [9]\nCĂN CỨ: [2], [2], [9]", True, "a", ("version:p2:1",)),
+    ("TRẢ LỜI: a\nHIỆU LỰC: không rõ\nCĂN CỨ: [1]", True, "a", ("version:p1:1",)),
+    ("trả lời: a\nhiệu lực: còn\ncăn cứ: [1]", True, "a", ("version:p1:1",)),
+    # one line: the labels need not start a line
+    ("TRẢ LỜI: x HIỆU LỰC: không CĂN CỨ: [1]", False, "", ("version:p1:1",)),
+    ("TRẢ LỜI: x HIỆU LỰC: còn CĂN CỨ: [2]", True, "x", ("version:p2:1",)),
+    ("TRẢ LỜI: x HIỆU LỰC: không rõ CĂN CỨ: [1]", True, "x", ("version:p1:1",)),
+    ("TRẢ LỜI: x\nHIỆU LỰC: còn CĂN CỨ: [1]", True, "x", ("version:p1:1",)),
+    # the last label of each kind wins
+    ("TRẢ LỜI: x HIỆU LỰC: còn CĂN CỨ: [1] HIỆU LỰC: không CĂN CỨ: [2]", False, "", ("version:p2:1",)),
+    # a lower-case "hiệu lực:" inside the answer is not a label
+    ("TRẢ LỜI: Luật có hiệu lực: từ 2020\nHIỆU LỰC: còn\nCĂN CỨ: [1]", True,
+     "Luật có hiệu lực: từ 2020", ("version:p1:1",)),
+])
+def test_parse(raw, answerable, text, cites) -> None:
+    ids = ["version:p1:1", "version:p2:1"]
+    assert generate.parse(raw, ids) == (text, answerable, cites)
+
+
+def test_declining_is_not_a_claim_that_the_unit_expired() -> None:
+    """"không rõ" must stay answerable, or a model that shrugs scores correct
+    on every genuinely unanswerable row and the reason stops being measured."""
+    _, answerable, _ = generate.parse("TRẢ LỜI:\nHIỆU LỰC: không rõ\nCĂN CỨ:", [])
+    assert answerable is True
+    _, claimed, _ = generate.parse("TRẢ LỜI:\nHIỆU LỰC: không\nCĂN CỨ:", [])
+    assert claimed is False
+
+
+def test_a_mistyped_label_does_not_become_the_answer() -> None:
+    text, answerable, _ = generate.parse("TRẢ LỜI:\nHIỆU LỰNG: không\nCĂN CỨ:", [])
+    assert text == ""
+    assert answerable is True, "a typo must not be read as a legal claim"
+
+
+def test_unformatted_output_is_kept_not_silently_scored_empty() -> None:
+    text, _, _ = generate.parse("mô hình phớt lờ định dạng", [])
+    assert text == "mô hình phớt lờ định dạng"
+
+
+def test_cache_round_trip(tmp_path: Path) -> None:
+    cache = generate.Cache(tmp_path / "c.sqlite")
+    key = generate.Cache.key("sys", "usr", "groq", "m")
+    assert cache.get(key) is None
+    cache.put(key, "groq", "m", "TRẢ LỜI: x\nHIỆU LỰC: còn\nCĂN CỨ:")
+    assert tuple(cache.get(key))[:2] == ("groq", "m")
+    assert generate.Cache.key("sys", "usr", "groq", "other") != key
+    cache.close()
+    assert generate.Cache(None).get(key) is None
+
+
+@pytest.mark.parametrize("changed", [{"temperature": 0.9}, {"max_tokens": 512}, {"effort": "low"}])
+def test_completion_cache_separates_generation_settings(tmp_path, monkeypatch, changed):
+    monkeypatch.setenv("GROQ_API_KEY", "test-key")
+    calls = []
+
+    def complete(*args, **kwargs):
+        calls.append(kwargs)
+        return llm.Completion("TRẢ LỜI: x\nHIỆU LỰC: còn\nCĂN CỨ:", "groq", "m", 0.0)
+
+    monkeypatch.setattr(llm, "complete", complete)
+    cache = generate.Cache(tmp_path / "c.sqlite")
+    try:
+        base = dict(provider="groq", model="m", cache=cache)
+        generate.answer("q", "2021-01-01", [], **base)
+        got = generate.answer("q", "2021-01-01", [], **base, **changed)
+        assert not got.cached, "generation settings changed but an old completion was reused"
+        assert generate.answer("q", "2021-01-01", [], **base, **changed).cached
+        assert len(calls) == 2
+    finally:
+        cache.close()
+
+
+def test_completion_cache_resolves_environment_model_before_lookup(tmp_path, monkeypatch):
+    monkeypatch.setenv("GROQ_API_KEY", "test-key")
+    monkeypatch.setenv("LLM_PROVIDER", "groq")
+    monkeypatch.setenv("GROQ_MODEL", "first")
+    calls = []
+
+    def complete(*args, **kwargs):
+        calls.append(llm.model_for("groq", kwargs.get("model")))
+        return llm.Completion("TRẢ LỜI: x\nHIỆU LỰC: còn\nCĂN CỨ:", "groq", calls[-1], 0.0)
+
+    monkeypatch.setattr(llm, "complete", complete)
+    cache = generate.Cache(tmp_path / "c.sqlite")
+    try:
+        assert generate.answer("q", "2021-01-01", [], cache=cache).model == "first"
+        monkeypatch.setenv("GROQ_MODEL", "second")
+        got = generate.answer("q", "2021-01-01", [], cache=cache)
+        assert got.model == "second" and not got.cached
+        # Explicit and resolved defaults identify the same request; transport options do not.
+        assert generate.answer("q", "2021-01-01", [], provider="groq", model="second",
+                               temperature=0.0, max_tokens=4096, retries=1, timeout=3,
+                               cache=cache).cached
+        assert calls == ["first", "second"]
+    finally:
+        cache.close()
+
+
+def test_no_gold_field_can_reach_the_prompt(tmp_path: Path, monkeypatch) -> None:
+    """The most load-bearing test here: a leak would show up as a good score.
+
+    A whole run is driven over a release row whose every gold field carries a
+    sentinel, and the captured prompt is checked for it.
+    """
+    release = tmp_path / "release.jsonl"
+    release.write_text(json.dumps({
+        "id": "vilextime:T1:provision:x:2024-05-01", "split": "dev", "group": "T1",
+        "question": "Quy định nói gì?", "as_of": "2024-05-01",
+        "as_of_strategy": "giua_khoang", "lineage_id": "provision:x",
+        # everything below is gold and must not be prompted
+        "answer": SENTINEL, "short_answer": SENTINEL, "answerable": True,
+        "version_id": f"version:{SENTINEL}:1", "no_answer_reason": None,
+        "evidence_set": [{"provision_id": SENTINEL, "version_id": SENTINEL, "role": "gold"}],
+        "accepted_evidence": [f"asis:provision:{SENTINEL}"],
+        "derivation": {"transitions": [{"evidence": SENTINEL}]},
+        "target": {"lead_in": SENTINEL, "citation": SENTINEL},
+    }, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    seen: list[str] = []
+
+    def capture(system, user, **kwargs):
+        seen.append(system + "\n" + user)
+        return llm.Completion("TRẢ LỜI: gì đó\nHIỆU LỰC: còn\nCĂN CỨ:", "fake", "fake", 0.0)
+
+    monkeypatch.setattr(llm, "complete", capture)
+    out = tmp_path / "preds.jsonl"
+    monkeypatch.setattr(sys, "argv", ["run_vilextime.py", "--system", "b1", "--split", "dev",
+                                      "--release", str(release), "--out", str(out), "--no-cache"])
+    run_vilextime.main()
+
+    assert seen, "the generator was never called"
+    for prompt in seen:
+        assert SENTINEL not in prompt, "a gold field reached the prompt"
+    written = [json.loads(line) for line in out.read_text(encoding="utf-8").splitlines() if line]
+    assert [r["id"] for r in written] == ["vilextime:T1:provision:x:2024-05-01"]
+    assert written[0]["answer"] == "gì đó"
+
+
+def test_query_exposes_only_three_fields() -> None:
+    assert list(run_vilextime.Query.__slots__) == ["id", "question", "as_of"]
+
+
+def test_validity_lines_follow_each_block_and_are_half_open():
+    _, user, _ = generate.build_prompt(
+        "q", "2024-05-01", [unit(1), unit(2)], with_context=False,
+        validity={unit(1).unit_id: [("2020-01-01", "2023-07-01")], unit(2).unit_id: [("2023-07-01", None)]})
+    assert "(Hiệu lực của đoạn này: từ 2020-01-01 đến trước 2023-07-01)" in user
+    assert "(Hiệu lực của đoạn này: từ 2023-07-01, chưa có ngày kết thúc)" in user
+    assert generate.validity_line([]) == "(Hiệu lực của đoạn này: không có khoảng hiệu lực nào)"
+    # mặc định không đổi prompt của các hệ đã khóa
+    assert "Hiệu lực của đoạn này" not in generate.build_prompt("q", "2024-05-01", [unit(1)], with_context=False)[1]
+
+
+def test_zero_retries_still_makes_one_call(monkeypatch) -> None:
+    """`retries` counts attempts in llm.complete; 0 used to mean no call at all (demo bug, 13/11)."""
+    calls = []
+
+    class Response:
+        status_code, ok, headers, text = 200, True, {}, ""
+
+        def json(self):
+            return {"choices": [{"message": {"content": "x"}, "finish_reason": "stop"}], "model": "m"}
+
+    monkeypatch.setenv("OPENAI_API_KEY", "k")
+    monkeypatch.setattr(llm.requests, "post", lambda *a, **kw: calls.append(1) or Response())
+    assert llm.complete("s", "u", provider="openai", model="m", retries=0).text == "x"
+    assert calls == [1]

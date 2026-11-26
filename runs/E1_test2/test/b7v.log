@@ -1,0 +1,15 @@
+system b7v-lex · 492 rows · 0 already done · 492 to run
+  B7 over layer B: consolidated version texts, still the document filter. Separates the wording L3 consolidated from the version window (K-07)
+  50/492 · 0.3 rows/s · 0 cached · 0 failed
+  100/492 · 0.3 rows/s · 0 cached · 0 failed
+  150/492 · 0.3 rows/s · 0 cached · 0 failed
+  200/492 · 0.3 rows/s · 0 cached · 0 failed
+  250/492 · 0.3 rows/s · 0 cached · 0 failed
+  300/492 · 0.3 rows/s · 0 cached · 0 failed
+  350/492 · 0.3 rows/s · 0 cached · 0 failed
+  400/492 · 0.3 rows/s · 0 cached · 0 failed
+  450/492 · 0.3 rows/s · 0 cached · 0 failed
+
+runs/E1_test2/test/b7v.jsonl: 492 written, 0 from cache, 0 failed in 1619.3s
+score it:
+  python scripts/eval/score_vilextime.py runs/E1_test2/test/b7v.jsonl --split test

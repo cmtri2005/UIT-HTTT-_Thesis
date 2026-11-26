@@ -1,0 +1,136 @@
+=== AITeamVN/Vietnamese_Reranker 2026-11-15T13:31:53Z
+system b4-rr · 151 rows · 0 already done · 151 to run
+  B4 — BM25 + dense by reciprocal rank fusion (k=60), no reranker
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   2%|▏         | 3/199 [00:00<00:29,  6.55it/s]Loading weights:   2%|▏         | 4/199 [00:01<01:17,  2.52it/s]Loading weights:   3%|▎         | 5/199 [00:01<01:28,  2.19it/s]Loading weights:   3%|▎         | 6/199 [00:02<01:26,  2.22it/s]Loading weights:   5%|▍         | 9/199 [00:02<00:50,  3.79it/s]Loading weights:   5%|▌         | 10/199 [00:03<01:07,  2.81it/s]Loading weights:   6%|▌         | 11/199 [00:03<01:03,  2.98it/s]Loading weights:  10%|▉         | 19/199 [00:04<00:23,  7.71it/s]Loading weights:  11%|█         | 21/199 [00:04<00:21,  8.18it/s]Loading weights:  11%|█         | 22/199 [00:05<00:53,  3.31it/s]Loading weights:  12%|█▏        | 23/199 [00:06<01:13,  2.41it/s]Loading weights:  16%|█▌        | 31/199 [00:08<00:42,  3.92it/s]Loading weights:  16%|█▌        | 32/199 [00:08<00:44,  3.78it/s]Loading weights:  19%|█▉        | 38/199 [00:08<00:25,  6.31it/s]Loading weights:  20%|██        | 40/199 [00:09<00:24,  6.50it/s]Loading weights:  34%|███▎      | 67/199 [00:09<00:04, 27.03it/s]Loading weights: 100%|██████████| 199/199 [00:09<00:00, 21.71it/s]
+  50/151 · 3.8 rows/s · 0 cached · 0 failed
+  100/151 · 4.0 rows/s · 0 cached · 0 failed
+  150/151 · 4.7 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/b4.jsonl: 151 written, 0 from cache, 0 failed in 31.9s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/b4.jsonl --split dev
+system b7-rr · 151 rows · 0 already done · 151 to run
+  B7 — document-level date filter, no graph (the main control)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   4%|▍         | 8/199 [00:00<00:02, 77.23it/s]Loading weights:   8%|▊         | 16/199 [00:00<00:07, 25.20it/s]Loading weights:  15%|█▌        | 30/199 [00:00<00:03, 45.85it/s]Loading weights:  19%|█▉        | 38/199 [00:00<00:03, 46.75it/s]Loading weights:  36%|███▌      | 72/199 [00:01<00:03, 40.52it/s]Loading weights:  39%|███▉      | 78/199 [00:02<00:03, 36.37it/s]Loading weights:  44%|████▎     | 87/199 [00:02<00:03, 28.32it/s]Loading weights:  46%|████▌     | 91/199 [00:02<00:03, 28.22it/s]Loading weights:  48%|████▊     | 95/199 [00:03<00:04, 21.75it/s]Loading weights:  49%|████▉     | 98/199 [00:03<00:05, 17.55it/s]Loading weights:  50%|█████     | 100/199 [00:03<00:05, 17.25it/s]Loading weights: 100%|██████████| 199/199 [00:03<00:00, 53.57it/s]
+  50/151 · 9.1 rows/s · 0 cached · 0 failed
+  100/151 · 11.8 rows/s · 0 cached · 0 failed
+  150/151 · 14.2 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/b7.jsonl: 151 written, 0 from cache, 0 failed in 10.6s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/b7.jsonl --split dev
+system b7plus-rr · 151 rows · 0 already done · 151 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   2%|▏         | 3/199 [00:00<00:07, 25.26it/s]Loading weights:   4%|▎         | 7/199 [00:00<00:08, 22.53it/s]Loading weights:  10%|▉         | 19/199 [00:00<00:04, 39.66it/s]Loading weights:  12%|█▏        | 23/199 [00:00<00:06, 28.45it/s]Loading weights:  13%|█▎        | 26/199 [00:00<00:06, 27.15it/s]Loading weights:  15%|█▍        | 29/199 [00:01<00:07, 22.00it/s]Loading weights:  17%|█▋        | 33/199 [00:01<00:07, 22.57it/s]Loading weights:  18%|█▊        | 36/199 [00:01<00:07, 21.96it/s]Loading weights:  25%|██▌       | 50/199 [00:01<00:04, 32.30it/s]Loading weights:  27%|██▋       | 54/199 [00:01<00:05, 27.16it/s]Loading weights:  29%|██▉       | 58/199 [00:02<00:04, 28.25it/s]Loading weights:  43%|████▎     | 85/199 [00:02<00:01, 65.12it/s]Loading weights:  50%|█████     | 100/199 [00:02<00:01, 81.20it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 82.67it/s]
+  50/151 · 8.2 rows/s · 0 cached · 0 failed
+  100/151 · 10.0 rows/s · 0 cached · 0 failed
+  150/151 · 12.3 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/b7plus.jsonl: 151 written, 0 from cache, 0 failed in 12.2s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/b7plus.jsonl --split dev
+system bvnone-rr · 151 rows · 0 already done · 151 to run
+  post hoc — layer B, no temporal filter: flat RAG over the version store
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 31/199 [00:00<00:02, 58.51it/s]Loading weights:  25%|██▌       | 50/199 [00:00<00:02, 69.34it/s]Loading weights:  29%|██▉       | 58/199 [00:00<00:02, 55.38it/s]Loading weights:  34%|███▎      | 67/199 [00:01<00:02, 47.67it/s]Loading weights:  36%|███▌      | 72/199 [00:01<00:02, 44.58it/s]Loading weights:  46%|████▌     | 91/199 [00:01<00:02, 48.03it/s]Loading weights:  48%|████▊     | 96/199 [00:02<00:03, 31.42it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 86.31it/s]
+  50/151 · 9.5 rows/s · 0 cached · 0 failed
+  100/151 · 11.6 rows/s · 0 cached · 0 failed
+  150/151 · 12.5 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/bvnone.jsonl: 151 written, 0 from cache, 0 failed in 12.0s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/AITeamVN__Vietnamese_Reranker/bvnone.jsonl --split dev
+=== BAAI/bge-reranker-v2-m3 2026-11-15T13:43:22Z
+system b4-rr · 151 rows · 0 already done · 151 to run
+  B4 — BM25 + dense by reciprocal rank fusion (k=60), no reranker
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  21%|██        | 41/199 [00:00<00:03, 42.05it/s]Loading weights:  26%|██▌       | 51/199 [00:01<00:03, 46.36it/s]Loading weights:  30%|██▉       | 59/199 [00:01<00:02, 47.59it/s]Loading weights:  37%|███▋      | 74/199 [00:01<00:02, 56.70it/s]Loading weights:  78%|███████▊  | 156/199 [00:01<00:00, 160.39it/s]Loading weights: 100%|██████████| 199/199 [00:01<00:00, 119.53it/s]
+  50/151 · 14.7 rows/s · 0 cached · 0 failed
+  100/151 · 12.1 rows/s · 0 cached · 0 failed
+  150/151 · 14.9 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/b4.jsonl: 151 written, 0 from cache, 0 failed in 10.0s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/b4.jsonl --split dev
+system b7-rr · 151 rows · 0 already done · 151 to run
+  B7 — document-level date filter, no graph (the main control)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   8%|▊         | 15/199 [00:00<00:01, 101.77it/s]Loading weights:  13%|█▎        | 26/199 [00:00<00:05, 29.41it/s] Loading weights:  40%|████      | 80/199 [00:01<00:01, 78.45it/s]Loading weights:  45%|████▌     | 90/199 [00:01<00:01, 69.13it/s]Loading weights: 100%|██████████| 199/199 [00:01<00:00, 142.15it/s]
+  50/151 · 11.1 rows/s · 0 cached · 0 failed
+  100/151 · 5.2 rows/s · 0 cached · 0 failed
+  150/151 · 6.5 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/b7.jsonl: 151 written, 0 from cache, 0 failed in 23.0s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/b7.jsonl --split dev
+system b7plus-rr · 151 rows · 0 already done · 151 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 85/199 [00:00<00:00, 228.19it/s]Loading weights:  54%|█████▍    | 108/199 [00:00<00:00, 220.11it/s]Loading weights:  65%|██████▌   | 130/199 [00:01<00:01, 55.44it/s] Loading weights: 100%|██████████| 199/199 [00:01<00:00, 119.21it/s]
+  50/151 · 5.0 rows/s · 0 cached · 0 failed
+  100/151 · 7.2 rows/s · 0 cached · 0 failed
+  150/151 · 7.9 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/b7plus.jsonl: 151 written, 0 from cache, 0 failed in 19.1s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/b7plus.jsonl --split dev
+system bvnone-rr · 151 rows · 0 already done · 151 to run
+  post hoc — layer B, no temporal filter: flat RAG over the version store
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   3%|▎         | 6/199 [00:00<00:11, 17.26it/s]Loading weights:  32%|███▏      | 64/199 [00:00<00:01, 121.43it/s]Loading weights:  39%|███▉      | 78/199 [00:00<00:01, 78.50it/s] Loading weights:  44%|████▎     | 87/199 [00:01<00:01, 56.96it/s]Loading weights:  50%|████▉     | 99/199 [00:01<00:01, 56.23it/s]Loading weights:  53%|█████▎    | 106/199 [00:01<00:01, 46.53it/s]Loading weights:  59%|█████▉    | 118/199 [00:02<00:02, 36.17it/s]Loading weights:  62%|██████▏   | 123/199 [00:02<00:02, 25.36it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 69.46it/s]
+  50/151 · 13.5 rows/s · 0 cached · 0 failed
+  100/151 · 17.1 rows/s · 0 cached · 0 failed
+  150/151 · 19.8 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/bvnone.jsonl: 151 written, 0 from cache, 0 failed in 7.6s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/BAAI__bge-reranker-v2-m3/bvnone.jsonl --split dev
+=== namdp-ptit/ViRanker 2026-11-15T13:50:44Z
+system b4-rr · 151 rows · 0 already done · 151 to run
+  B4 — BM25 + dense by reciprocal rank fusion (k=60), no reranker
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   1%|          | 2/199 [00:00<00:54,  3.64it/s]Loading weights:  12%|█▏        | 23/199 [00:00<00:05, 30.38it/s]Loading weights:  14%|█▍        | 28/199 [00:01<00:09, 18.99it/s]Loading weights:  16%|█▌        | 32/199 [00:02<00:13, 12.19it/s]Loading weights:  17%|█▋        | 34/199 [00:02<00:14, 11.56it/s]Loading weights:  38%|███▊      | 75/199 [00:02<00:03, 38.19it/s]Loading weights:  44%|████▎     | 87/199 [00:03<00:02, 39.71it/s]Loading weights:  46%|████▌     | 92/199 [00:03<00:02, 40.11it/s]Loading weights:  49%|████▊     | 97/199 [00:03<00:03, 32.23it/s]Loading weights: 100%|██████████| 199/199 [00:03<00:00, 54.61it/s]
+  50/151 · 9.2 rows/s · 0 cached · 0 failed
+  100/151 · 10.7 rows/s · 0 cached · 0 failed
+  150/151 · 11.5 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/b4.jsonl: 151 written, 0 from cache, 0 failed in 13.1s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/b4.jsonl --split dev
+system b7-rr · 151 rows · 0 already done · 151 to run
+  B7 — document-level date filter, no graph (the main control)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   2%|▏         | 3/199 [00:00<00:28,  6.85it/s]Loading weights:   7%|▋         | 13/199 [00:00<00:08, 21.27it/s]Loading weights:  15%|█▍        | 29/199 [00:00<00:03, 45.05it/s]Loading weights:  28%|██▊       | 55/199 [00:00<00:01, 89.30it/s]Loading weights:  35%|███▌      | 70/199 [00:01<00:01, 102.54it/s]Loading weights:  55%|█████▍    | 109/199 [00:01<00:00, 171.10it/s]Loading weights:  66%|██████▋   | 132/199 [00:02<00:01, 51.02it/s] Loading weights:  74%|███████▍  | 148/199 [00:02<00:01, 48.44it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 74.47it/s]
+  50/151 · 7.5 rows/s · 0 cached · 0 failed
+  100/151 · 8.4 rows/s · 0 cached · 0 failed
+  150/151 · 9.0 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/b7.jsonl: 151 written, 0 from cache, 0 failed in 16.7s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/b7.jsonl --split dev
+system b7plus-rr · 151 rows · 0 already done · 151 to run
+  B7+ — version-level filter; the proposed system minus the online graph
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  21%|██        | 42/199 [00:00<00:01, 115.26it/s]Loading weights:  27%|██▋       | 54/199 [00:01<00:04, 30.87it/s] Loading weights:  30%|███       | 60/199 [00:01<00:04, 31.87it/s]Loading weights:  33%|███▎      | 65/199 [00:01<00:04, 31.84it/s]Loading weights:  36%|███▌      | 71/199 [00:01<00:04, 31.59it/s]Loading weights:  39%|███▉      | 78/199 [00:02<00:03, 31.03it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 89.80it/s]
+  50/151 · 12.3 rows/s · 0 cached · 0 failed
+  100/151 · 15.0 rows/s · 0 cached · 0 failed
+  150/151 · 15.3 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/b7plus.jsonl: 151 written, 0 from cache, 0 failed in 9.8s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/b7plus.jsonl --split dev
+system bvnone-rr · 151 rows · 0 already done · 151 to run
+  post hoc — layer B, no temporal filter: flat RAG over the version store
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   3%|▎         | 5/199 [00:00<00:21,  8.98it/s]Loading weights:  42%|████▏     | 83/199 [00:00<00:00, 162.96it/s]Loading weights:  63%|██████▎   | 125/199 [00:01<00:00, 103.32it/s]Loading weights: 100%|██████████| 199/199 [00:01<00:00, 155.72it/s]
+  50/151 · 23.8 rows/s · 0 cached · 0 failed
+  100/151 · 27.7 rows/s · 0 cached · 0 failed
+  150/151 · 28.7 rows/s · 0 cached · 0 failed
+
+runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/bvnone.jsonl: 151 written, 0 from cache, 0 failed in 5.2s
+score it:
+  python scripts/eval/score_vilextime.py runs/rerank_pool_dev_20261115/rr/namdp-ptit__ViRanker/bvnone.jsonl --split dev
+AITeamVN__Vietnamese_Reranker            b4      MRR 0.696  R@1 0.530  TV-R@1 0.285
+AITeamVN__Vietnamese_Reranker            b7      MRR 0.777  R@1 0.656  TV-R@1 0.470
+AITeamVN__Vietnamese_Reranker            b7plus  MRR 0.724  R@1 0.603  TV-R@1 0.550
+AITeamVN__Vietnamese_Reranker            bvnone  MRR 0.673  R@1 0.510  TV-R@1 0.278
+BAAI__bge-reranker-v2-m3                 b4      MRR 0.685  R@1 0.550  TV-R@1 0.278
+BAAI__bge-reranker-v2-m3                 b7      MRR 0.722  R@1 0.596  TV-R@1 0.424
+BAAI__bge-reranker-v2-m3                 b7plus  MRR 0.665  R@1 0.523  TV-R@1 0.477
+BAAI__bge-reranker-v2-m3                 bvnone  MRR 0.644  R@1 0.477  TV-R@1 0.245
+namdp-ptit__ViRanker                     b4      MRR 0.624  R@1 0.523  TV-R@1 0.265
+namdp-ptit__ViRanker                     b7      MRR 0.654  R@1 0.536  TV-R@1 0.377
+namdp-ptit__ViRanker                     b7plus  MRR 0.624  R@1 0.510  TV-R@1 0.470
+namdp-ptit__ViRanker                     bvnone  MRR 0.651  R@1 0.556  TV-R@1 0.278
+exit=0 done 2026-11-15T14:00:27Z

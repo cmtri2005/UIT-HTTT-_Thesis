@@ -1,0 +1,117 @@
+# Chương 1. Mở đầu
+
+> Bản nháp cho GVHD xem hướng tại mốc Chủ nhật 08/11/2026. Các kết quả hiện có được đổi vai thành vòng thử ngày 05/11 sau khi đã thấy kết quả; bộ test cuối chưa chạy.
+<!-- nguồn: docs/plans/active/master-plan.md -->
+
+**Tên đề tài:** TRUY XUẤT TĂNG CƯỜNG DỰA TRÊN ĐỒ THỊ TRI THỨC CÓ NHẬN BIẾT THỜI GIAN CHO HỎI ĐÁP PHÁP LUẬT VIỆT NAM THEO MỐC HIỆU LỰC.
+
+**Sinh viên:** Cao Minh Trí 23521635; Nguyễn Minh Trí 23521643. **GVHD:** ThS. Đỗ Thị Minh Phụng. MSSV của Nguyễn Minh Trí được ghi theo đính chính của tác giả trong yêu cầu soạn nháp; đề cương có lỗi đánh máy ở trường này.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx; yêu cầu C9 của tác giả ngày 05/11/2026 -->
+
+## 1.1. Bối cảnh và động cơ
+
+Một câu hỏi pháp luật cần được đặt trong thời điểm áp dụng. Cùng một nội dung được hỏi, lời văn của điều khoản có thể đã được sửa đổi, bổ sung, thay thế hoặc bãi bỏ giữa các mốc. Do đó, truy xuất được một đoạn đúng chủ đề chưa đủ: hệ thống còn phải xác định đoạn ấy thuộc phiên bản nào và có thể dùng tại thời điểm người hỏi nêu hay không. Đề cương đặt trọng tâm vào lỗi lấy đúng quy phạm nhưng áp dụng sai phiên bản, thay vì chỉ đánh giá mức liên quan của đoạn văn.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+
+Hướng tiếp cận của khóa luận là biểu diễn điều khoản cùng lịch sử lời văn và khoảng hiệu lực, rồi dùng các thông tin đó khi tìm căn cứ và kiểm trích dẫn. Biểu diễn đồ thị hỗ trợ mô tả quan hệ cấu trúc và tác động sửa đổi; tuy nhiên, lợi ích của biểu diễn này phải được phân biệt với lợi ích của một bộ lọc ngày đơn giản. Đó là lý do cần các cấu hình đối chứng giữ chung đường truy xuất và sinh câu trả lời.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+<!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
+
+Bài toán có tiền lệ gần trong Prior, LawInForce-eCFR và NitiBench+ về lọc luật theo mốc, điều kiện cấp sẵn căn cứ và lỗi đọc phiên bản [@prior2026oldfriend] [@yao2026lawinforce] [@akarajaradwong2026nitibenchplus]. Vì vậy, “lọc thời gian có lợi” và “hai nút thắt tìm–đọc” không được coi là phát hiện riêng. Luận điểm của khóa luận được thu hẹp vào phép đo trên pháp luật Việt Nam, hai nấc đã đo trên cùng dữ liệu: ngày văn bản và khoảng hiệu lực phiên bản. Lan truyền từ nút cha chưa có bằng chứng lợi ích; nhóm bãi bỏ đã có ở NitiBench+, nên chỉ giữ phạm vi lệnh nằm ở văn bản khác và bãi bỏ qua nút cha của nguồn Việt Nam. Khảo sát đã có log, nhưng còn nguồn bị chặn và bài chỉ đọc một phần; chưa xác lập thứ tự công bố hay phủ định tiền lệ khác.
+<!-- nguồn: related_paper/notes/2026-11-05-doc-nguon-va-tinh-moi.md; docs/plans/active/master-plan.md, mục 10 -->
+
+## 1.2. Phát biểu bài toán
+
+Theo đề cương, đầu vào là một câu hỏi pháp lý \(x\) bằng tiếng Việt kèm mốc thời gian áp dụng \(t\), tức thời điểm phát sinh hành vi hoặc quan hệ pháp luật cần tra cứu. Đầu ra là câu trả lời \(a\) và tập bằng chứng \(E\) gồm các đơn vị pháp lý ở cấp Điều/Khoản/Điểm có hiệu lực tại \(t\). Với \(U\) là tập đơn vị pháp lý trong kho, ràng buộc đầu ra được viết:
+
+\[
+(x,t)\longmapsto(a,E),\qquad E\subseteq U,\quad \forall u\in E:\operatorname{valid}(u,t).
+\]
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+
+Truy vấn là cặp \((x,t)\). Với những câu hỏi có nội dung thay đổi theo lịch sử pháp luật, đổi mốc phải dẫn đến việc lựa chọn lại câu trả lời và bằng chứng tương ứng. Trong đánh giá, cần phân biệt câu trả lời sai nội dung, dùng sai phiên bản và không đưa ra kết luận. Trường hợp không tìm được căn cứ không tự chứng minh quy định đã hết hiệu lực; đây là điểm đặc biệt quan trọng khi đánh giá nhóm bãi bỏ.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+<!-- nguồn: scripts/eval/score_vilextime.py -->
+
+## 1.3. Câu hỏi nghiên cứu và giả thuyết
+
+Các câu hỏi và giả thuyết dưới đây được giữ nguyên văn đề cương:
+
+> RQ1. Các mô hình ngôn ngữ lớn và các hệ thống RAG hiện có mắc lỗi áp dụng sai phiên bản quy phạm ở mức độ nào trên pháp luật Việt Nam?
+
+> RQ2. Việc biểu diễn văn bản pháp luật dưới dạng đồ thị theo phiên bản có làm giảm tỷ lệ lỗi này so với RAG phẳng và GraphRAG phi thời gian hay không?
+
+> RQ3. Lợi ích thu được đến từ biểu diễn đồ thị, hay chỉ đơn thuần đến từ việc lọc theo siêu dữ liệu thời gian?
+
+> Giả thuyết nghiên cứu: Việc mô hình hóa chuỗi phiên bản và hiệu lực ở cấp cấu trúc pháp lý sẽ cải thiện khả năng truy xuất đúng phiên bản so với chỉ lọc theo ngày hiệu lực ở cấp văn bản.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+
+Để trả lời, khóa luận tách ba mức: mô tả lỗi của các hệ đã chạy; so sánh xác nhận theo kế hoạch phân tích đã khai báo; và phân tích thăm dò về các thành phần hoặc nhóm nhỏ. Các phán quyết trong vòng thử chỉ có hiệu lực trong phạm vi dữ liệu, nhãn và cấu hình tương ứng. Trên bộ test cuối (G4, §6.6), F1–F6 được ủng hộ ở cả hai lần chạy, còn F7 (T6 không có đáp án, 23 lineage) không đủ bằng chứng. Theo quy tắc khai trước (ADR 0006 §6), H0 được ủng hộ qua F6, kèm ghi chú vòng lặp test 2 không đủ bằng chứng. F6 trùng F5 về cấu trúc, nên H0 đo bước lọc theo khoảng phiên bản, không đo lan truyền hay duyệt đồ thị lúc truy vấn.
+<!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
+<!-- nguồn: docs/plans/active/master-plan.md -->
+
+## 1.4. Mục tiêu và đóng góp dự kiến
+
+Đề cương cam kết hai sản phẩm nghiên cứu. Thứ nhất là ViLexTime, bộ dữ liệu hỏi đáp pháp luật tiếng Việt theo mốc thời gian, có bằng chứng cấp Điều/Khoản/Điểm, quy mô dự kiến khoảng 1.100–1.300 câu hỏi. Thứ hai là kiến trúc Temporal-Aware KG-RAG, kết hợp đồ thị có thông tin thời gian, truy xuất có ràng buộc hiệu lực, truy xuất lai ghép, mở rộng đồ thị và kiểm chứng trích dẫn. Quy mô dự kiến là mục tiêu của đề cương, chưa phải số mẫu người kiểm đạt.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+
+Ở trạng thái hiện tại, đóng góp có thể trình bày là đường ống dẫn xuất phiên bản có truy nguyên, tài nguyên đánh giá công bố nguồn nhãn, và phép so sánh giúp phân biệt các mức thông tin thời gian. Kiểm định trên bộ cuối đã chạy (G4, §6.6). Đóng góp không được định nghĩa bằng yêu cầu hệ đề xuất phải thắng; một kết quả không đủ bằng chứng vẫn trả lời được giới hạn của cách biểu diễn đã thử nếu phép đo đáng tin cậy.
+<!-- nguồn: docs/plans/active/master-plan.md -->
+
+Điều kiện X8 sẽ cấp sẵn căn cứ đúng mốc và căn cứ hiện hành cho các nhóm T1, T2, T3, T6 để đo cái giá của việc đọc sai văn bản, tách khỏi lỗi tìm. Phải làm trên dev trước rồi bộ test cuối; oracle dev hiện có không thay được hai điều kiện đó. Kết quả (§6.5.1): trên bộ cuối, cùng generator đạt Accuracy 0,956 khi được cấp căn cứ đúng mốc và 0,456 khi được cấp căn cứ hiện hành (lần 1, 318 dòng); trên dev là 0,947 và 0,523 (151 dòng). Trên T1 của bộ cuối, sau khi sửa đáp án ngắn và chấm lại (amendment 19/11), cả hai điều kiện đạt 0,860, đúng như kỳ vọng vì T1 không đổi theo thời gian (§6.6.2).
+<!-- nguồn: docs/plans/active/master-plan.md, X8 và mục 10 -->
+
+## 1.5. Phạm vi và giới hạn
+
+Nguồn thu thập theo đề cương là vbpl.vn; các miền tiêu biểu gồm giao thông đường bộ, thuế–phí–hải quan, doanh nghiệp–đầu tư và đất đai. Các nội dung thực hiện bao gồm khảo sát tài liệu, thu thập và phân tích cấu trúc, dựng đồ thị có phiên bản, xây ViLexTime, phát triển truy xuất và sinh, thực nghiệm và phân tích. ViLexTime theo thiết kế diff-driven đi từ so khớp phiên bản, trích khác biệt, diễn đạt câu hỏi đến kiểm định thủ công; vai trò LLM được đề cương giới hạn ở hỗ trợ diễn đạt câu hỏi.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+
+Khóa luận tập trung vào hiệu lực theo thời gian của văn bản quy phạm pháp luật cấp trung ương; chưa xử lý đầy đủ hiệu lực theo không gian, đối tượng áp dụng và xung đột quy phạm. Dữ liệu chỉ là văn bản dạng chữ, chưa hỗ trợ đa phương thức. Hợp nhất tự động có thể sai; hệ thống không huấn luyện lại LLM và không thay thế tư vấn pháp lý chuyên nghiệp. Kho thực tế có thể rộng hơn các miền đánh giá để giữ các quan hệ tác động cần thiết.
+<!-- nguồn: docs/DeCuongKLTN_23521635_23521643_UIT.docx -->
+<!-- nguồn: docs/plans/active/master-plan.md -->
+
+## 1.6. Chỗ lệch so với đề cương
+
+Bảng sau ghi các lệch đã được kế hoạch chính yêu cầu giải trình. Đây là khai báo về cách thực hiện, không sửa nội dung cam kết ban đầu.
+
+| Lệch | Lý do | Xử lý trong khóa luận |
+|---|---|---|
+| Nhãn LLM ở v1.0 và test 2 | Thiếu giờ người khi chạy theo mốc 31/10 | Báo thành vòng thử. Bộ cuối cũng không do người độc lập gán: hai agent AI gán mù, CMT duyệt, chưa luật sư kiểm (`review.source = "ai_cmt"`); báo đúng tầng này |
+| “Chuyển miền” đổi thành phân rã theo miền | Hệ không huấn luyện lại, miền đa nhãn | Thực hiện theo C5; không gọi là phép chuyển miền đã chạy |
+| GraphRAG là bản xấp xỉ trong cùng đường ống | Cần so sánh chỉ đổi một yếu tố; dựng GraphRAG đầy đủ trên kho lớn có chi phí cao | Gọi rõ đối chứng mở rộng một bước, không gọi `b5` là GraphRAG. LightRAG thật đang dựng (REFACTOR_PLAN 3.3): chỉ đổi phần truy xuất, cùng prompt và generator; chạy trên bộ cuối cần amendment ADR 0006 riêng |
+| T5 thiếu, T4 có thể dưới 150 | Điều kiện pháp lý hẹp | Báo số thật, không nới định nghĩa để đủ quota |
+| Kho rộng hơn bốn miền | Cần đóng kín quan hệ sửa đổi | Giải thích trong phần dữ liệu và datasheet |
+<!-- nguồn: docs/plans/active/master-plan.md, mục 4 -->
+
+Các lệch bổ sung so với đề cương và định nghĩa cần công bố:
+
+| Cam kết / định nghĩa | Thực hiện và giới hạn |
+|---|---|
+| T1 250 câu | Định nghĩa giảm còn 150 cho đối chứng. Bộ cuối có 43 lineage T1, ngoài `all`; đáp án ngắn từng là nguyên lời văn còn ký hiệu liệt kê; đã sửa và chấm lại theo amendment ADR 0006 19/11 |
+| T2 400 câu | Bộ cuối 127 lineage |
+| T3 200 câu | Định nghĩa sàn 120, mục tiêu 150; thực tế nhóm đòi từ ba đáp án theo mốc, không bắt buộc truy vết A→B→C như đề cương. Bộ cuối chỉ 6 lineage: chỉ báo mô tả |
+| T4 riêng 150 câu | Đổi thành lát chồng lắp của T2, không cộng hai lần |
+| T5 hồi tố “có lợi”, 50 câu | T5a bỏ vế “có lợi”, T5b là đã ký chưa hiệu lực; hiện chỉ chẩn đoán. Bộ cuối không có T5 |
+| T6 100 câu | Định nghĩa T6a sàn 100, T6b sàn 200. Bộ cuối 23 lineage, không đủ quota; không đủ bằng chứng cho lợi ích lan truyền |
+| Đồ thị tri thức thời gian là thành phần truy xuất | Đồ thị đóng góp chủ yếu ở bước dựng kho phiên bản offline. So `proposed2` với `b7plus` (cùng kho, không dùng đồ thị lúc truy vấn) cho hiệu không phân biệt được với 0 (thăm dò hậu nghiệm: +0,013 [−0,009; +0,035] lần 1, +0,016 [−0,006; +0,038] lần 2; `runs/posthoc_g4_20261113/attribution.json`); không viết “GraphRAG vượt trội” |
+| Một mô hình sinh | Họ xác nhận dùng GPT-4o mini (ADR 0004); generator khác họ Qwen3.8-27B chỉ chạy thăm dò (§6.6.6) |
+| Giao diện minh họa | `scripts/demo.py` chạy dòng lệnh trọn đường, khoảng 5 phút một câu; chưa có giao diện web |
+| Gold độc lập trên bộ test | Gold mù người phủ 105/156 lineage chính của bộ cuối, gồm cả 23 T6; luật sư đọc 30 dòng (κ 0,932). 51 lineage còn lại không đọc mù được vì người gán A đã thấy đáp án. F1–F6 trên phần này báo riêng (§6.6.4) |
+| 1.100–1.300 câu hỏi kiểm thủ công | Hiện đếm nhiều cặp câu hỏi–mốc và tầng nhãn; mọi tầng có 515 lineage chưa tính T5: test v1.0 165, dev 81, test 2 101, silver 168; không phải 515 câu người kiểm đạt |
+| LLM chỉ hỗ trợ diễn đạt | Thực tế model viết nháp, Claude chọn span đáp án (tiêu chí chấm), agent kiểm phần test, và LLM lọc trước khi đưa người; có thiên lệch chọn mẫu |
+| Bốn miền tiêu biểu | Test v1.0 có 136/211 dòng `khac`, silver 243/389; đất đai ở test chỉ 5 dòng/3 lineage; kho rộng không có nghĩa đánh giá cân bằng bốn miền |
+| Chỉ số đề cương | TVER, VCR, TCS, MRR, EM/F1 báo ở Chương 6; TVER chỉ do máy tính, dùng chung kho với bộ lọc, TVER theo người không làm. LLM-as-judge không dùng: thay bằng người chấm 100 câu, scorer khớp người 96/100 (92/100 theo phiếu chấm lại, §6.6.5) |
+| L4 lọc trước truy xuất | `rel_up` lấy seed trước bộ lọc ngày để tìm lệnh tác động rồi lọc văn bản lệnh; lệch thứ tự cam kết |
+<!-- nguồn: docs/vilextime-dinh-nghia.md, mục 11; docs/DeCuongKLTN_23521635_23521643_UIT.docx; data/vilextime_dataset/vilextime.jsonl; data/vilextime/test2_release_v2.jsonl; data/vilextime_dataset/vilextime_silver.jsonl; data/vilextime_dataset/vilextime_meta.jsonl; runs/domain_e3/report.json; src/vilexgraph/framework/graphx.py; docs/vilextime-datasheet.md -->
+
+V1.0 được khai là bản xác nhận lần 1 trong ADR 0005; amendment 03/11 gọi test 2 là bản lặp lại. Ngày 05/11, sau khi đã thấy kết quả (XN1 được ủng hộ ở v1.0, không đủ bằng chứng ở test 2), kế hoạch mới đổi vai cả hai thành vòng thử và mở bộ cuối. Đây là thay đổi sau quan sát, không phải vai trò được định trước. Giữ cả ba phán quyết cạnh nhau, không gộp điểm hoặc chọn phán quyết thuận lợi. Lịch sử các lần nhìn được ghi ở ADR 0006 §8 và quy tắc kết luận ở §6; ADR này Accepted ngày 12/11/2026 (commit `ac32a89`), trước đợt chạy G4 trên bộ cuối (hai lần r1, r2, bắt đầu 14:08 UTC cùng ngày).
+<!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md, §1 và amendment 03/11; runs/E3_v1/test/confirm.json; runs/E3_test2/rescore/confirm.json; docs/plans/active/master-plan.md, xử lý C3 -->
+
+Ngoài các lệch trên, trạng thái chưa hoàn tất cũng phải được công bố: M2 theo đề cương (100 truy vấn đối chiếu tay) chưa đạt, gold mù A2 (81 lineage) được dùng thay một phần; Verifier chưa cho thấy tác dụng khi bộ lọc đã loại căn cứ không hợp lệ. Bộ cuối đã chạy một lần theo ADR 0006 (G4, 12–13/11); các so sánh thêm sau đó (`b7v`, `bvnone`, `bvdate`, quy kết) là thăm dò hậu nghiệm, báo tách khỏi phép kiểm đã khai.
+<!-- nguồn: docs/plans/active/master-plan.md; docs/plans/active/REFACTOR_PLAN.md; data/vilextime_final/README.md; data/vilextime_final/STATUS.md; runs/final_g4_20261112/; runs/posthoc_g4_20261113/ -->
+<!-- nguồn: runs/README.md -->
+
+## 1.7. Cấu trúc khóa luận
+
+Chương mở đầu xác định bài toán, mục tiêu và phạm vi. Chương cơ sở lý thuyết tổng hợp các khái niệm và công trình đã đọc. Chương kho văn bản trình bày cấu trúc, sự kiện và chuỗi phiên bản cùng bằng chứng kiểm chứng. Chương ViLexTime mô tả quy trình dữ liệu, nguồn nhãn và thiết kế bộ test cuối. Chương phương pháp trình bày các tầng kiến trúc và đối chứng. Chương thực nghiệm tách hai vòng thử, thử nghiệm dev và phần kết quả cuối còn chờ. Chương kết luận phân biệt điều đã quan sát với điều chưa thể khẳng định; phụ lục khai báo sự tham gia của AI.
+<!-- nguồn: docs/thesis/chuong-2-co-so-ly-thuyet.md; docs/thesis/chuong-3-kho-van-ban-va-do-thi.md; docs/thesis/chuong-4-vilextime.md; docs/thesis/chuong-5-phuong-phap.md; docs/thesis/chuong-6-thuc-nghiem.md; docs/thesis/chuong-7-ket-luan.md -->
