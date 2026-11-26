@@ -6,14 +6,14 @@ Người chấm KHÔNG thấy tên hệ và điểm máy: hai cột đó chỉ n
 Không gọi model; không sửa dự đoán hay scorer.
 
     PYTHONPATH=src .venv/bin/python scripts/review/human_answer_sheet.py \\
-        --g4 runs/final/main/r1/test --release data/benchmark/test_final/vilextime.jsonl \\
+        --g4 runs/final_test/main/r1/test --release data/benchmark/final_test/vilextime.jsonl \\
         --out data/labels/human_scoring/  --n 100 --seed 20261113
 
 Đọc phiếu đã chấm (sau khi chấm xong mới mở khóa), so người với scorer:
 
     PYTHONPATH=src .venv/bin/python scripts/review/human_answer_sheet.py \\
-        --g4 runs/final/main/r1/test --release data/benchmark/test_final/vilextime.jsonl \\
-        --filled data/labels/human_scoring/phieu_cham_da_cham.xlsx --out runs/final/posthoc/human_score/
+        --g4 runs/final_test/main/r1/test --release data/benchmark/final_test/vilextime.jsonl \\
+        --filled data/labels/human_scoring/phieu_cham_da_cham.xlsx --out runs/final_test/extra_analysis/human_score/
 """
 from __future__ import annotations
 

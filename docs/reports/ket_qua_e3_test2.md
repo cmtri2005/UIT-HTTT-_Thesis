@@ -1,8 +1,8 @@
 # Kết quả ViLexTime — test 2
 
-> **Nhãn LLM, không phải nhãn người hay luật sư.** Đã có một lần chấm E3 sai do thiếu đáp án ngắn; báo cáo này chỉ dùng kết quả chấm lại tại `runs/early/generation_test2/rescore/`. Xem [Amendment 2026-11-04 của ADR 0005](../decisions/0005-ke-hoach-phan-tich.md#amendment-2026-11-04-sửa-đáp-án-ngắn-của-test-2-sau-lần-chấm-e3-đầu).
+> **Nhãn LLM, không phải nhãn người hay luật sư.** Đã có một lần chấm E3 sai do thiếu đáp án ngắn; báo cáo này chỉ dùng kết quả chấm lại tại `runs/earlier_tests/generation_test2/rescore/`. Xem [Amendment 2026-11-04 của ADR 0005](../decisions/0005-ke-hoach-phan-tich.md#amendment-2026-11-04-sửa-đáp-án-ngắn-của-test-2-sau-lần-chấm-e3-đầu).
 
-## `runs/early/generation_test2/rescore/all.score.json`
+## `runs/earlier_tests/generation_test2/rescore/all.score.json`
 
 Chế độ `giua_khoang`, 227 dòng (T2, T3, T6). KTC 95% bootstrap theo lineage.
 
@@ -36,7 +36,7 @@ Hiệu ghép cặp với hệ đứng trước trong file (KTC 95%):
 | b7pp − b7 | +0,009 [-0,036; +0,055] | +0,026 [-0,013; +0,068] | -0,219 [-0,273; -0,166] |
 | proposed − b7pp | +0,018 [-0,026; +0,058] | +0,000 [+0,000; +0,000] | +0,013 [+0,000; +0,031] |
 
-## XN1–XN9 (`runs/early/generation_test2/rescore/confirm.json`)
+## XN1–XN9 (`runs/earlier_tests/generation_test2/rescore/confirm.json`)
 
 10.000 lần lấy mẫu lại, Holm trên 6/6 kiểm định; XN5–XN7 là thăm dò, ngoài Holm (ADR 0005 §1).
 

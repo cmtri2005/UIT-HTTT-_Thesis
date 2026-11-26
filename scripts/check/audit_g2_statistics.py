@@ -35,7 +35,7 @@ def rows(p):
 
 
 def dataset_check():
-    p = Path('data/benchmark/test_v1/manifest.json')
+    p = Path('data/benchmark/earlier_test_v1/manifest.json')
     m = json.loads(p.read_text()); sha(p)
     counts = {}
     for kind, name in [('main', 'vilextime.jsonl'), ('silver', 'vilextime_silver.jsonl')]:
@@ -68,9 +68,9 @@ def paired(run):
 
 def power(n):
     # Same cluster sandwich estimator as scripts/paper/paper_values.py.
-    rr = [r for r in rows(Path('data/benchmark/test2/test2_release_v2.jsonl'))
+    rr = [r for r in rows(Path('data/benchmark/earlier_test2/test2_release_v2.jsonl'))
           if r['as_of_strategy'] == 'giua_khoang' and r['answerable'] and r['group'] != 'T5']
-    pred = {s: {r['id']: r for r in rows(Path(f'runs/early/retrieval_test2/test/{s}.jsonl'))}
+    pred = {s: {r['id']: r for r in rows(Path(f'runs/earlier_tests/retrieval_test2/test/{s}.jsonl'))}
             for s in ('b7', 'b7pp')}
     clusters = collections.defaultdict(lambda: [0, 0])
     for r in rr:

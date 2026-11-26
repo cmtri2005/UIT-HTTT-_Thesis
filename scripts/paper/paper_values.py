@@ -5,11 +5,11 @@ R=Path('.')
 csv.field_size_limit(10**9)
 def j(p): return json.load(open(R/p,encoding='utf-8'))
 def jl(p): return [json.loads(l) for l in open(R/p,encoding='utf-8') if l.strip()]
-S={'v1':j('runs/early/generation_test_v1/test/all.score.json'),'t2':j('runs/early/generation_test2/rescore/all.score.json')}
-L={'v1':j('runs/early/retrieval_test_v1/test/ladder.score.json'),'t2':j('runs/early/retrieval_test2/test/ladder.score.json')}
-X={'v1':j('runs/early/generation_test_v1/test/confirm.json')['results'],'t2':j('runs/early/generation_test2/rescore/confirm.json')['results']}
-PRED={'v1':R/'runs/early/generation_test_v1/test','t2':R/'runs/early/generation_test2/test'}
-REL={'v1':jl('data/benchmark/test_v1/vilextime.jsonl'),'t2':jl('data/benchmark/test2/test2_release_v2.jsonl')}
+S={'v1':j('runs/earlier_tests/generation_test_v1/test/all.score.json'),'t2':j('runs/earlier_tests/generation_test2/rescore/all.score.json')}
+L={'v1':j('runs/earlier_tests/retrieval_test_v1/test/ladder.score.json'),'t2':j('runs/earlier_tests/retrieval_test2/test/ladder.score.json')}
+X={'v1':j('runs/earlier_tests/generation_test_v1/test/confirm.json')['results'],'t2':j('runs/earlier_tests/generation_test2/rescore/confirm.json')['results']}
+PRED={'v1':R/'runs/earlier_tests/generation_test_v1/test','t2':R/'runs/earlier_tests/generation_test2/test'}
+REL={'v1':jl('data/benchmark/earlier_test_v1/vilextime.jsonl'),'t2':jl('data/benchmark/earlier_test2/test2_release_v2.jsonl')}
 def n(x,d=3,sign=False):
     if x is None: return '—'
     return (f'{x:+.{d}f}' if sign else f'{x:.{d}f}').replace('.',',')
@@ -58,11 +58,11 @@ for v,t in sec.items():
         V[f'e7.{v}.{s}.r20']=f"{b[2]} = {b[3].replace('.',',')}"; V[f'e7.{v}.{s}.cond']=f"{b[4]} = {b[5].replace('.',',')}"
         V[f'e7.{v}.{s}.r20p']=f"{float(b[3])*100:.1f}".replace('.',','); V[f'e7.{v}.{s}.condp']=f"{float(b[5])*100:.1f}".replace('.',',')
 # dữ liệu v1.0
-man=j('data/benchmark/test_v1/manifest.json'); a=man['agreement']
+man=j('data/benchmark/earlier_test_v1/manifest.json'); a=man['agreement']
 V.update({'iaa.n':str(a['n']),'iaa.ac1':n(a['ac1']),'iaa.ac1ci':ci(a['ac1_ci95']),'iaa.k':n(a['kappa']),'iaa.pneg':n(a['p_neg']),'rows.main':f"{man['rows']['main']}",'rows.silver':f"{man['rows']['silver']}"})
 for g in('T1','T2','T3','T6'): V[f'iaa.{g}']=n(a['per_group'][g]['ac1']); V[f'iaa.{g}.n']=str(a['per_group'][g]['n'])
 d=man['dropped_lineages_by_reason']; V['drop.unclear']=str(d['relocation_unclear']); V['drop.reloc']=str(d['relocated']); V['drop.t6rows']=str(man['dropped_rows_by_group']['T6'])
-meta={r['id']:r for r in jl('data/benchmark/test_v1/vilextime_meta.jsonl')}
+meta={r['id']:r for r in jl('data/benchmark/earlier_test_v1/vilextime_meta.jsonl')}
 tb=[r for r in REL['v1'] if r['split']=='test' and r['as_of_strategy']=='ranh_gioi']
 lab=C.Counter(meta[r['id']]['review'].get('labeler') for r in tb)
 V['lab.ab']=str(lab['A+B']); V['lab.agent']=str(sum(c for k,c in lab.items() if k and k.startswith('Codex'))); V['lab.law']=str(sum(c for k,c in lab.items() if k and k.startswith('luật sư'))); V['lab.law_ai']=str(sum(c for k,c in lab.items() if k and 'Claude' in k)); V['lab.n']=str(len(tb))
@@ -100,7 +100,7 @@ _A={r['lineage_id']:r for r in csv.DictReader(open(R/'data/labels/test2_llm_cali
 _B={r['lineage_id']:r for r in csv.DictReader(open(R/'data/labels/test2_llm_calibration/calib_B.tsv',encoding='utf-8'),delimiter='\t')}
 V['c.bothwrong']=str(sum(_A[i]['verdict']!=key[i]['su_that'] and _B[i]['verdict']!=key[i]['su_that'] for i in key))
 _q={}
-for x in jl('data/benchmark/test2/questions.jsonl'): _q[x['lineage_id']]=x
+for x in jl('data/benchmark/earlier_test2/questions.jsonl'): _q[x['lineage_id']]=x
 _ids={r['lineage_id'] for r in REL['v1'] if r['split']=='test'}
 _c=C.Counter(_q[i].get('provider') for i in _ids)
 V['q.claude']=str(_c['claude-code']); V['q.deepseek']=str(_c['deepseek'])
@@ -140,7 +140,7 @@ for v in S:
     V[f'subgroup.{v}'] = '\n'.join(subgroup)
 
     # XN1: đếm chuyển trạng thái TV-hit@1 trên từng dòng có đáp án E1.
-    pred = {s:{r['id']:r for r in jl(Path('runs/early/retrieval_test_v1/test' if v=='v1' else 'runs/early/retrieval_test2/test')/f'{s}.jsonl')}
+    pred = {s:{r['id']:r for r in jl(Path('runs/earlier_tests/retrieval_test_v1/test' if v=='v1' else 'runs/earlier_tests/retrieval_test2/test')/f'{s}.jsonl')}
             for s in ('b7','b7pp')}
     clusters = C.defaultdict(lambda:[0,0])
     contribution = ['| Nhóm | Dòng có đáp án / lineage | Tăng hit / mất hit | Chênh lệch số hit |', '|---|---|---|---:|']

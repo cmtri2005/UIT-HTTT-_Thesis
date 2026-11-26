@@ -172,8 +172,8 @@ def test_rows_are_kept_out_of_scoring_one_by_one(tmp_path):
             _row("part", "2026-01-01", group="T1"), _row("part", "2026-06-01", "giua_khoang", "part:2026-01-01", group="T1"),
             _row("other", "2026-06-01", group="T1")]
     rel.joinpath("release.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
-    (tmp_path / "benchmark" / "test2").mkdir(parents=True)
-    (tmp_path / "benchmark/test2/dropped_rows.jsonl").write_text(json.dumps(
+    (tmp_path / "benchmark" / "earlier_test2").mkdir(parents=True)
+    (tmp_path / "benchmark/earlier_test2/dropped_rows.jsonl").write_text(json.dumps(
         {"row_id": "h021:2016-09-25", "reason": "superseded_by_other_norm", "note": "H021", "by": "CMT", "at": "2026-11-10"}) + "\n",
         encoding="utf-8")
     event = {"status": "needs_review", "status_reason": "partial_repeal", "effective_on": "2026-04-29",

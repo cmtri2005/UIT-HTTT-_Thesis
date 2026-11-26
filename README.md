@@ -1,77 +1,70 @@
-# Temporal-Aware RAG cho pháp luật Việt Nam — dữ liệu, code và kết quả
+# Hỏi đáp pháp luật Việt Nam theo thời điểm
 
-Repo gom những gì cần để viết paper và khóa luận: bộ ViLexTime, nhãn, kết quả thực nghiệm, code chạy và chấm.
+Repo này chứa đủ thứ để viết paper và khóa luận: bộ dữ liệu ViLexTime, nhãn, kết quả thực nghiệm và code.
+
+## Cần gì, mở ở đâu
+
+| Cần | Mở |
+|---|---|
+| Bộ dữ liệu dùng cho kết quả chính (722 dòng) | `data/benchmark/final_test/` |
+| Bản công bố của bộ dữ liệu (6.0.0) | `data/benchmark/public_release_v6/` |
+| Bảng kết quả chính | `runs/final_test/main/r1/results.md` |
+| Con số nào trong paper lấy từ file nào | `docs/paper/ieee/numbers.md` |
+| Nhãn người, độ đồng thuận | `data/labels/` |
+| Bản thảo paper, khóa luận | `docs/paper/`, `docs/thesis/` |
+| Nhật ký từng lần chạy | `runs/LOG.md` |
+
+Mỗi thư mục `data/`, `runs/`, `docs/` có một README ngắn giải thích từng thư mục con.
+
+## Cây thư mục
 
 ```
-src/vilexgraph/        hệ hỏi đáp: kho phiên bản, truy xuất, sinh
-scripts/               eval/ chạy và chấm · paper/ dựng số liệu · check/ kiểm dữ liệu · pipeline/ dựng bộ · review/ gán nhãn
-prompts/  tests/  notebooks/
-
-data/
-  benchmark/
-    test_final/        bộ test cuối, 722 dòng — kết quả chính chạy trên bản này
-    release_v6/        bản phát hành 6.0.0 (data + annotation), đã sửa lỗi kho
-    test_v1/           bộ test đầu (thực nghiệm sớm)
-    test2/             bộ test 2
-  labels/
-    blind_gold/        gold đọc mù A/B và đồng thuận
-    annotation_rounds/ phiếu gán theo lô, hướng dẫn 4.0
-    human_scoring/     chấm tay câu trả lời
-    test2_llm_labels/  nhãn LLM của test 2
-    test2_llm_calibration/  hiệu chuẩn lời dặn LLM
-    error_analysis/    phân rã lỗi
-    missed_amendment_audit/ rà sót sửa đổi
-    kiem_A.tsv, kiem_B.tsv  kiểm chéo hai người gán
-  corpus/              manifest kho văn bản, kiểm bản hợp nhất
-  vocab/               bảng mã trạng thái, loại quan hệ, lĩnh vực
-
-runs/
-  final/               bộ test cuối
-    main/              kết quả chính (r1, r2: hai lần gọi API)
-    posthoc/           quy kết, chấm tay, sửa đáp án ngắn
-    lightrag_baseline/ open_model_qwen/
-    blind_gold_subset/ gold_fix/ version_recheck/ retrieval_funnel/
-  early/               test v1 và test 2: retrieval_*, generation_*, domain_breakdown
-  dev/                 chọn cấu hình trên dev: pilot_generation, hybrid_retrieval,
-                       rebuild_rerun, repeal_fix, reranker_pool, verifier
-  README.md            sổ chạy: mỗi lần chạy, mục đích, kết quả
-
-docs/
-  paper/               ieee/, acm/ (main.tex, numbers.md), abstract_vi/, figures/
-  thesis/              chương 1–7
-  decisions/           ADR (0005, 0006: kế hoạch phân tích)
-  reports/             audit, đồng thuận, chẩn đoán
-  vilextime-*.md       định nghĩa, hướng dẫn gán, datasheet, schema
-  de_cuong_kltn.docx   đề cương
+data/       bộ dữ liệu và nhãn
+runs/       kết quả thực nghiệm
+docs/       paper, khóa luận, quyết định, báo cáo
+src/        code hệ hỏi đáp
+scripts/    chạy, chấm điểm, dựng số liệu cho paper
+prompts/    lời dặn gửi LLM
+tests/      kiểm tra code
 ```
+
+## Đọc tên file kết quả
+
+Trong `runs/`, mỗi hệ là một file `<mã hệ>.jsonl`. Paper dùng tên dễ đọc hơn:
+
+| Mã trong file | Tên trong paper | Làm gì |
+|---|---|---|
+| `b1` | LLM only | Không truy xuất |
+| `b2ctx` | BM25 | Tìm theo từ khóa |
+| `b3` | Dense | Tìm theo nghĩa |
+| `b4` | Hybrid | Từ khóa + nghĩa |
+| `b5` | Hybrid+AmendHop | Hybrid, mở rộng theo quan hệ sửa đổi |
+| `b6` | Hybrid+Hierarchy | Hybrid, mở rộng theo cây điều khoản |
+| `b7` | +DocDate | Lọc theo ngày hiệu lực của cả văn bản |
+| `b7v` | +VersionStore | Dùng lời văn từng phiên bản |
+| `b7plus` | +VersionFilter | Lọc theo khoảng hiệu lực của phiên bản |
+| `b7pp` | +Propagation | Lọc theo hiệu lực có lan truyền từ điều khoản cha |
+| `proposed2` | Full config (TV-RAG) | Cấu hình đầy đủ, chọn trước trên dev |
+| `bvnone` | Unfiltered versions | Lời văn phiên bản, không lọc |
+| `bvdate` | Dates in prompt | Như trên, in ngày hiệu lực vào prompt |
+| `oracle` | Oracle (in force) | Đưa đúng phiên bản có hiệu lực |
+| `oracle_now` | Oracle (current) | Đưa phiên bản hiện hành |
+| `lightrag` | LightRAG | Baseline đồ thị bên ngoài |
+
+Một số mã khác:
+
+- `r1`, `r2`: lần chạy thứ nhất và thứ hai (gọi API hai lần).
+- `giua_khoang`: hỏi ở một ngày giữa khoảng hiệu lực. Bảng chính dùng chế độ này.
+- `T1`: câu đối chứng, điều khoản chỉ có một phiên bản. `T2`: có hai phiên bản. `T3`: có nhiều phiên bản. `T6`: điều khoản đã bị bãi bỏ, câu hỏi không có đáp án.
+- `F1`–`F7`: bảy giả thuyết kiểm định, khai trước trong `docs/decisions/0006-ke-hoach-phan-tich-bo-test-cuoi.md`.
 
 ## Lưu ý khi trích số
 
-- Kết quả trong `runs/final/main/` chạy trên `data/benchmark/test_final/`, chưa chấm lại trên 6.0.0.
-- Accuracy của test 2 chỉ lấy ở `runs/early/generation_test2/rescore/`.
-- Kiểm hash: `cd data/benchmark/test_final && sha256sum -c SHA256SUMS`.
-
-## Tên cũ
-
-File bằng chứng (`*.json`, `*.jsonl`, log, `SHA256SUMS`, `data/benchmark/test_final/README.md`) giữ nguyên đường dẫn cũ lúc chạy.
-Đối chiếu:
-
-| Cũ | Mới |
-|---|---|
-| `data/vilextime_final` | `data/benchmark/test_final` |
-| `data/vilextime_dataset` | `data/benchmark/test_v1` |
-| `data/vilextime` | `data/benchmark/test2` |
-| `data/review/*` | `data/labels/*` (`gold_final` → `blind_gold`, `the4` → `annotation_rounds`, `human_score_g4` → `human_scoring`, `e7` → `error_analysis`) |
-| `runs/final_g4_20261112` | `runs/final/main` |
-| `runs/posthoc_g4_20261113` | `runs/final/posthoc` |
-| `runs/lightrag_20261113`, `runs/qwen_chutes_20261116` | `runs/final/lightrag_baseline`, `runs/final/open_model_qwen` |
-| `runs/E1`, `runs/E1_test2` | `runs/early/retrieval_test_v1`, `runs/early/retrieval_test2` |
-| `runs/E3_v1`, `runs/E3_test2` | `runs/early/generation_test_v1`, `runs/early/generation_test2` |
-| `runs/B2_dev` | `runs/dev/pilot_generation` |
-| `runs/*_dev*`, `runs/hybrid_20261105` | `runs/dev/*` |
+- Kết quả chính chạy trên `data/benchmark/final_test/`, chưa chấm lại trên bản 6.0.0.
+- Accuracy của test 2 chỉ lấy ở `runs/earlier_tests/generation_test2/rescore/`.
+- File kết quả (`.json`, `.jsonl`, log) ghi đường dẫn lúc chạy, tức là tên thư mục cũ. Bảng tên cũ ở cuối `runs/README.md`.
 
 ## Không có trong repo
 
-Kho văn bản dẫn xuất (`data/derived/`, khoảng 11 GB) và dữ liệu cào gốc không có ở đây.
-Muốn chấm lại hoặc chạy lại thì cần kho đó (`scripts/pull_snapshot.sh`).
-Kho phiên bản rút gọn có ở repo phát hành [vilextime_uit](https://github.com/cmtri2005/vilextime_uit) (`corpus/`).
+Kho văn bản đầy đủ (khoảng 11 GB) không có ở đây, nên repo đủ để đọc và trích số, chưa đủ để chạy lại.
+Kho rút gọn có ở [vilextime_uit](https://github.com/cmtri2005/vilextime_uit) (`corpus/`).

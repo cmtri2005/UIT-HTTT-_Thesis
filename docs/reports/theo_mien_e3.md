@@ -8,9 +8,9 @@ Dùng nguyên `score_vilextime.load_rows`, `distractors`, `units_of`, `score`; d
 
 ## v1.0
 
-211 dòng / 165 lineage; release `data/benchmark/test_v1/vilextime.jsonl`; SHA-256 `7cf51ee66c7e242b0d3a7b03e62f1ed9bede6527082d9b2f8483ec75d278b366`.
+211 dòng / 165 lineage; release `data/benchmark/earlier_test_v1/vilextime.jsonl`; SHA-256 `7cf51ee66c7e242b0d3a7b03e62f1ed9bede6527082d9b2f8483ec75d278b366`.
 
-v1.0 dùng metadata đồng hành; test 2 dùng bản v2 có đáp án ngắn đã sửa. Nhãn test 2 là nhãn LLM. Nguồn, hash dự đoán/metadata và số tổng kiểm lại: `runs/early/domain_breakdown/report.json`.
+v1.0 dùng metadata đồng hành; test 2 dùng bản v2 có đáp án ngắn đã sửa. Nhãn test 2 là nhãn LLM. Nguồn, hash dự đoán/metadata và số tổng kiểm lại: `runs/earlier_tests/domain_breakdown/report.json`.
 
 | Miền | Dòng | Lineage | Hệ | Accuracy | TV-R@1 | TVER | Dòng có trích dẫn |
 |---|---:|---:|---|---:|---:|---:|---:|
@@ -47,9 +47,9 @@ v1.0 dùng metadata đồng hành; test 2 dùng bản v2 có đáp án ngắn đ
 
 ## test 2
 
-227 dòng / 101 lineage; release `data/benchmark/test2/test2_release_v2.jsonl`; SHA-256 `b299408327e3bb5c0e520d4457b27225d866afe3c7976e1c3b0aff2b8093855c`.
+227 dòng / 101 lineage; release `data/benchmark/earlier_test2/test2_release_v2.jsonl`; SHA-256 `b299408327e3bb5c0e520d4457b27225d866afe3c7976e1c3b0aff2b8093855c`.
 
-v1.0 dùng metadata đồng hành; test 2 dùng bản v2 có đáp án ngắn đã sửa. Nhãn test 2 là nhãn LLM. Nguồn, hash dự đoán/metadata và số tổng kiểm lại: `runs/early/domain_breakdown/report.json`.
+v1.0 dùng metadata đồng hành; test 2 dùng bản v2 có đáp án ngắn đã sửa. Nhãn test 2 là nhãn LLM. Nguồn, hash dự đoán/metadata và số tổng kiểm lại: `runs/earlier_tests/domain_breakdown/report.json`.
 
 | Miền | Dòng | Lineage | Hệ | Accuracy | TV-R@1 | TVER | Dòng có trích dẫn |
 |---|---:|---:|---|---:|---:|---:|---:|

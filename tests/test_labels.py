@@ -105,8 +105,8 @@ def test_a_row_whose_lineage_was_dropped_still_reaches_the_audit_sheet(tmp_path)
     (data / "derived/vilextime/T2.jsonl").write_text(json.dumps(gone) + "\n")
     kept = [line for line in (data / "derived/vilextime/release.jsonl").open() if ids[1] not in line]
     (data / "derived/vilextime/release.jsonl").write_text("".join(kept))
-    (data / "benchmark" / "test2").mkdir(parents=True)
-    (data / "benchmark/test2/dropped.jsonl").write_text(json.dumps({"lineage_id": "p1", "reason": "group_mismatch",
+    (data / "benchmark" / "earlier_test2").mkdir(parents=True)
+    (data / "benchmark/earlier_test2/dropped.jsonl").write_text(json.dumps({"lineage_id": "p1", "reason": "group_mismatch",
                                                               "note": "hai đáp án"}) + "\n")
     audit_sheet(data, tmp_path / "a.xlsx", None)
     ws = load_workbook(tmp_path / "a.xlsx").active

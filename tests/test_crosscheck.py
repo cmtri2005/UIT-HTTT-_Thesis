@@ -377,7 +377,7 @@ def test_drop_adds_each_d4_lineage_with_a_final_khong_dat_once(tmp_path):
     from crosscheck import COLUMNS
 
     (tmp_path / "labels").mkdir()
-    (tmp_path / "benchmark" / "test2").mkdir(parents=True)
+    (tmp_path / "benchmark" / "earlier_test2").mkdir(parents=True)
     for name, extra in (("crosscheck_A.tsv", ["adjudicated"]), ("crosscheck_B.tsv", [])):
         with (tmp_path / "labels" / name).open("w", encoding="utf-8", newline="") as f:
             w = csv.DictWriter(f, COLUMNS + extra, delimiter="\t", lineterminator="\n", restval="")
@@ -390,7 +390,7 @@ def test_drop_adds_each_d4_lineage_with_a_final_khong_dat_once(tmp_path):
     (tmp_path / "labels/hoa_giai_D4.tsv").write_text("id\tverdict\treasons\tnote\tadjudicator\nr2\tdat\t\t\thuman:C\n")
     drop(tmp_path, today="2026-10-20")
     drop(tmp_path, today="2026-10-21")
-    got = [json.loads(x) for x in (tmp_path / "benchmark/test2/dropped.jsonl").read_text().splitlines()]
+    got = [json.loads(x) for x in (tmp_path / "benchmark/earlier_test2/dropped.jsonl").read_text().splitlines()]
     assert [(d["lineage_id"], d["reason"]) for d in got] == [("p", "gold_wrong")]
 
 
@@ -469,10 +469,10 @@ def test_label_ui_edits_reach_the_whole_lineage_and_the_source_files(tmp_path):
     import label_ui
     from crosscheck import KIEM_COLUMNS, read
 
-    (tmp_path / "benchmark" / "test2").mkdir(parents=True)
-    (tmp_path / "benchmark/test2/questions.jsonl").write_text(json.dumps(
+    (tmp_path / "benchmark" / "earlier_test2").mkdir(parents=True)
+    (tmp_path / "benchmark/earlier_test2/questions.jsonl").write_text(json.dumps(
         {"lineage_id": "p", "question": "Hỏi cũ?", "model": "m"}, ensure_ascii=False) + "\n", encoding="utf-8")
-    (tmp_path / "benchmark/test2/short_answers.jsonl").write_text("".join(json.dumps(
+    (tmp_path / "benchmark/earlier_test2/short_answers.jsonl").write_text("".join(json.dumps(
         {"lineage_id": "p", "version_id": v, "short_answer": s, "by": "m"}, ensure_ascii=False) + "\n"
         for v, s in (("p:1", "7 triệu"), ("p:2", "9 triệu"))), encoding="utf-8")
     path = tmp_path / "kiem_A.tsv"
@@ -487,15 +487,15 @@ def test_label_ui_edits_reach_the_whole_lineage_and_the_source_files(tmp_path):
     save = lambda edits: label_ui.save(path, "r1", label, edits, tmp_path, version_of)
 
     assert save({"short_answer": "10 triệu"})[1]                     # not in the wording: refused, nothing written
-    assert read(path)[0]["verdict"] == "" and "10 triệu" not in (tmp_path / "benchmark/test2/short_answers.jsonl").read_text()
+    assert read(path)[0]["verdict"] == "" and "10 triệu" not in (tmp_path / "benchmark/earlier_test2/short_answers.jsonl").read_text()
     rows, errors = save({"question": "Hỏi mới?", "short_answer": "Phạt 7 triệu"})
     assert not errors and {r["id"] for r in rows} == {"r1", "r2"}
     got = {r["id"]: r for r in read(path)}
     assert got["r1"]["question"] == got["r2"]["question"] == "Hỏi mới?"
     assert (got["r1"]["short_answer"], got["r2"]["short_answer"]) == ("Phạt 7 triệu", "9 triệu")   # its version only
-    q = json.loads((tmp_path / "benchmark/test2/questions.jsonl").read_text(encoding="utf-8"))
+    q = json.loads((tmp_path / "benchmark/earlier_test2/questions.jsonl").read_text(encoding="utf-8"))
     assert (q["question"], q["model_question"], q["edited_by"]) == ("Hỏi mới?", "Hỏi cũ?", "human:A")
-    s = [json.loads(x) for x in (tmp_path / "benchmark/test2/short_answers.jsonl").open(encoding="utf-8")]
+    s = [json.loads(x) for x in (tmp_path / "benchmark/earlier_test2/short_answers.jsonl").open(encoding="utf-8")]
     assert (s[0]["short_answer"], s[0]["model_short_answer"], s[1]["short_answer"]) == ("Phạt 7 triệu", "7 triệu", "9 triệu")
 
 
@@ -563,8 +563,8 @@ def test_label_ui_pull_applies_page_documents_and_keeps_the_latest_edit(tmp_path
     import label_ui
     from crosscheck import KIEM_COLUMNS, read
 
-    (tmp_path / "benchmark" / "test2").mkdir(parents=True)
-    (tmp_path / "benchmark/test2/questions.jsonl").write_text(json.dumps(
+    (tmp_path / "benchmark" / "earlier_test2").mkdir(parents=True)
+    (tmp_path / "benchmark/earlier_test2/questions.jsonl").write_text(json.dumps(
         {"lineage_id": "provision:p", "question": "Hỏi cũ?"}, ensure_ascii=False) + "\n", encoding="utf-8")
     path = tmp_path / "kiem_B.tsv"
     with path.open("w", encoding="utf-8", newline="") as f:

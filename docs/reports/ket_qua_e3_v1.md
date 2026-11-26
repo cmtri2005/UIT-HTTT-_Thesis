@@ -1,6 +1,6 @@
 # Kết quả ViLexTime
 
-## `runs/early/generation_test_v1/test/all.score.json`
+## `runs/earlier_tests/generation_test_v1/test/all.score.json`
 
 Chế độ `giua_khoang`, 211 dòng (T1, T2, T3, T6). KTC 95% bootstrap theo lineage.
 
@@ -34,7 +34,7 @@ Hiệu ghép cặp với hệ đứng trước trong file (KTC 95%):
 | b7pp − b7 | -0,005 [-0,033; +0,023] | +0,047 [+0,019; +0,082] | -0,133 [-0,177; -0,090] |
 | proposed − b7pp | +0,019 [+0,005; +0,039] | +0,000 [+0,000; +0,000] | +0,005 [+0,000; +0,015] |
 
-## XN1–XN9 (`runs/early/generation_test_v1/test/confirm.json`)
+## XN1–XN9 (`runs/earlier_tests/generation_test_v1/test/confirm.json`)
 
 10.000 lần lấy mẫu lại, Holm trên 6/6 kiểm định; XN5–XN7 là thăm dò, ngoài Holm (ADR 0005 §1).
 

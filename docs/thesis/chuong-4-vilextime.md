@@ -70,8 +70,8 @@ Schema công bố tách nội dung đối chiếu `context` khỏi đáp án ng�
 ## 4.4. Vòng thử v1.0: quy mô bản đã chạy
 
 Tên phát hành `vilextime-v1.0` khác với phiên bản schema `2.0.0`; ADR từng khai đây là bản final dùng xác nhận; ngày 05/11 mới đổi vai thành vòng thử sau quan sát, không phải bộ test cuối của kế hoạch hiện hành. Manifest final ghi 769 dòng chính và 859 dòng silver. Bảng kết quả chính của test dùng 211 dòng giữa khoảng, thuộc 165 lineage; silver không được gộp vào bảng này. Datasheet vẫn có bảng quy mô của một bản dựng cũ, nên chỉ dùng manifest final và file kết quả tương ứng để mô tả bản đã chạy.
-<!-- nguồn: data/benchmark/test_v1/manifest.json -->
-<!-- nguồn: runs/early/generation_test_v1/test/confirm.json -->
+<!-- nguồn: data/benchmark/earlier_test_v1/manifest.json -->
+<!-- nguồn: runs/earlier_tests/generation_test_v1/test/confirm.json -->
 <!-- nguồn: docs/plans/active/codex-chot-du-lieu-va-thuc-nghiem.md @51f36c7 -->
 
 | Nhóm v1.0, test, giữa khoảng | Dòng | Lineage |
@@ -82,12 +82,12 @@ Tên phát hành `vilextime-v1.0` khác với phiên bản schema `2.0.0`; ADR t
 | T6 | 30 | 15 |
 | All | 211 | 165 |
 
-<!-- nguồn: data/benchmark/test_v1/vilextime.jsonl -->
+<!-- nguồn: data/benchmark/earlier_test_v1/vilextime.jsonl -->
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
 
 Sự nhỏ đi của các lát sau kiểm nhãn là đặc điểm thực của bản v1.0 đã chạy, không phải quy mô bộ test cuối đang chuẩn bị. Không dùng quota dự kiến để mô tả số mẫu đã được xác nhận. Đặc biệt, loại các câu có nội dung chuyển chỗ làm thay đổi mạnh tập bãi bỏ, nên kết quả không đại diện cho mọi trường hợp một điều khoản từng bị bãi bỏ ở vị trí cũ.
 <!-- nguồn: docs/vilextime-datasheet.md -->
-<!-- nguồn: data/benchmark/test_v1/manifest.json -->
+<!-- nguồn: data/benchmark/earlier_test_v1/manifest.json -->
 
 ## 4.5. Độ đồng thuận và nguồn nhãn v1.0
 
@@ -99,10 +99,10 @@ Hai người gán A/B là chính hai tác giả Cao Minh Trí (CMT) và Nguyễn
 
 Biên bản D5 lịch sử báo AC1 0,612, khoảng tin cậy 95% [0,511; 0,697], và κ 0,323 trên 300 dòng của đợt kiểm cũ. Manifest final ghi phép đo theo hướng dẫn hiện hành trên 246 dòng: AC1 0,377, khoảng [0,250; 0,496], κ 0,235, khoảng [0,144; 0,320], và thỏa thuận nhãn âm 0,395. Hai phép đo khác bộ mẫu và phiên bản hướng dẫn; không lấy số thuận lợi hơn để thay số của tập được dùng. Cả hai đều không chứng minh đạt cổng đồng thuận. Việc chọn AC1 diễn ra sau pilot, không được mô tả là đã đăng ký trước.
 <!-- nguồn: docs/reports/D5_bien_ban.md -->
-<!-- nguồn: data/benchmark/test_v1/manifest.json -->
+<!-- nguồn: data/benchmark/earlier_test_v1/manifest.json -->
 
 Tại các dòng ranh giới của test v1.0, metadata ghi 88 dòng do A và B cùng nhãn, 33 dòng có nhãn phân xử/kiểm của luật sư và 90 dòng chỉ có nhãn Codex (T1: 75; T6: 15). Trong phần luật sư có 10 dòng ghi đã dùng phiếu Claude hỗ trợ; không đồng nhất việc có chữ “luật sư” với một quy trình hoàn toàn độc lập khỏi AI. Các nhãn này được truyền sang dòng giữa khoảng tương ứng, không phải một lượt người gán mới ở mỗi mốc.
-<!-- nguồn: data/benchmark/test_v1/vilextime_meta.jsonl -->
+<!-- nguồn: data/benchmark/earlier_test_v1/vilextime_meta.jsonl -->
 <!-- nguồn: docs/vilextime-datasheet.md -->
 
 Agent có AC1 0,721 và thỏa thuận âm 0,610 trên mẫu hiệu chuẩn mù 178 dòng; ngưỡng AC1 0,80 không đạt trên toàn tập. Mẫu luật sư kiểm nhãn agent đồng ý 43/50, khoảng Wilson 95% [0,738; 0,930]. Kết quả này cung cấp thông tin về chất lượng của mẫu kiểm, không xác nhận toàn bộ nhãn agent. Việc code chỉ sử dụng nhãn agent ở T1 và T6 là một quyết định phạm vi, không chứng minh hai nhóm đều đạt mọi ngưỡng hiệu chuẩn.
@@ -117,7 +117,7 @@ Quy tắc phát hành v1.0 ưu tiên nhãn luật sư, tiếp đến A/B đồng
 
 Test 2 được khai là bản lặp lại ngày 03/11, đổi vai thành vòng thử ngày 05/11 sau khi thấy kết quả, dùng **nhãn LLM**, không phải nhãn người hoặc luật sư. Sau khi loại các lineage thuộc văn bản dev, release có 101 lineage và 492 dòng ở mọi chế độ. Lát giữa khoảng dùng trong E3 có quy mô dưới đây. Bộ này được báo riêng, không cộng vào v1.0 để tăng cỡ mẫu hay tạo một bảng kết quả chung.
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
-<!-- nguồn: runs/early/generation_test2/rescore/confirm.json -->
+<!-- nguồn: runs/earlier_tests/generation_test2/rescore/confirm.json -->
 
 | Nhóm test 2 — nhãn LLM, giữa khoảng | Dòng | Lineage |
 |---|---:|---:|
@@ -126,8 +126,8 @@ Test 2 được khai là bản lặp lại ngày 03/11, đổi vai thành vòng 
 | T6 | 32 | 16 |
 | All | 227 | 101 |
 
-<!-- nguồn: data/benchmark/test2/test2_release_v2.jsonl -->
-<!-- nguồn: runs/early/generation_test2/rescore/confirm.json -->
+<!-- nguồn: data/benchmark/earlier_test2/test2_release_v2.jsonl -->
+<!-- nguồn: runs/earlier_tests/generation_test2/rescore/confirm.json -->
 
 Hai LLM gán độc lập, các trường hợp lệch được hòa giải bằng model và một số ca phân vân được agent hỗ trợ tra cứu. Báo cáo đồng thuận ghi AC1 của Q1, Q2, Q3 lần lượt 0,907; 0,884; 0,766, nhưng thỏa thuận nhãn âm tương ứng chỉ 0,476; 0,222; 0,133. AC1 tương đối cao ở vài câu hỏi kiểm không đủ để kết luận nhãn đáng tin cậy khi cổng nhãn âm không đạt. Amendment cũng ghi rõ chưa có người hoặc luật sư kiểm bộ này.
 <!-- nguồn: data/labels/test2_llm_labels/agreement.json -->
@@ -137,7 +137,7 @@ Hai LLM gán độc lập, các trường hợp lệch được hòa giải bằ
 Lời dặn dùng khi gán nhãn test 2 cũng có giới hạn, được phát hiện khi rà ngày 04/11. Model chỉ nhận thẻ gán nhãn viết cho người và vài dòng dặn thêm, không có các định nghĩa mà thẻ trỏ tới và không có bước hiệu chuẩn. Model không được tra cứu ngoài các đoạn trích, nên Q4 = Không phần lớn chỉ có nghĩa là không thấy quy định khác trong phần được đưa; chỉ sáu câu phân vân được agent tra luật kiểm lại. Lời dặn còn yêu cầu "phải khắt khe" ngoài nội dung của thẻ, và với cùng lời dặn, hai model loại 45 và 24 trên 138 câu. Nguyên văn lời dặn được lưu ở `prompts/vilextime/test2_gan_v1.md`. Nhóm đã viết lời dặn bản 2 đầy đủ hơn và khai báo trước một cổng hiệu chuẩn (amendment 04/11 (b)): so với 68 câu có nhãn người độc lập, nhãn cuối phải đạt AC1 ≥ 0,80 và p_neg ≥ 0,60. Kết quả không đạt: AC1 0,530 và p_neg 0,758. Trong 29 câu người gán xấu, quy trình bắt 25; trong 39 câu người gán tốt, quy trình loại nhầm 12. Mẫu này có 25/29 câu xấu ở T6, nên gần như không đo được khả năng bắt câu xấu ở T2 và T3. Theo khai báo trước, nhóm dừng lại: không gán test 2 bằng bản 2, không sửa lời dặn và không có phân tích độ nhạy. Kết quả này đo lời dặn bản 2, không đo trực tiếp nhãn test 2 đang dùng, vì lời dặn bản 1 chưa từng được hiệu chuẩn. Do đó chưa có số đo nào cho biết nhãn test 2 khớp với người đến đâu.
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
 
-Có một lần chấm E3 test 2 — nhãn LLM — sai do release thiếu đáp án ngắn và phép kiểm chứa span coi tập span rỗng là thỏa. Amendment ngày 04/11 khai báo sửa trường đáp án ngắn và chấm lại các dự đoán đã có, không sinh hoặc truy xuất lại. Mọi Accuracy của test 2 trong khóa luận chỉ lấy từ `runs/early/generation_test2/rescore/`; bản kết quả cũ được giữ làm hồ sơ sai sót, không được trích như số hợp lệ. Bộ chấm hiện từ chối dòng có đáp án nhưng thiếu span vàng trong phần đang chấm.
+Có một lần chấm E3 test 2 — nhãn LLM — sai do release thiếu đáp án ngắn và phép kiểm chứa span coi tập span rỗng là thỏa. Amendment ngày 04/11 khai báo sửa trường đáp án ngắn và chấm lại các dự đoán đã có, không sinh hoặc truy xuất lại. Mọi Accuracy của test 2 trong khóa luận chỉ lấy từ `runs/earlier_tests/generation_test2/rescore/`; bản kết quả cũ được giữ làm hồ sơ sai sót, không được trích như số hợp lệ. Bộ chấm hiện từ chối dòng có đáp án nhưng thiếu span vàng trong phần đang chấm.
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
 <!-- nguồn: scripts/eval/score_vilextime.py -->
 
@@ -210,7 +210,7 @@ Tỷ lệ giữ T6 trong kế hoạch chưa có file phễu gốc trong repo nê
 ### Tiếp xúc trước với đáp án đồ thị và gold mù theo người
 
 Đối chiếu lại `lineage_id` của silver T2–T3 với các dòng **có verdict không rỗng** trong phiếu A cho thấy: ở vòng 25/10 theo hồ sơ tác giả, A đã gán **131/168 lineage**, tương ứng **283 dòng**, trong đó **280 `dat`** và **3 `khong_dat`**. Các dòng này có trường `answer` và `cac_phien_ban`: A đã được cho thấy đáp án cùng lịch sử phiên bản do đồ thị dựng. Không đếm các dòng phiếu còn trống là đã gán, cũng không coi đây là bằng chứng A đã đọc đủ nguồn pháp lý.
-<!-- nguồn: data/labels/kiem_A.tsv; data/benchmark/test_v1/vilextime_silver.jsonl; phép đo: lấy lineage T2/T3 silver, giao phiếu A có verdict khác rỗng, đếm dòng/lineage/verdict; ngày vòng theo yêu cầu C9b của tác giả -->
+<!-- nguồn: data/labels/kiem_A.tsv; data/benchmark/earlier_test_v1/vilextime_silver.jsonl; phép đo: lấy lineage T2/T3 silver, giao phiếu A có verdict khác rỗng, đếm dòng/lineage/verdict; ngày vòng theo yêu cầu C9b của tác giả -->
 
 Điều kiện “hệ chưa chạy” của silver vẫn khác điều kiện “người chưa thấy đáp án”. Khi thu nhãn mới, cần khai lần tiếp xúc này; một lượt A gán lại trên cùng lineage không trở thành một quan sát mù mới. Quy trình bộ cuối yêu cầu không thấy gợi ý hoặc nhãn LLM và kết quả hệ; gold độc lập còn đòi không thấy lời văn do đồ thị dựng. Vì vậy phải xác định độ mù theo từng người và từng lineage, không chỉ gọi chung cả silver là mới.
 <!-- nguồn: data/labels/kiem_A.tsv; docs/plans/active/master-plan.md, mục 5 và A6 -->
@@ -219,7 +219,7 @@ Gói hiện có ở `data/labels/annotation_rounds/gold1/` chia câu theo ngư�
 <!-- nguồn: data/labels/annotation_rounds/gold1/gold_sample.tsv; data/labels/annotation_rounds/gold1/gold_A.tsv; data/labels/annotation_rounds/gold1/gold_B.tsv; data/labels/kiem_A.tsv; data/labels/kiem_B.tsv -->
 
 Trong silver T2/T3, phần A chưa thấy chỉ còn 37 lineage, đúng bằng số phiếu gold1 giao A; phần cả hai chưa thấy là 26 lineage và gold1 chỉ có 15 câu gán đôi. AC1 mới phải báo riêng phần A chưa thấy và phần đã thấy, không gọi AC1 gộp là mù với đồ thị. Không thể lấy thêm gold mù cho A từ cùng silver sau khi đã dùng hết phần chưa thấy. Dự báo T2/T3/T6 mới không bảo đảm đủ gold; [CHỜ G2: bảng nguồn bù gold theo người/lineage và số thực đạt, giữ gold trước lô nhãn của chính người đó].
-<!-- nguồn: data/labels/kiem_A.tsv; data/labels/kiem_B.tsv; data/benchmark/test_v1/vilextime_silver.jsonl; data/labels/annotation_rounds/gold1/gold_sample.tsv; data/labels/annotation_rounds/gold1/gold_A.tsv; docs/plans/active/master-plan.md, xử lý N2 -->
+<!-- nguồn: data/labels/kiem_A.tsv; data/labels/kiem_B.tsv; data/benchmark/earlier_test_v1/vilextime_silver.jsonl; data/labels/annotation_rounds/gold1/gold_sample.tsv; data/labels/annotation_rounds/gold1/gold_A.tsv; docs/plans/active/master-plan.md, xử lý N2 -->
 
 Theo A6, câu gold của mỗi người phải được giữ khỏi lô gán của chính người đó cho đến khi họ điền xong gold. Việc gán lại nhãn câu hỏi và việc tự tìm đáp án từ văn bản gốc/VBHN là hai loại bằng chứng; phải lưu riêng. [CHỜ G2: gold1 được người điền và đối soát độ mù theo người; khai báo tiếp xúc cũ khi thu nhãn mới].
 <!-- nguồn: docs/plans/active/master-plan.md, A6 và quy tắc sau mục 11; data/labels/annotation_rounds/gold1/ -->

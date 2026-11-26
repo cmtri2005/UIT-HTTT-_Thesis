@@ -39,8 +39,8 @@ ADR này không sửa ADR 0005. Kết luận đã báo của v1.0 và test 2 gi�
   | đồ thị trỏ nhầm văn bản (lo2 `dafc3b40`, CMT 11/11) | sự kiện `event:168125:…` | 0 (không nằm trong tập đạt) |
   | `relocation_unclear` (Q1, CMT 11/11) | chỉ dev: 6cab03a0, 6caa8e70, 1a267400 | 0 |
 - **Danh sách khóa (G2, 12/11):**
-  - Lineage: `data/benchmark/test_final/lineages_199.txt` sha256 `d34a1ff2086b293152f24706006c25afcaf983b19326a64c014228e3156b4f1d` (156 chính + 43 T1).
-  - Release: `data/benchmark/test_final/vilextime.jsonl` sha256 `5766f9162939bd7c37471d8b995b56b6b5dae0c0da11e52ff13d8030587e534c`; meta `vilextime_meta.jsonl` sha256 `22142241f8eae7296b48ddad042a3552746070a89d1042663fd41c586acaaa49`; manifest `manifest.json` sha256 `87093c3f78f4205e77b2c64a45b116cb3dd627465c47b7491a8f264d6675cbcd`.
+  - Lineage: `data/benchmark/final_test/lineages_199.txt` sha256 `d34a1ff2086b293152f24706006c25afcaf983b19326a64c014228e3156b4f1d` (156 chính + 43 T1).
+  - Release: `data/benchmark/final_test/vilextime.jsonl` sha256 `5766f9162939bd7c37471d8b995b56b6b5dae0c0da11e52ff13d8030587e534c`; meta `vilextime_meta.jsonl` sha256 `22142241f8eae7296b48ddad042a3552746070a89d1042663fd41c586acaaa49`; manifest `manifest.json` sha256 `87093c3f78f4205e77b2c64a45b116cb3dd627465c47b7491a8f264d6675cbcd`.
   - 722 dòng; ở `giua_khoang`: `all` 156 lineage / 318 dòng (295 có đáp án), `t6_unanswerable` 23, `t6_ancestor` 9, `t2_near` 38, `t1_control` 43. Dựng bằng `scripts/pipeline/build_final_release.py`; `check_release.py` qua; 0 trùng lineage và văn bản với dev; 0 dự đoán trong `runs/`. Đáp án của 676 dòng có đáp án khớp cửa sổ và lời văn của đồ thị dựng lại 10/11 (kể cả 27 lineage không còn trong `vilextime_pool.jsonl`).
 - **Dev:** giữ nguyên 151 dòng `dev`, `giua_khoang`, như ADR 0005.
 - **Lát khai báo trước** trên `giua_khoang`:
@@ -70,9 +70,9 @@ ADR này không sửa ADR 0005. Kết luận đã báo của v1.0 và test 2 gi�
   - P là `proposed3` nếu trên dev, `proposed3` − `proposed2` ở `t6_unanswerable` có KTC ghép cặp > 0, **và** trên các dòng có đáp án, cận dưới KTC của hiệu Accuracy ≥ −0,02.
   - Ngược lại, P là `proposed2`.
   - Kết quả áp quy tắc trên dev (09/11, `runs/gpt4omini_dev/select_p.json`): **P = `proposed2`**. Ở `t6_unanswerable` (21 dòng), `proposed3` − `proposed2` = +2/21, KTC ghép cặp [0; 0,238], cận dưới không > 0 nên điều kiện đầu không đạt. Dòng có đáp án (112 dòng): +1/112, KTC [0; 0,028]. Nếu quy tắc chạy lại vì đồ thị đổi (mục 7), ghi kết quả mới ở đây.
-  - Chạy lại sau khi sửa đồ thị một lần (11/11, `runs/dev/rebuild_rerun/select_p.json`, quy tắc không đổi): **P = `proposed2`**. `t6_unanswerable`: +1/21, KTC [−0,095; 0,190]; dòng có đáp án: +1/112, KTC [0; 0,028]. Gate: `docs/reports/gate/h6-gate2-dev-20261111.md`.
+  - Chạy lại sau khi sửa đồ thị một lần (11/11, `runs/dev_tuning/rebuild_rerun/select_p.json`, quy tắc không đổi): **P = `proposed2`**. `t6_unanswerable`: +1/21, KTC [−0,095; 0,190]; dòng có đáp án: +1/112, KTC [0; 0,028]. Gate: `docs/reports/gate/h6-gate2-dev-20261111.md`.
   - Chấm lại dev sau khi loại 12 lineage T6 theo R2 và Q1 (11/11, `runs/t6_dev_r2_20261111/rescore.json`, không gọi API mới): `t6_unanswerable` còn 9 dòng, hiệu 0, KTC [−0,33; 0,33]; **P = `proposed2`**.
-  - Sửa lệnh bãi bỏ (12/11, `graphx.py` `_ISSUED`): lệnh sửa đổi, bãi bỏ giữ tác dụng sau khi văn bản chứa lệnh hết hiệu lực; căn cứ: Luật 80/2015 Điều 154 và Luật 64/2025 Điều 57 liệt kê cách hết hiệu lực, không quy định điều khoản bị bãi bỏ có hiệu lực lại (`vn-law-verifier`; ghi là "chưa tìm thấy quy định ngược lại"). Dev: 4/151 prompt đổi mỗi hệ có mở rộng, chỉ 4 dòng đó gọi lại API; Accuracy `proposed2` 0,722, `proposed3` 0,735, `p2a3` 0,728, không đổi; quy tắc chọn: **P = `proposed2`** (`runs/dev/repeal_fix/compare.json`). Khóa bộ đệm truy xuất nâng lên `retrieval-v3`.
+  - Sửa lệnh bãi bỏ (12/11, `graphx.py` `_ISSUED`): lệnh sửa đổi, bãi bỏ giữ tác dụng sau khi văn bản chứa lệnh hết hiệu lực; căn cứ: Luật 80/2015 Điều 154 và Luật 64/2025 Điều 57 liệt kê cách hết hiệu lực, không quy định điều khoản bị bãi bỏ có hiệu lực lại (`vn-law-verifier`; ghi là "chưa tìm thấy quy định ngược lại"). Dev: 4/151 prompt đổi mỗi hệ có mở rộng, chỉ 4 dòng đó gọi lại API; Accuracy `proposed2` 0,722, `proposed3` 0,735, `p2a3` 0,728, không đổi; quy tắc chọn: **P = `proposed2`** (`runs/dev_tuning/repeal_fix/compare.json`). Khóa bộ đệm truy xuất nâng lên `retrieval-v3`.
   - **P = `proposed2` khóa tại commit Accepted của ADR này.** Mọi phân tích dev sau đó (kể cả chẩn đoán T6) chỉ báo cáo, không mở lại P, không đổi prompt hay cấu hình hệ.
 
 ### 3. Họ kiểm định xác nhận (Holm, α = 0,05)
@@ -139,7 +139,7 @@ Parser nhận nhãn `HIỆU LỰC`, `CĂN CỨ` ở đầu dòng hoặc viết H
   | Bác | Bác |
 
 - **Không đủ bằng chứng** được viết theo mẫu: "KTC không loại trừ 0 và không loại trừ hiệu ≥ MDE; không diễn giải là không có hiệu ứng".
-- **Cỡ mẫu và power:** ghi cạnh mọi phán quyết. Bảng MDE cho F1–F7 ở N thật (156 lineage; F7 23 lineage), tính từ phương sai ghép cặp của test 2 và dev, ghi rõ là ước lượng trước khi chạy: xấp xỉ chuẩn, power 80% (`data/benchmark/test_final/g2_mde.py`, `g2_mde_table.md`). Power 0,37 trước đây chỉ là kịch bản xấu cho F5/F6.
+- **Cỡ mẫu và power:** ghi cạnh mọi phán quyết. Bảng MDE cho F1–F7 ở N thật (156 lineage; F7 23 lineage), tính từ phương sai ghép cặp của test 2 và dev, ghi rõ là ước lượng trước khi chạy: xấp xỉ chuẩn, power 80% (`data/benchmark/final_test/g2_mde.py`, `g2_mde_table.md`). Power 0,37 trước đây chỉ là kịch bản xấu cho F5/F6.
 
   | Mã | MDE α 0,05 | MDE Holm xấu nhất α/7 | Nguồn SD | Hiệu đã thấy (dev / test 2) |
   |---|---:|---:|---|---|
@@ -173,7 +173,7 @@ Parser nhận nhãn `HIỆU LỰC`, `CĂN CỨ` ở đầu dòng hoặc viết H
 
 ### 9. Niêm phong Colab đợt 2
 
-Kết quả đợt 2 (các hệ còn thiếu trên v1.0 và test 2) được nhập, lưu sha256 vào `runs/README.md`, nhưng **chỉ chấm sau khi ADR này được commit**. Mục đích: không để kết quả test của `b3`, `b4`, `oracle` và ablation ảnh hưởng đến việc chọn embedding, lai ghép hay P.
+Kết quả đợt 2 (các hệ còn thiếu trên v1.0 và test 2) được nhập, lưu sha256 vào `runs/LOG.md`, nhưng **chỉ chấm sau khi ADR này được commit**. Mục đích: không để kết quả test của `b3`, `b4`, `oracle` và ablation ảnh hưởng đến việc chọn embedding, lai ghép hay P.
 
 ### 10. Thay đổi so với ADR 0005
 
@@ -225,19 +225,19 @@ Tradeoffs:
 ## Amendment 2026-11-13: hai baseline thăm dò sau khi đã thấy kết quả bộ cuối
 
 Accepted 13/11/2026, CMT duyệt trong hội thoại ("ok bạn nhé"), **trước** khi hai hệ dưới đây chạy trên bộ cuối. NMT chưa có xác nhận riêng trong repo. Không sửa phần nào ở trên.
-- **Đã thấy gì:** toàn bộ kết quả G4 (hai lần chạy), phân tích hậu nghiệm ở `runs/final/posthoc/attribution.json`, và kết quả dev của hai hệ dưới đây.
+- **Đã thấy gì:** toàn bộ kết quả G4 (hai lần chạy), phân tích hậu nghiệm ở `runs/final_test/extra_analysis/attribution.json`, và kết quả dev của hai hệ dưới đây.
 - **Hệ thêm:** `bvnone` (lớp B, lai ghép, không lọc thời gian, không mở rộng, không Verifier) và `bvdate` (như `bvnone`, mỗi đoạn trong prompt có thêm một dòng khoảng hiệu lực đã lan truyền). Cùng generator, prompt hệ thống, `k`, seed và hai lần chạy như ADR 0006 §2, §5b. Định nghĩa ở `src/vilexgraph/framework/systems.py` (`POSTHOC`).
 - **Câu hỏi:** RAG phẳng được đọc cùng kho phiên bản thì còn kém bao nhiêu; cho model thấy ngày hiệu lực thì có thay được bộ lọc cứng không.
 - **Phép so, đều là thăm dò, ngoài Holm, không có phán quyết:** Accuracy và `wrong_version` trên `all` của `bvnone − b4`, `bvdate − bvnone`, `b7plus − bvdate`, `proposed2 − bvdate`; báo ở cả hai lần chạy.
 - **Không đổi:** P, F1–F7, phán quyết đã báo, scorer, gold, prompt của các hệ đã khóa.
 - **Cách đọc đã khai trước:** nếu KTC của `b7plus − bvdate` chứa 0 ở cả hai lần thì viết "không thấy khác biệt lớn hơn độ rộng KTC giữa lọc cứng và để model tự chọn theo ngày"; nếu loại 0 về phía dương ở cả hai lần thì viết "lọc cứng trước khi xếp hạng còn giá trị riêng".
-- **Kết quả dev lúc duyệt** (`runs/final/posthoc/dev/`, đã thấy): `b7plus − bvdate` Accuracy +0,272 [+0,19; +0,36] lần 1, +0,245 [+0,16; +0,33] lần 2.
-- **Đường chạy trên bộ cuối:** `runs/final/posthoc/run_test_baselines.sh`; cùng prompt hệ thống, generator, seed, hai lần gọi như §5b; kết quả ở `runs/final/posthoc/test/`.
+- **Kết quả dev lúc duyệt** (`runs/final_test/extra_analysis/dev/`, đã thấy): `b7plus − bvdate` Accuracy +0,272 [+0,19; +0,36] lần 1, +0,245 [+0,16; +0,33] lần 2.
+- **Đường chạy trên bộ cuối:** `runs/final_test/extra_analysis/run_test_baselines.sh`; cùng prompt hệ thống, generator, seed, hai lần gọi như §5b; kết quả ở `runs/final_test/extra_analysis/test/`.
 
 ## Amendment 2026-11-15: LightRAG thật làm đối chứng GraphRAG phi thời gian, thăm dò, sau khi đã thấy kết quả bộ cuối
 
 Accepted 15/11/2026, CMT duyệt trong hội thoại ("ok thôi chạy đi nhé", trả lời câu hỏi có hai lựa chọn: chạy dev, và duyệt amendment để chạy bộ cuối), **trước** khi LightRAG sinh câu trả lời trên bộ cuối. NMT chưa có xác nhận riêng trong repo. Không sửa phần nào ở trên.
-- **Đã thấy gì:** toàn bộ kết quả G4 (hai lần chạy), hậu nghiệm 13/11, `bvnone` và `bvdate` trên bộ cuối; độ phủ căn cứ của LightRAG trên **dev** (`runs/final/lightrag_baseline/dev/coverage.json`). Ngữ cảnh LightRAG của 361 dòng bộ cuối đã được lấy trên Colab cùng lượt với dev (15/11); chưa dựng prompt, chưa sinh câu trả lời, chưa chấm, chưa đo độ phủ trên các dòng này.
+- **Đã thấy gì:** toàn bộ kết quả G4 (hai lần chạy), hậu nghiệm 13/11, `bvnone` và `bvdate` trên bộ cuối; độ phủ căn cứ của LightRAG trên **dev** (`runs/final_test/lightrag_baseline/dev/coverage.json`). Ngữ cảnh LightRAG của 361 dòng bộ cuối đã được lấy trên Colab cùng lượt với dev (15/11); chưa dựng prompt, chưa sinh câu trả lời, chưa chấm, chưa đo độ phủ trên các dòng này.
 - **Hệ thêm:** `lightrag` = LightRAG (`lightrag-hku`, chế độ `mix` mặc định). Đồ thị dựng bằng `Qwen/Qwen2.5-14B-Instruct` (vLLM, FP8), embedding `AITeamVN/Vietnamese_Embedding`. Truy vấn là "Mốc thời gian: <ngày>. <câu hỏi>". Nguyên ngữ cảnh LightRAG trả về được đặt làm một khối căn cứ trong prompt chung (`scripts/eval/lightrag_package.py prompts`). Generator, prompt hệ thống, `max_tokens`, seed và hai lần chạy như ADR 0006 §2, §5b.
 - **Cách gửi:** gửi từng request như G4 (`api_generate.py`, không `--batch`). Batch đã thử trên dev và không đạt tiêu chí tương đương đặt trước (`runs/batch_check_20261115/`), nên không dùng cho phép so với các hệ G4.
 - **Ba chỗ không ngang hàng, phải báo kèm mọi số:** (1) kho của LightRAG chỉ gồm 608 văn bản (văn bản mà dev và bộ cuối hỏi tới, cộng lệnh sửa đổi nhắm vào chúng), các hệ khác tìm trên toàn kho; (2) ngữ cảnh trung vị khoảng 99.000 ký tự, các hệ khác khoảng 12.000–13.000; (3) kho LightRAG không có ngày hiệu lực. (1) và (2) có lợi cho LightRAG.
@@ -246,16 +246,16 @@ Accepted 15/11/2026, CMT duyệt trong hội thoại ("ok thôi chạy đi nhé"
 - **Cách đọc đã khai trước:** nếu KTC của `proposed2 − lightrag` (Accuracy) loại 0 về phía dương ở cả hai lần thì viết "hệ có lọc theo khoảng hiệu lực hơn một GraphRAG phi thời gian thật, dù hệ đó có kho nhỏ hơn và ngữ cảnh lớn hơn"; nếu chứa 0 ở một trong hai lần thì viết "không thấy khác biệt lớn hơn độ rộng KTC"; nếu loại 0 về phía âm thì báo đúng như vậy.
 - **Không đổi:** P, F1–F7 (F2 vẫn là P − `b5`), phán quyết đã báo, scorer, gold, prompt của các hệ đã khóa.
 - **Chi phí ước lượng:** khoảng 11,3 triệu token đầu vào mỗi lần chạy trên bộ cuối (35,8 triệu ký tự, 3,16 ký tự mỗi token đo trên prompt dev của G3), tức khoảng 1,7 USD mỗi lần nếu giá đầu vào là 0,15 USD một triệu token.
-- **Kết quả dev lúc duyệt** (`runs/final/lightrag_baseline/dev/`, đã thấy, gửi thường, hai lần): Accuracy `lightrag` 0,417 / 0,404; `b4` 0,358 / 0,371; `b5` 0,384 / 0,397; `b7plus` 0,695 / 0,695; `proposed2` 0,722 / 0,709. TCS `lightrag` 0 trên 36 cặp ở cả hai lần. Định dạng đạt 108/151 và 109/151, vì model trích nhãn đoạn nội bộ của ngữ cảnh LightRAG; không ảnh hưởng Accuracy.
-- **Đường chạy trên bộ cuối:** `runs/final/lightrag_baseline/run_test.sh`; kết quả ở `runs/final/lightrag_baseline/test/`.
+- **Kết quả dev lúc duyệt** (`runs/final_test/lightrag_baseline/dev/`, đã thấy, gửi thường, hai lần): Accuracy `lightrag` 0,417 / 0,404; `b4` 0,358 / 0,371; `b5` 0,384 / 0,397; `b7plus` 0,695 / 0,695; `proposed2` 0,722 / 0,709. TCS `lightrag` 0 trên 36 cặp ở cả hai lần. Định dạng đạt 108/151 và 109/151, vì model trích nhãn đoạn nội bộ của ngữ cảnh LightRAG; không ảnh hưởng Accuracy.
+- **Đường chạy trên bộ cuối:** `runs/final_test/lightrag_baseline/run_test.sh`; kết quả ở `runs/final_test/lightrag_baseline/test/`.
 
 ## Amendment 2026-11-16: generator mở (Qwen) và các phép thăm dò khác trên bộ cuối, sau khi đã thấy kết quả bộ cuối
 
 Accepted 16/11/2026, CMT duyệt trong hội thoại ("Chốt", trả lời ba câu mở ở nháp, đề xuất là: chạy Qwen cho `bvdate`, `bvnone`, `lightrag` cùng; ghi "GPT-4o mini" cạnh số 0,245; B3 và C2 không làm, theo ưu tiên CMT nói cùng ngày "hết quota, tập trung key player"), **trước** khi bất kỳ hệ nào dưới đây chạy trên bộ cuối. NMT chưa có xác nhận riêng trong repo. Không sửa phần nào ở trên.
 
 ### 1. Đã thấy gì
-- Toàn bộ G4 (hai lần chạy), hậu nghiệm 13/11 (`runs/final/posthoc/`), `bvnone`, `bvdate`, `lightrag` bằng GPT-4o mini trên bộ cuối.
-- Gold mù người của 81 lineage (NMT, 15/11) và F1–F7 trên 103 lineage có gold người (`runs/final/blind_gold_subset/`). NMT đọc xong sau khi bộ cuối đã được chạy.
+- Toàn bộ G4 (hai lần chạy), hậu nghiệm 13/11 (`runs/final_test/extra_analysis/`), `bvnone`, `bvdate`, `lightrag` bằng GPT-4o mini trên bộ cuối.
+- Gold mù người của 81 lineage (NMT, 15/11) và F1–F7 trên 103 lineage có gold người (`runs/final_test/blind_gold_subset/`). NMT đọc xong sau khi bộ cuối đã được chạy.
 - Dev: Qwen3.8-27B, 15 hệ × 2 lần (`runs/qwen_gen_20261115/dev/`, evidence-gate PASS 16/11).
 - **Chưa thấy:** mọi dự đoán Qwen trên bộ cuối.
 
@@ -312,7 +312,7 @@ Qwen, `all`, dev 151 dòng, r1 / r2 (KTC ghép cặp 95%, 10.000 lần):
 `runs/qwen_gen_20261115/` (tạo `run_test.sh` cạnh `run_dev.sh`; cần cờ `--allow-test` hoặc `final_run.py`, chỉ sau commit duyệt). Chi phí: 0 USD API (Colab A100).
 
 ### 9. Reranker: bỏ (CMT, 16/11/2026)
-Không đưa reranker lên bộ cuối. Lý do: hết quota, ưu tiên các việc chính. Đã có trên dev, **chỉ truy xuất** (chưa sinh): `AITeamVN/Vietnamese_Reranker` nâng MRR `b4` 0,536 → 0,696; TV-R@1 `b7plus − b4` 0,199 → 0,265 (`runs/dev/reranker_pool/`). Phần Qwen dev cho 4 ô đã dựng sẵn nhưng chưa chạy (`runs/qwen_gen_rr_20261116/`). Paper phải ghi trong giới hạn: "chưa so sánh với retriever có reranker trên bộ cuối; trên dev, khoảng cách truy xuất giữa lọc và không lọc không co lại khi thêm reranker".
+Không đưa reranker lên bộ cuối. Lý do: hết quota, ưu tiên các việc chính. Đã có trên dev, **chỉ truy xuất** (chưa sinh): `AITeamVN/Vietnamese_Reranker` nâng MRR `b4` 0,536 → 0,696; TV-R@1 `b7plus − b4` 0,199 → 0,265 (`runs/dev_tuning/reranker_pool/`). Phần Qwen dev cho 4 ô đã dựng sẵn nhưng chưa chạy (`runs/qwen_gen_rr_20261116/`). Paper phải ghi trong giới hạn: "chưa so sánh với retriever có reranker trên bộ cuối; trên dev, khoảng cách truy xuất giữa lọc và không lọc không co lại khi thêm reranker".
 
 ## Amendment 2026-11-16 (b): Qwen trên bộ cuối chạy qua API Chutes, không qua vLLM
 
@@ -320,13 +320,13 @@ Accepted 16/11/2026, CMT duyệt trong hội thoại ("chốt"), **trước** kh
 
 - **Lý do đổi:** Colab hết quota. Chạy lại cả 15 hệ bằng vLLM không còn khả thi.
 - **Đường chạy:** `scripts/eval/api_generate.py --provider chutes --model Qwen/Qwen3.8-27B-TEE`, nhiệt độ 0, `max_tokens` 1024, `seed` 20261109, hai lần chạy. Tham số `chat_template_kwargs.enable_thinking = false` được `src/vilexgraph/llm.py` gửi cho provider `chutes` (dev vLLM chạy `thinking: false`; mặc định Qwen3.8 tự suy luận và dùng hết `max_tokens` mà không trả lời).
-- **Prompt:** đúng các file đã dùng cho GPT-4o mini trên bộ cuối (`runs/final/main/r1/prompts/`, `runs/final/posthoc/test/prompts/`, `runs/final/lightrag_baseline/test/prompts/`), kiểm hash khi gọi. 15 hệ × 2 lần × 361 dòng.
+- **Prompt:** đúng các file đã dùng cho GPT-4o mini trên bộ cuối (`runs/final_test/main/r1/prompts/`, `runs/final_test/extra_analysis/test/prompts/`, `runs/final_test/lightrag_baseline/test/prompts/`), kiểm hash khi gọi. 15 hệ × 2 lần × 361 dòng.
 - **Chỗ lệch so với dev phải khai kèm mọi số Qwen:** Chutes phục vụ bản FP8 (`Qwen3.8-27B-FP8`, sglang, môi trường TEE); dev vLLM chạy bản gốc `Qwen/Qwen3.8-27B` revision `37561816e66b5b9153b1b64c10968c18c1e6f4a0` (BF16). Chutes không ghim revision và không bảo đảm seed. Qwen bộ cuối là phân tích hậu nghiệm với một đường chạy khác dev.
-- **Đối chiếu đã làm trên dev trước khi duyệt** (`runs/final/open_model_qwen/dev/`, `b4` và `b7plus`, r1, 151 dòng): Accuracy Chutes/vLLM `b4` 0,444/0,424, `b7plus` 0,722/0,715; sai phiên bản `b4` 0,424/0,435, `b7plus` 0,012/0,012; TCS `b4` 0,139/0,056 (36 cặp), `b7plus` 0,750/0,750. Trùng nguyên văn với vLLM: 128/151 và 141/151.
+- **Đối chiếu đã làm trên dev trước khi duyệt** (`runs/final_test/open_model_qwen/dev/`, `b4` và `b7plus`, r1, 151 dòng): Accuracy Chutes/vLLM `b4` 0,444/0,424, `b7plus` 0,722/0,715; sai phiên bản `b4` 0,424/0,435, `b7plus` 0,012/0,012; TCS `b4` 0,139/0,056 (36 cặp), `b7plus` 0,750/0,750. Trùng nguyên văn với vLLM: 128/151 và 141/151.
 - **Cách đọc đã khai trước:** các cách đọc ở Amendment 2026-11-16 giữ nguyên. Thêm: nếu một kết luận Qwen chỉ đứng được khi chênh nhỏ hơn mức lệch Chutes–vLLM đo ở trên (khoảng 0,02 Accuracy), không nêu kết luận đó.
 - **Không đổi:** P, F1–F7, phán quyết đã báo, scorer, gold, prompt đã khóa.
 - **Chi phí ước lượng:** khoảng 3 USD (khoảng 4.700 token đầu vào mỗi prompt đo trên dev; `lightrag` dài hơn).
-- **Đường chạy trên bộ cuối:** `runs/final/open_model_qwen/test/run_test.sh`.
+- **Đường chạy trên bộ cuối:** `runs/final_test/open_model_qwen/test/run_test.sh`.
 
 ## Amendment 2026-11-19: sửa đáp án ngắn của 43 lineage T1 đối chứng, chấm lại sau khi đã thấy kết quả
 
@@ -334,7 +334,7 @@ Accepted 19/11/2026, CMT duyệt trong hội thoại ("duyệt nhé. làm đi"),
 
 - **Lỗi:** đáp án ngắn T1 là nguyên lời văn của đơn vị, mở đầu bằng ký hiệu liệt kê ("1.", "d)") và ở 4 dòng có câu dẫn của khoản cha; 41/43 dòng bắt đầu bằng ký hiệu. Phép so khớp đòi chuỗi chứa đủ các ký hiệu đó, nên câu trả lời đúng bị chấm sai (`oracle` T1: 2/43; dev T1: 0,833).
 - **Đã thấy gì:** toàn bộ kết quả G4 và hậu nghiệm, kể cả Accuracy T1 của mọi hệ và `t1_no_harm`; đã thử quy tắc dưới đây trên `oracle` T1 (2/43 → 37/43) trước khi duyệt.
-- **Sửa (cơ học, không phán đoán):** với mỗi đoạn của đáp án ngắn (tách bằng "…"), bỏ một ký hiệu liệt kê ở đầu theo biểu thức `^\s*(?:\d+(?:\.\d+)*\.|[a-zđ]\)|[a-zđ]\.\d+\))\s+`. Không đổi chữ nào khác, không bỏ câu dẫn, không viết lại đáp án. Bản cũ `data/benchmark/test_final/vilextime.jsonl` giữ nguyên; bản sửa ở `runs/final/posthoc/t1_fix/release/` (script `scripts/eval/fix_t1_short_answers.py`, danh sách dòng đổi `changed.jsonl`).
-- **Chấm lại:** dự đoán G4 lần 1 và lần 2 đã lưu, không gọi model. Tính lại `t1_no_harm` (§4, δ = 0,05) và Accuracy T1 mọi hệ. Báo cả bản trước và sau sửa, ghi "chấm lại sau khi đã thấy kết quả". Đường chạy `runs/final/posthoc/t1_fix/run.sh`.
+- **Sửa (cơ học, không phán đoán):** với mỗi đoạn của đáp án ngắn (tách bằng "…"), bỏ một ký hiệu liệt kê ở đầu theo biểu thức `^\s*(?:\d+(?:\.\d+)*\.|[a-zđ]\)|[a-zđ]\.\d+\))\s+`. Không đổi chữ nào khác, không bỏ câu dẫn, không viết lại đáp án. Bản cũ `data/benchmark/final_test/vilextime.jsonl` giữ nguyên; bản sửa ở `runs/final_test/extra_analysis/t1_fix/release/` (script `scripts/eval/fix_t1_short_answers.py`, danh sách dòng đổi `changed.jsonl`).
+- **Chấm lại:** dự đoán G4 lần 1 và lần 2 đã lưu, không gọi model. Tính lại `t1_no_harm` (§4, δ = 0,05) và Accuracy T1 mọi hệ. Báo cả bản trước và sau sửa, ghi "chấm lại sau khi đã thấy kết quả". Đường chạy `runs/final_test/extra_analysis/t1_fix/run.sh`.
 - **Không đổi:** họ F1–F7 (T1 ngoài `all`), scorer, các nhóm khác.
-- **Kết quả (19/11, `runs/final/posthoc/t1_fix/summary.txt`):** `oracle` T1 0,047 → 0,860 (37/43) ở cả hai lần; `proposed2` 0,093 → 0,442; `b2ctx` 0,070 → 0,349. `t1_no_harm`, `proposed2 − b2ctx`: +0,093 [−0,093; +0,279] ở cả hai lần → "không chứng minh được không làm hại" (cận dưới ≤ −0,05; KTC rộng như §4 đã dự kiến). `b7pp − b2ctx` lần 1 +0,116 [−0,047; +0,279] → "không làm hại", lần 2 +0,093 [−0,093; +0,279] → không chứng minh được; không nêu kết luận "không làm hại" vì hai lần không cùng phán quyết. Khẳng định sai "hết hiệu lực" trên T1 (không đổi theo bản sửa): `proposed2` 1/43, `b2ctx` 11/43. Họ F1–F7 trùng khít bản gốc ở cả hai lần.
+- **Kết quả (19/11, `runs/final_test/extra_analysis/t1_fix/summary.txt`):** `oracle` T1 0,047 → 0,860 (37/43) ở cả hai lần; `proposed2` 0,093 → 0,442; `b2ctx` 0,070 → 0,349. `t1_no_harm`, `proposed2 − b2ctx`: +0,093 [−0,093; +0,279] ở cả hai lần → "không chứng minh được không làm hại" (cận dưới ≤ −0,05; KTC rộng như §4 đã dự kiến). `b7pp − b2ctx` lần 1 +0,116 [−0,047; +0,279] → "không làm hại", lần 2 +0,093 [−0,093; +0,279] → không chứng minh được; không nêu kết luận "không làm hại" vì hai lần không cùng phán quyết. Khẳng định sai "hết hiệu lực" trên T1 (không đổi theo bản sửa): `proposed2` 1/43, `b2ctx` 11/43. Họ F1–F7 trùng khít bản gốc ở cả hai lần.

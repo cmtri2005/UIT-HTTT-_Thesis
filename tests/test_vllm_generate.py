@@ -12,6 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_digest_matches_the_repository_hash_on_real_prompts():
     for path in (ROOT / "runs/final_rehearsal_g3_20261112/r1/prompts/b4.jsonl",
-                 ROOT / "runs/final/lightrag_baseline/dev/prompts/lightrag.jsonl"):
+                 ROOT / "runs/final_test/lightrag_baseline/dev/prompts/lightrag.jsonl"):
         row = json.loads(path.open(encoding="utf-8").readline())
         assert vllm_generate.digest(row) == colab_b1.digest(row) == row["prompt_sha256"]

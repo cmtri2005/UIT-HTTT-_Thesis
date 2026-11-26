@@ -752,10 +752,10 @@ Bản phát hành dựng lại từ bộ test cuối bằng chương trình, **k
 | Kho phiên bản | `scripts/pipeline/{build_store,resolve_expiry_targets,extract_provision_events,apply_document_scope,build_versions}.py` → `data/derived/` |
 | Hàng chờ LLM xem trước | `data/labels/provision_events.jsonl`, `validity_queue.tsv`, `temporal_candidates.jsonl` |
 | Corpus | `scripts/pipeline/build_corpus.py`, `build_eligibility.py` → `vilextime_uit/corpus/` |
-| Ứng viên | `build_question_pool.py`, `sample_vilextime.py` → `data/derived/vilextime_pool.jsonl`, `data/benchmark/test2/sample.jsonl` |
-| Viết câu hỏi | `scripts/pipeline/generate_questions.py`, `src/vilexgraph/llm.py`; system prompt: `prompts/vilextime/base.md` + `T1.md`…`T6.md`; bộ test 2: `test2_cau_hoi.md`; kết quả: `data/benchmark/test2/questions.jsonl` |
-| Lọc ứng viên | `prompts/vilextime/test2_loc.md`; thư mục làm việc ngoài repo `~/vilextime_loc/`; phiếu: `data/labels/annotation_rounds/`, `data/benchmark/test_final/inputs/` |
-| Đáp án ngắn | `data/benchmark/test2/short_answers*.jsonl`; kiểm: `enrich_vilextime.py`; sửa: `scripts/eval/fix_t1_short_answers.py`, `scripts/review/test2_fill_shorts.py` |
+| Ứng viên | `build_question_pool.py`, `sample_vilextime.py` → `data/derived/vilextime_pool.jsonl`, `data/benchmark/earlier_test2/sample.jsonl` |
+| Viết câu hỏi | `scripts/pipeline/generate_questions.py`, `src/vilexgraph/llm.py`; system prompt: `prompts/vilextime/base.md` + `T1.md`…`T6.md`; bộ test 2: `test2_cau_hoi.md`; kết quả: `data/benchmark/earlier_test2/questions.jsonl` |
+| Lọc ứng viên | `prompts/vilextime/test2_loc.md`; thư mục làm việc ngoài repo `~/vilextime_loc/`; phiếu: `data/labels/annotation_rounds/`, `data/benchmark/final_test/inputs/` |
+| Đáp án ngắn | `data/benchmark/earlier_test2/short_answers*.jsonl`; kiểm: `enrich_vilextime.py`; sửa: `scripts/eval/fix_t1_short_answers.py`, `scripts/review/test2_fill_shorts.py` |
 | Dựng dòng | `build_vilextime.py`, `enrich_vilextime.py` |
 | Agent gán, hòa giải | `.claude/agents/{legal-annotator-a,legal-annotator-b,legal-adjudicator}.md`; kỹ năng: `.claude/skills/{vn-legal-research,vilextime-ai-labeling}/`; bản nguyên văn đã phát hành: `vilextime_uit/annotation/prompts/` |
 | Lời giao việc và Codex | `data/labels/ai_research/{prompt_v2.md,codex_b_wrapper.md}`; từng lượt: `data/labels/ai_research/<ngày>_<lượt>/` |
@@ -764,6 +764,6 @@ Bản phát hành dựng lại từ bộ test cuối bằng chương trình, **k
 | Phễu bộ cuối | `data/labels/ai_research/2026-11-11_final_count/count_final.py` |
 | Đọc mù | `scripts/review/independent_gold.py`; phiếu `data/labels/blind_gold/`, `data/labels/gold_random30/`; bản phát hành `vilextime_uit/annotation/blind_reading/` |
 | Rà sót sửa đổi | `scripts/check/audit_missed_amendments.py`, `data/labels/missed_amendment_audit/` |
-| Bộ cuối và phát hành | `scripts/pipeline/build_final_release.py` → `data/benchmark/test_final/`; `build_dib_release.py` → `vilextime_uit/` |
+| Bộ cuối và phát hành | `scripts/pipeline/build_final_release.py` → `data/benchmark/final_test/`; `build_dib_release.py` → `vilextime_uit/` |
 | Kiểm và tái lập | `scripts/check/verify_pipeline.py`; `vilextime_uit/scripts/{check_dataset,evaluate}.py` |
 | Nhãn thô và hòa giải đã phát hành | `vilextime_uit/annotation/labels/{ai_labels_raw,adjudication,post_review_ai_checks}.jsonl` |

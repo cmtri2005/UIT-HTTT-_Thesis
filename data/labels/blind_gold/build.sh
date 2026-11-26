@@ -8,7 +8,7 @@
 #                              independent_gold.py reveal A --review $O --release $R
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
-R=data/benchmark/test_final/internal/derived/vilextime/release.jsonl
+R=data/benchmark/final_test/internal/derived/vilextime/release.jsonl
 O=data/labels/blind_gold
 SIZES=T2-near:19:6,T2-regular:39:12,T6-direct:14:7,T6-ancestor:9:5
 
@@ -21,7 +21,7 @@ release, out, sizes = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
 rows = [json.loads(line) for line in release.open(encoding="utf-8")]
 lineage_of = {r["id"]: r["lineage_id"] for r in map(json.loads, open("data/derived/vilextime/release.jsonl", encoding="utf-8"))}
 lineage_of.update({r["id"]: r["lineage_id"] for r in rows})
-gold1 = set(Path("runs/final/posthoc/gold_subset/lineages.txt").read_text().split())
+gold1 = set(Path("runs/final_test/extra_analysis/gold_subset/lineages.txt").read_text().split())
 seen = ig.seen_lineages(Path("data/labels"), lineage_of, "AB")
 pool = [r for r in rows
         if r["as_of_strategy"] == "giua_khoang" and r["lineage_id"] not in gold1 | seen

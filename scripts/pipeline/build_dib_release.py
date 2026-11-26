@@ -3,8 +3,8 @@
 Inputs are read-only: the T1-fixed release (ADR 0006 amendment 19/11) and the
 labelling provenance under data/labels. Output: data/vilextime_dib/.
 
-Changes versus data/benchmark/test_final (all listed in CHANGES.md of the output):
-  1. T1 answers: leading enumeration marker removed (runs/final/posthoc/t1_fix).
+Changes versus data/benchmark/final_test (all listed in CHANGES.md of the output):
+  1. T1 answers: leading enumeration marker removed (runs/final_test/extra_analysis/t1_fix).
   2. F019 gold corrected per ADR 0006 §7 (lawyer blind read; TT 36/2026/TT-BXD).
   3. meta.review rewritten per lineage from the real provenance files.
   4. meta.question_source: Codex model recorded as author-reported gpt-6.1-sol.
@@ -32,7 +32,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT / "runs/final/posthoc/t1_fix/release"
+BASE = ROOT / "runs/final_test/extra_analysis/t1_fix/release"
 AI = ROOT / "data/labels/ai_research"
 GOLD = ROOT / "data/labels"
 GOLD_DOT3 = GOLD / "gold_dot3_highrisk"  # high-risk augmentation (AI-proposed, CMT-verified; not blind)

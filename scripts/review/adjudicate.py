@@ -7,7 +7,7 @@
                data/labels/hoa_giai_D4.tsv (id, verdict, reasons, note đã chốt) và
                cột `adjudicated` của crosscheck_A.tsv (= verdict đã chốt).
                Không ghi gì nếu còn một lỗi hoặc còn dòng chưa chốt.
-    drop     thêm vào data/benchmark/test2/dropped.jsonl mọi lineage D4 có dòng mang nhãn
+    drop     thêm vào data/benchmark/earlier_test2/dropped.jsonl mọi lineage D4 có dòng mang nhãn
              cuối `khong_dat` (đã chốt, hoặc A và B cùng nhãn), để lineage xếp hạng
              kế tiếp thế chỗ (hướng dẫn §5 bước 6). Lineage đã có trong file thì bỏ qua.
 
@@ -216,7 +216,7 @@ def ingest(data: Path, by: str, name: str = "crosscheck") -> None:
 
 
 def drop(data: Path, today: str | None = None) -> None:
-    path = data / "benchmark/test2/dropped.jsonl"
+    path = data / "benchmark/earlier_test2/dropped.jsonl"
     old = [json.loads(line) for line in path.open(encoding="utf-8")] if path.exists() else []
     known = {d["lineage_id"] for d in old}
     new = {}

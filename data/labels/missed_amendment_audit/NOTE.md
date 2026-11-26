@@ -1,6 +1,6 @@
 # Rà sót sửa đổi, 21/11/2026 (xong)
 Script `scripts/check/audit_missed_amendments.py`: offline, dùng cache vbpl (data/diagrams = "Lược đồ", data/raw = toàn văn).
-Tự kiểm: chạy trên bản chưa sửa `runs/final/posthoc/t1_fix/release` phải bắt F016.
+Tự kiểm: chạy trên bản chưa sửa `runs/final_test/extra_analysis/t1_fix/release` phải bắt F016.
 
 Kết quả trên 199 lineage: 60 ứng viên / 46 lineage (`candidates.tsv`), đọc hết, phán quyết ở `verdicts.tsv`:
 - 5 lỗi kho, đã sửa (bản DiB 5.0.0): F016, F060 (người đọc mù tìm ra) và 3 lỗi mới: NĐ 33/2010 Đ7 k1 đ (NĐ 53/2012),

@@ -30,12 +30,12 @@ Vì vậy đơn vị phân tích là lineage.
 
 ### 1. Dữ liệu được phân tích
 
-- Bản final: `data/benchmark/test_v1/vilextime.jsonl`, sha256
+- Bản final: `data/benchmark/earlier_test_v1/vilextime.jsonl`, sha256
   `7cf51ee66c7e242b0d3a7b03e62f1ed9bede6527082d9b2f8483ec75d278b366`
-  (`data/benchmark/test_v1/manifest.json`, schema 2.0.0, `final: true`, xuất lại 29/10 sau khi luật sư
+  (`data/benchmark/earlier_test_v1/manifest.json`, schema 2.0.0, `final: true`, xuất lại 29/10 sau khi luật sư
   kiểm 117 dòng nhãn agent và đảo Q2, định nghĩa §6): 769 dòng chính;
   859 dòng silver ngoài bảng chính. Các trường `near_identical` và `repeal_mode` lấy theo ID từ
-  `data/benchmark/test_v1/vilextime_meta.jsonl`. Số dưới đây đếm bằng `SLICES` của
+  `data/benchmark/earlier_test_v1/vilextime_meta.jsonl`. Số dưới đây đếm bằng `SLICES` của
   `scripts/eval/confirm_vilextime.py` trên `giua_khoang`.
 - Bảng chính `test`: 211 dòng, 165 lineage; `dev`: 151 dòng, 81 lineage (dev không đổi so với bản 28/10). "all" gồm T1, T2, T3
   và T6, trùng toàn bộ bảng chính ở cả hai split. T5 không có trong file chính; các dòng T5 nằm
@@ -166,7 +166,7 @@ bằng cùng công cụ, báo ước lượng, khoảng tin cậy và p chưa hi
 - Dao động của LLM: đo trên `dev` thay cho việc chạy hệ chính hai lần (CMT đồng ý ngày 29/10). Qua
   hai lượt Colab với hai biến thể attention, prompt giống nhau cho output giống nhau ở 553/553 dòng
   (`a3` so với `proposed`, `a2` so với `b7pp`, 121 dòng `b5` so với `b2ctx`, 130 dòng `a4` so với
-  `proposed`; `runs/README.md`, 29/10). Với greedy, dao động giữa các lần chạy vì thế bằng 0. Phép
+  `proposed`; `runs/LOG.md`, 29/10). Với greedy, dao động giữa các lần chạy vì thế bằng 0. Phép
   đo này không loại trừ dao động do đổi GPU hoặc thư viện. Nếu `test` chạy trên phần cứng khác, ghi
   lại phần cứng đó trong `run.json`.
 - Bỏ từng nhóm khỏi "all", và các chế độ `as_of` khác: báo cùng chiều hay không.
@@ -211,7 +211,7 @@ Tradeoffs:
 ## Amendment 2026-11-03: bộ test 2 (T2, T3, T6) làm bản lặp lại của v1.0
 
 Ngày: 03/11/2026. Người duyệt: CMT (giao cho agent soạn và commit, 03/11). **Lúc viết amendment này đã thấy kết quả
-test nào:** đã có `runs/early/retrieval_test_v1/test` của v1.0 (E1, 29/10, một lần), và chưa có dự đoán nào của hệ nào trên test 2. Nếu file
+test nào:** đã có `runs/earlier_tests/retrieval_test_v1/test` của v1.0 (E1, 29/10, một lần), và chưa có dự đoán nào của hệ nào trên test 2. Nếu file
 dự đoán đầu tiên trên test 2 trong `runs/` có ngày sớm hơn commit này thì amendment mất hiệu lực.
 
 Lý do: v1.0 có test nhỏ ở T3 (12 dòng / 4 lineage) và T6 (30 / 15), và đo 29/10 cho thấy phần lớn lệch A–B nằm ở dòng
@@ -237,7 +237,7 @@ Lý do: v1.0 có test nhỏ ở T3 (12 dòng / 4 lineage) và T6 (30 / 15), và 
 Dựng release test 2 bằng `scripts/pipeline/enrich_vilextime.py` (thêm `accepted_evidence`, dòng `giua_khoang`, `truoc_hieu_luc`) cho kết quả:
 6 lineage thuộc văn bản của split `dev` nên bị loại để không rò dev. Bảng chính test 2 còn **101 lineage**, **492 dòng**
 (T2 ranh giới 120, giữa khoảng 120, trước hiệu lực 38; T3 75 và 75; T6 32 và 32) trong
-`data/benchmark/test2/test2_release.jsonl`, sha256 `8c140f5c14b1dbc00a7d34954abf161d1a94fd6e69d3a56ee16d3e80c0bd4c28`.
+`data/benchmark/earlier_test2/test2_release.jsonl`, sha256 `8c140f5c14b1dbc00a7d34954abf161d1a94fd6e69d3a56ee16d3e80c0bd4c28`.
 Con số 107 / 240 ở mục 1 phía trên là trước bước này. Thang truy xuất chạy với `--release` file này và `--split test`.
 
 ## Amendment 2026-11-04: sửa đáp án ngắn của test 2 sau lần chấm E3 đầu
@@ -246,23 +246,23 @@ Ngày: 04/11/2026. Người duyệt: CMT (đồng ý phương án trong phiên l
 một lần, nên đây là sửa lỗi có khai báo, không phải khai báo trước.
 
 **Lúc viết amendment này đã thấy kết quả test nào:** toàn bộ E1 và E3 của v1.0; E1 của test 2; lần chấm E3 đầu của test 2 trong
-`runs/early/generation_test2/test/` với Accuracy sai (`b1` 0,903; `b2ctx` 0,855; `b5` 0,872; `b7` 0,885; `b7pp` 0,885; `proposed` 0,894) và các
+`runs/earlier_tests/generation_test2/test/` với Accuracy sai (`b1` 0,903; `b2ctx` 0,855; `b5` 0,872; `b7` 0,885; `b7pp` 0,885; `proposed` 0,894) và các
 phán quyết dựa trên nó (XN8 "không đủ bằng chứng", XN9 "bác"). **Chưa tính Accuracy, XN7, XN8, XN9 nào trên đáp án ngắn đúng.**
 
-1. **Lỗi.** `scripts/pipeline/enrich_vilextime.py` chỉ đọc `short_answers.jsonl`, nên `data/benchmark/test2/test2_release.jsonl` (sha256
+1. **Lỗi.** `scripts/pipeline/enrich_vilextime.py` chỉ đọc `short_answers.jsonl`, nên `data/benchmark/earlier_test2/test2_release.jsonl` (sha256
    `8c140f5c…`) chỉ có đáp án ngắn ở 12/460 dòng có đáp án (6/211 ở `giua_khoang`). `contains()` coi đáp án ngắn rỗng là đúng, nên ở các
    dòng còn lại, câu trả lời nào không ghi "không" cũng được tính đúng.
-2. **Sửa.** Chấm bằng `data/benchmark/test2/test2_release_v2.jsonl` (sha256
+2. **Sửa.** Chấm bằng `data/benchmark/earlier_test2/test2_release_v2.jsonl` (sha256
    `b299408327e3bb5c0e520d4457b27225d866afe3c7976e1c3b0aff2b8093855c`), dựng bằng `scripts/review/test2_fill_shorts.py` từ
-   `data/benchmark/test2/short_answers_test2.jsonl` (sha256 `9c827eb0…`, commit `f6ee3c0` trước release và trước mọi lần chạy trên test 2).
+   `data/benchmark/earlier_test2/short_answers_test2.jsonl` (sha256 `9c827eb0…`, commit `f6ee3c0` trước release và trước mọi lần chạy trên test 2).
    Chỉ trường `short_answer` thay đổi: 448 dòng được điền, 6 dòng được thay, 6 dòng giữ nguyên. Khi hai nguồn khác nhau, lấy file của
    test 2. Cả 460 dòng đều qua `check_short_answer`.
 3. **Không chạy lại gì.** Prompt không dùng đáp án ngắn, nên giữ nguyên câu trả lời của E3 và dự đoán của E1. Đây là lần chấm lại duy
    nhất; định nghĩa chỉ số, cấu hình, họ Holm và chiều dự đoán không đổi.
 4. **Điều kiện hợp lệ.** XN1, XN2, XN3, XN4 và XN6 phải giống hệt lần chấm đầu, vì không phụ thuộc đáp án ngắn. Nếu khác thì dừng và
    tìm nguyên nhân, không báo số mới.
-5. **Báo cáo.** Mọi số Accuracy trên test 2 lấy từ `runs/early/generation_test2/rescore/`. Khóa luận phải nêu lần chấm sai đầu tiên. Cột Accuracy
-   trong `runs/early/retrieval_test2/test/ladder.score.json` cũng sai vì cùng lỗi, và không được dùng (thang này chỉ truy xuất, không sinh câu trả lời).
+5. **Báo cáo.** Mọi số Accuracy trên test 2 lấy từ `runs/earlier_tests/generation_test2/rescore/`. Khóa luận phải nêu lần chấm sai đầu tiên. Cột Accuracy
+   trong `runs/earlier_tests/retrieval_test2/test/ladder.score.json` cũng sai vì cùng lỗi, và không được dùng (thang này chỉ truy xuất, không sinh câu trả lời).
 6. **Kết quả kiểm điều kiện ở mục 4 (ghi sau khi chấm lại).** Ước lượng, KTC, `p` và phán quyết của XN1, XN2, XN3, XN4, XN6 giống hệt lần chấm đầu.
    Trường duy nhất đổi là `p_Holm` của XN1 và XN4 (0,6894 → 0,4596). Mục 4 viết "giống hệt" nhưng chưa tách trường này; nó đổi là đúng vì
    Holm phụ thuộc `p` của cả họ, trong đó XN8 và XN9 đã đổi. Phán quyết của XN1 và XN4 không đổi.
@@ -273,7 +273,7 @@ Ngày: 04/11/2026. Người duyệt: CMT (đồng ý phương án bốn bước 
 độ nhạy. **Không đổi bảng chính, phán quyết hay kết luận H0 của test 2.** Nếu nhãn v2 đầu tiên có thời điểm sớm hơn commit này thì amendment
 mất hiệu lực.
 
-**Lúc viết amendment này đã thấy kết quả test nào:** toàn bộ E1 và E3 của v1.0 và test 2, gồm `runs/early/generation_test2/rescore/`, cùng các nhãn LLM cũ.
+**Lúc viết amendment này đã thấy kết quả test nào:** toàn bộ E1 và E3 của v1.0 và test 2, gồm `runs/earlier_tests/generation_test2/rescore/`, cùng các nhãn LLM cũ.
 Người viết lời dặn v2 đã thấy các số này. Phiên gán v2 chạy ở thư mục riêng ngoài repo, không có khóa, nhãn cũ hay kết quả hệ thống.
 
 1. **Vì sao cần.** Rà ngày 04/11 thấy lời dặn gán nhãn test 2 không có file trong repo. Bản dựng lại khớp từng byte với bản các phiên gán đã đọc:
@@ -293,7 +293,7 @@ Người viết lời dặn v2 đã thấy các số này. Phiên gán v2 chạy
 5. **Gán test 2.** 138 câu của phiếu v3, gói sha256 `632e5fd36d5d4527e27fc9f64cd3ef293dafa637af5b88f73f168566412ce851`. Lần duy nhất, chỉ chạy lại câu lỗi định dạng.
    Sau đó một agent tra luật (Lawgical) kiểm Q4 của các câu T6 đang đạt, không phải luật sư. Câu Q4 thành `co` hoặc `khong_chac` thì không đạt. Số câu chưa kịp kiểm được báo kèm.
 6. **Phân tích.** Lọc `test2_release_v2.jsonl` chỉ còn lineage đạt theo nhãn v2 bằng `test2_relabel.py subset`; chạy `score_vilextime.py` và `confirm_vilextime.py` với `--split test --draws 10000` trên dự đoán đã có
-   (`runs/early/retrieval_test2/test`, `runs/early/generation_test2/test`). Không sinh hay truy xuất lại. Câu đạt theo v2 nhưng ngoài release chưa có dự đoán, chỉ báo số đếm. Holm trên sáu kiểm định như §4, chạy một lần.
+   (`runs/earlier_tests/retrieval_test2/test`, `runs/earlier_tests/generation_test2/test`). Không sinh hay truy xuất lại. Câu đạt theo v2 nhưng ngoài release chưa có dự đoán, chỉ báo số đếm. Holm trên sáu kiểm định như §4, chạy một lần.
 7. **Diễn giải.** Sáu phán quyết không đổi thì ghi "kết luận test 2 vững với lời dặn v2"; có phán quyết đổi thì ghi "kết luận nhạy với cách gán nhãn" và nêu kiểm định nào. Dù theo hướng nào, bảng chính và H0 vẫn
    theo amendment 03/11 và 04/11; phân tích này không được dùng để chọn bảng đẹp hơn. Luôn gọi là nhãn LLM, không chung bảng với v1.0.
 8. **Kết quả hiệu chuẩn (ghi sau khi chạy, 04/11): KHÔNG ĐẠT, dừng theo mục 4.** Nhãn cuối so với người trên 68 câu: AC1 **0,530** (ngưỡng 0,80), p_neg 0,758 (ngưỡng 0,60). LLM-A: 0,652 và 0,800.

@@ -4,7 +4,7 @@
 C0 = prompt proposed2 giữ nguyên (dựng lại từ ids, phải khớp từng byte `user` cũ).
 C1 = như C0 nhưng lệnh bãi bỏ gold (accepted_evidence) ở vị trí 1, đánh số lại; system không đổi.
 
-    python scripts/eval/x8_t6_variant.py [--run runs/dev/rebuild_rerun] [--out runs/x8_t6_dev_20261111]
+    python scripts/eval/x8_t6_variant.py [--run runs/dev_tuning/rebuild_rerun] [--out runs/x8_t6_dev_20261111]
 """
 from __future__ import annotations
 
@@ -48,7 +48,7 @@ def _question(user: str) -> str:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--run", default="runs/dev/rebuild_rerun")
+    ap.add_argument("--run", default="runs/dev_tuning/rebuild_rerun")
     ap.add_argument("--out", default="runs/x8_t6_dev_20261111")
     a = ap.parse_args()
     out = Path(a.out)

@@ -1,5 +1,5 @@
 # Người đọc thứ hai (luật sư), 30 dòng chung — 16/11/2026
-Phiếu: `gold_B.xlsx` (bản luật sư trả, sha256 c1fb469f…), nhập bằng `independent_gold.py import B` rồi `reveal B --release data/benchmark/test_final/internal/derived/vilextime/release.jsonl`. 30/30 dòng có `hieu_luc`; 17 dòng có nội dung và văn bản áp dụng; cột `phut` trống.
+Phiếu: `gold_B.xlsx` (bản luật sư trả, sha256 c1fb469f…), nhập bằng `independent_gold.py import B` rồi `reveal B --release data/benchmark/final_test/internal/derived/vilextime/release.jsonl`. 30/30 dòng có `hieu_luc`; 17 dòng có nội dung và văn bản áp dụng; cột `phut` trống.
 
 **Đồng thuận `hieu_luc` (còn/không), 30 dòng chung với NMT:** khớp 29/30 (0,967); Cohen κ = 0,932; Gwet AC1 = 0,935. Luật sư khớp kho 29/30; NMT khớp kho 30/30 trên 30 dòng này. Chưa so cột nội dung (chữ tự do).
 

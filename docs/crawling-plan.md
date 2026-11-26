@@ -984,7 +984,7 @@ Run tests with `pytest` (or `python3 -m pytest`) from the repo root.
 | `data/delta_runs.jsonl` | when each delta run happened and what it moved | **no** — this is what lets the corpus say "as of when" |
 | `data/tree_content_mismatch.txt` | documents whose tree claims articles the body lacks — review queue for Stage 5b | yes, regenerated |
 | `data/field_filter_review.txt` | Stage 4 candidates, regenerated each run | yes |
-| `data/benchmark/test2/questions.jsonl` | ViLexTime question text, one row per lineage, with who wrote it and why a rejected one was rejected | **no** — model or hand-written text, not rebuildable; everything else in the dataset is derived |
+| `data/benchmark/earlier_test2/questions.jsonl` | ViLexTime question text, one row per lineage, with who wrote it and why a rejected one was rejected | **no** — model or hand-written text, not rebuildable; everything else in the dataset is derived |
 | `data/excluded_ids.txt` | **human-confirmed** exclusions from `apply_field_review.py` | no — encodes a manual decision, don't hand-edit without updating the script's `CONFIRMED_EXCLUSIONS` too |
 
 ## Gotchas (learned the hard way — read before you crawl)

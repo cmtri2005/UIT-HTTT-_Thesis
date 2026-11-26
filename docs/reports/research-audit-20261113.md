@@ -2,14 +2,14 @@
 
 Phiên audit chỉ đọc, làm theo yêu cầu của CMT sau khi G4 chạy xong. Không sửa code, dữ liệu, nhãn, cấu hình, ADR, plan hay bản thảo. Không gọi API trả phí, không chạy lại test.
 
-Đây là báo cáo của một phiên AI trong dự án, không phải phản biện ngoài. Các số [HN] đã được tính lại bằng `scripts/eval/posthoc_g4.py` (`runs/final/posthoc/attribution.json`) và qua `evidence-gate` 13/11 (việc 6.6 của REFACTOR_PLAN; tái chạy trùng từng byte). Số trong báo cáo này đã thay bằng số của file đó.
+Đây là báo cáo của một phiên AI trong dự án, không phải phản biện ngoài. Các số [HN] đã được tính lại bằng `scripts/eval/posthoc_g4.py` (`runs/final_test/extra_analysis/attribution.json`) và qua `evidence-gate` 13/11 (việc 6.6 của REFACTOR_PLAN; tái chạy trùng từng byte). Số trong báo cáo này đã thay bằng số của file đó.
 
 ## Cách đọc nhãn bằng chứng
 
 | Nhãn | Nghĩa |
 |---|---|
 | **[XM]** | Đã xác minh từ artifact trong repo |
-| **[HN]** | Phân tích hậu nghiệm: tự tính trong phiên này từ `runs/final/main/{r1,r2}/test/*.jsonl` bằng hàm `correct`, `load_rows`, `distractors` của `scripts/eval/score_vilextime.py`; bootstrap theo lineage, B = 10.000. Bản lưu: `runs/final/posthoc/attribution.json`, đã qua `evidence-gate` 13/11. Vẫn là thăm dò hậu nghiệm |
+| **[HN]** | Phân tích hậu nghiệm: tự tính trong phiên này từ `runs/final_test/main/{r1,r2}/test/*.jsonl` bằng hàm `correct`, `load_rows`, `distractors` của `scripts/eval/score_vilextime.py`; bootstrap theo lineage, B = 10.000. Bản lưu: `runs/final_test/extra_analysis/attribution.json`, đã qua `evidence-gate` 13/11. Vẫn là thăm dò hậu nghiệm |
 | **[SL]** | Suy luận từ bằng chứng |
 | **[GT]** | Giả thuyết cần kiểm |
 
@@ -23,9 +23,9 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
 
 ### Điểm mạnh [XM]
 
-- Kỷ luật khai báo trước tốt: ADR 0006 Accepted trước khi chạy, P khóa trên dev, chạy hai lần, Holm, bootstrap theo lineage, hash đầy đủ (`docs/decisions/0006-ke-hoach-phan-tich-bo-test-cuoi.md`, `runs/final/main/`).
+- Kỷ luật khai báo trước tốt: ADR 0006 Accepted trước khi chạy, P khóa trên dev, chạy hai lần, Holm, bootstrap theo lineage, hash đầy đủ (`docs/decisions/0006-ke-hoach-phan-tich-bo-test-cuoi.md`, `runs/final_test/main/`).
 - Mọi hệ dùng chung một đường ống, một prompt, một `k` (`src/vilexgraph/framework/systems.py`).
-- Có đủ hai điều kiện cấp sẵn căn cứ: `oracle` 0,956 và `oracle_now` 0,456 (`runs/final/main/r1/results.md`).
+- Có đủ hai điều kiện cấp sẵn căn cứ: `oracle` 0,956 và `oracle_now` 0,456 (`runs/final_test/main/r1/results.md`).
 - Tài liệu tự khai giới hạn rất thẳng (ADR 0006 §3, §11).
 
 ### Ba rủi ro lớn nhất
@@ -42,7 +42,7 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
 **Rủi ro 2. Vòng tự chấm chưa bị phá trên bộ test cuối.**
 
 - Gold, bộ lọc và TVER cùng lấy cửa sổ từ một đồ thị (ADR 0006 §3 tự ghi).
-- Mẫu gold mù 120 dòng chỉ có **24 lineage** thuộc 199 lineage bộ cuối. Đợt 2 (30 dòng) trùng 0 và do AI gán **[HN, đếm từ `data/labels/gold_sample.tsv`, `data/labels/gold_dot2/gold_sample.tsv`, `data/benchmark/test_final/lineages_199.txt`]**.
+- Mẫu gold mù 120 dòng chỉ có **24 lineage** thuộc 199 lineage bộ cuối. Đợt 2 (30 dòng) trùng 0 và do AI gán **[HN, đếm từ `data/labels/gold_sample.tsv`, `data/labels/gold_dot2/gold_sample.tsv`, `data/benchmark/final_test/lineages_199.txt`]**.
 - "119/120 khớp" là sau cột `dong_y` do AI đề xuất, CMT xác nhận **[XM, `data/labels/gold_A.reveal.tsv`]**:
   - G011: người ghi "còn", đồ thị ghi "bãi bỏ", vẫn tính khớp. Ghi chú: "A ghi còn sai… Đồ thị đúng. AI-đề xuất, CMT xác nhận".
   - G002: người ghi "06 tháng đến 12 tháng", đồ thị ghi "03 tháng đến 12 tháng", `dong_y = co`, ô lý do trống. Cần xem lại.
@@ -52,7 +52,7 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
 **Rủi ro 3. Bước lớn nhất của thang chưa được tách, và baseline phẳng chưa có cùng thông tin.**
 
 - `b7 → b7plus` đổi cùng lúc hai thứ: lớp văn bản (nguyên bản `asis` sang lời văn hợp nhất `version`) và bộ lọc (ngày văn bản sang khoảng phiên bản).
-- Nấc tách là `b7v`. ADR 0006 §2 khai thang `b2ctx → b7 → b7v → b7plus → b7pp`, nhưng `b7v` **không chạy** trên bộ cuối: `runs/final/main/retrieval/` chỉ có `b2ctx`, `b7`, `b7plus`, `b7pp` **[XM]**.
+- Nấc tách là `b7v`. ADR 0006 §2 khai thang `b2ctx → b7 → b7v → b7plus → b7pp`, nhưng `b7v` **không chạy** trên bộ cuối: `runs/final_test/main/retrieval/` chỉ có `b2ctx`, `b7`, `b7plus`, `b7pp` **[XM]**.
 - Toàn bộ lợi ích của bước này nằm ở dòng mà đáp án là phiên bản thứ hai trở đi **[HN]**:
 
   | Dòng có đáp án | `b7` đúng (lần 1) | `b7plus` đúng (lần 1) | Hiệu lần 1 | Hiệu lần 2 |
@@ -69,7 +69,7 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
   | `b7` | 235 | 151 (64%) |
   | `b7plus` | 243 | 202 (83%) |
 
-- Prompt không cho model thấy ngày hiệu lực từng đoạn; mỗi đoạn chỉ có tên văn bản và đường dẫn Điều/Khoản **[XM, `runs/final/main/r1/prompts/b4.jsonl`]**. Chưa có baseline "siêu dữ liệu ngày trong prompt".
+- Prompt không cho model thấy ngày hiệu lực từng đoạn; mỗi đoạn chỉ có tên văn bản và đường dẫn Điều/Khoản **[XM, `runs/final_test/main/r1/prompts/b4.jsonl`]**. Chưa có baseline "siêu dữ liệu ngày trong prompt".
 
 ### Mâu thuẫn giữa các nguồn [XM]
 
@@ -77,8 +77,8 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
 |---|---|---|
 | Ai gán nhãn bộ cuối | `docs/paper/nhap-paper-vilextime.md`, chương 4 và 6 (05/11): "bộ test cuối do người kiểm" | ADR 0006 §1 và quyết định 06/11: AI gán, CMT duyệt |
 | Phạm vi gold mù đợt 1 | ADR 0006 §7: "người, T2/T3" | `data/labels/gold_sample.tsv`: 6 tầng × 20, gồm T1 và T6. Cần đối soát |
-| Sổ chạy | `runs/README.md` quy tắc 2: mỗi lần chạy test có một dòng | Chưa có dòng nào cho G4 |
-| Trạng thái release | `data/benchmark/test_final/README.md`, `manifest.json`: "NHÁP, chưa hệ nào chạy" | G4 đã chạy 13/11 |
+| Sổ chạy | `runs/LOG.md` quy tắc 2: mỗi lần chạy test có một dòng | Chưa có dòng nào cho G4 |
+| Trạng thái release | `data/benchmark/final_test/README.md`, `manifest.json`: "NHÁP, chưa hệ nào chạy" | G4 đã chạy 13/11 |
 | Nhãn bảng | `r1/results.md`: "318 dòng (T1, T2, T3, T6)" | `all` không gồm T1 |
 | Thang truy xuất | ADR 0006 §2: 5 nấc | Chạy 4 nấc |
 
@@ -124,7 +124,7 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
 - Diễn giải:
   - `b7v ≈ b7` và `b7plus − b7v` lớn: lợi ích là bộ lọc khoảng.
   - `b7v > b7`: lời văn hợp nhất tự nó đã giúp.
-  - Tham chiếu v1.0: −0,019 và +0,066 (`runs/README.md`, 29/10).
+  - Tham chiếu v1.0: −0,019 và +0,066 (`runs/LOG.md`, 29/10).
 - Chi phí: khoảng 30 phút máy. Đây là hoàn tất việc đã khai, nhưng chạy sau khi đã thấy kết quả, phải ghi rõ.
 
 **P0-3. Phá vòng tự chấm trên chính bộ cuối.**
@@ -214,7 +214,7 @@ Mọi số [HN] là thăm dò, tính sau khi đã thấy kết quả test.
 
 | Thứ tự | Việc | Dùng gì | Xong khi |
 |---|---|---|---|
-| 1 | Bảng quy kết từ dự đoán có sẵn (P0-1, P0-4, P1-7, phân tầng) | `runs/final/main/r1`, `r2` | Một script, một file JSON trong `runs/`, gate đối soát, dòng mới trong `runs/README.md` |
+| 1 | Bảng quy kết từ dự đoán có sẵn (P0-1, P0-4, P1-7, phân tầng) | `runs/final_test/main/r1`, `r2` | Một script, một file JSON trong `runs/`, gate đối soát, dòng mới trong `runs/LOG.md` |
 | 2 | `b7v` chỉ truy xuất (P0-2) | Bộ cuối, không API | Có TV-R@1 và hai hiệu kề nhau kèm KTC |
 | 3 | Gold mù người trên bộ cuối (P0-3) | 60–80 dòng | Có tỷ lệ khớp thô, Wilson, F1–F6 trên phần này |
 | 4 | Người chấm 100 câu (P1-6) | Đầu ra có sẵn | Có tỷ lệ sai phiên bản của `b1`, độ khớp scorer–người |
@@ -317,7 +317,7 @@ Thông điệp: với luật Việt Nam, phần khó và có giá trị là hợ
 
 ## Phụ lục A. Số G4 dùng trong báo cáo [XM]
 
-Nguồn: `runs/final/main/r1/results.md`, `r1/confirm.json`, `compare_runs.json`. Chế độ `giua_khoang`, 318 dòng T2/T3/T6, 156 lineage.
+Nguồn: `runs/final_test/main/r1/results.md`, `r1/confirm.json`, `compare_runs.json`. Chế độ `giua_khoang`, 318 dòng T2/T3/T6, 156 lineage.
 
 | Hệ | Acc | TV-R@1 | R@10 | TVER | Sai phiên bản |
 |---|---:|---:|---:|---:|---:|
@@ -380,9 +380,9 @@ Khảo sát đầy đủ hơn của dự án nằm ở `related_paper/notes/2026
 - `AGENTS.md`, `docs/WORKFLOW.md`, đề cương (trích chữ từ docx, không sửa).
 - `docs/plans/active/master-plan.md` (toàn bộ).
 - ADR 0004, 0006 (toàn bộ); ADR 0005 chỉ qua phần ADR 0006 dẫn lại.
-- `runs/README.md` (toàn bộ); `runs/final/main/` (`results.md`, `confirm.json`, `compare_runs.json`, `all.score.json`, dự đoán, prompt mẫu).
+- `runs/LOG.md` (toàn bộ); `runs/final_test/main/` (`results.md`, `confirm.json`, `compare_runs.json`, `all.score.json`, dự đoán, prompt mẫu).
 - `src/vilexgraph/framework/`: `systems.py`, `temporal.py`, `graphx.py`, `verify.py`; `scripts/eval/score_vilextime.py`, `compare_runs.py`, một phần `confirm_vilextime.py`.
-- `data/benchmark/test_final/` (README, manifest, meta); `data/labels/gold_*.reveal.tsv`, `gold_sample.tsv`.
+- `data/benchmark/final_test/` (README, manifest, meta); `data/labels/gold_*.reveal.tsv`, `gold_sample.tsv`.
 - `docs/vilextime-dinh-nghia.md` §6; `docs/reports/phan-bien-adr-0006-20261111.md`, `doi-chieu-vbhn.md`.
 - `docs/paper/nhap-paper-vilextime.md` (phần đầu và các chỗ `[CHỜ]`); chương 1, 4, 5, 6, 7 qua tìm từ khóa.
 - `related_paper/notes/2026-11-05-doc-nguon-va-tinh-moi.md` §1, §2 (một phần), §4.

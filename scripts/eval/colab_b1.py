@@ -83,7 +83,7 @@ def export_prompts(args) -> None:
     name = getattr(args, "system", "b2ctx")
     # B5 oracle context: the gold unit alone (the version in force, or for a repealed row the
     # repeal), an upper bound kept out of the runner, which never sees gold. Adding the repealed
-    # row's last version was tried on dev and scored lower (runs/README.md, 29/10).
+    # row's last version was tried on dev and scored lower (runs/LOG.md, 29/10).
     oracle = name in (ORACLE, ORACLE_NOW)
     spec = systems.get("b2ctx" if oracle else name)
     if getattr(args, "no_dense", False) and spec.dense:

@@ -6,7 +6,7 @@ confirm.json files give the same one; otherwise "không ổn định" and it cou
 Per system and slice: share of answers that changed, and how many went right→wrong / wrong→right.
 
     python scripts/eval/compare_runs.py --confirm1 runs/R1/confirm.json --confirm2 runs/R2/confirm.json \\
-        --gen1 runs/R1/test --gen2 runs/R2/test --release data/benchmark/test_final/vilextime.jsonl --split test \\
+        --gen1 runs/R1/test --gen2 runs/R2/test --release data/benchmark/final_test/vilextime.jsonl --split test \\
         --out runs/compare_runs.json
 """
 from __future__ import annotations

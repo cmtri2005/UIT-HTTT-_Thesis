@@ -80,7 +80,7 @@ def test_copy_share_ignores_function_words_and_gates_at_forty_percent():
 
 
 def published_fixture(data):
-    dest = data / "benchmark" / "test_v1"
+    dest = data / "benchmark" / "earlier_test_v1"
     dest.mkdir(parents=True)
     (dest / "vilextime.jsonl").write_text(
         json.dumps({"id": "d", "lineage_id": "old-dev", "split": "dev", "group": "T1"}) + "\n" +

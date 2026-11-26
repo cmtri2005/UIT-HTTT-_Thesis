@@ -93,7 +93,7 @@ Các lệch bổ sung so với đề cương và định nghĩa cần công bố
 | T4 riêng 150 câu | Đổi thành lát chồng lắp của T2, không cộng hai lần |
 | T5 hồi tố “có lợi”, 50 câu | T5a bỏ vế “có lợi”, T5b là đã ký chưa hiệu lực; hiện chỉ chẩn đoán. Bộ cuối không có T5 |
 | T6 100 câu | Định nghĩa T6a sàn 100, T6b sàn 200. Bộ cuối 23 lineage, không đủ quota; không đủ bằng chứng cho lợi ích lan truyền |
-| Đồ thị tri thức thời gian là thành phần truy xuất | Đồ thị đóng góp chủ yếu ở bước dựng kho phiên bản offline. So `proposed2` với `b7plus` (cùng kho, không dùng đồ thị lúc truy vấn) cho hiệu không phân biệt được với 0 (thăm dò hậu nghiệm: +0,013 [−0,009; +0,035] lần 1, +0,016 [−0,006; +0,038] lần 2; `runs/final/posthoc/attribution.json`); không viết “GraphRAG vượt trội” |
+| Đồ thị tri thức thời gian là thành phần truy xuất | Đồ thị đóng góp chủ yếu ở bước dựng kho phiên bản offline. So `proposed2` với `b7plus` (cùng kho, không dùng đồ thị lúc truy vấn) cho hiệu không phân biệt được với 0 (thăm dò hậu nghiệm: +0,013 [−0,009; +0,035] lần 1, +0,016 [−0,006; +0,038] lần 2; `runs/final_test/extra_analysis/attribution.json`); không viết “GraphRAG vượt trội” |
 | Một mô hình sinh | Họ xác nhận dùng GPT-4o mini (ADR 0004); generator khác họ Qwen3.8-27B chỉ chạy thăm dò (§6.6.6) |
 | Giao diện minh họa | `scripts/demo.py` chạy dòng lệnh trọn đường, khoảng 5 phút một câu; chưa có giao diện web |
 | Gold độc lập trên bộ test | Gold mù người phủ 105/156 lineage chính của bộ cuối, gồm cả 23 T6; luật sư đọc 30 dòng (κ 0,932). 51 lineage còn lại không đọc mù được vì người gán A đã thấy đáp án. F1–F6 trên phần này báo riêng (§6.6.4) |
@@ -102,14 +102,14 @@ Các lệch bổ sung so với đề cương và định nghĩa cần công bố
 | Bốn miền tiêu biểu | Test v1.0 có 136/211 dòng `khac`, silver 243/389; đất đai ở test chỉ 5 dòng/3 lineage; kho rộng không có nghĩa đánh giá cân bằng bốn miền |
 | Chỉ số đề cương | TVER, VCR, TCS, MRR, EM/F1 báo ở Chương 6; TVER chỉ do máy tính, dùng chung kho với bộ lọc, TVER theo người không làm. LLM-as-judge không dùng: thay bằng người chấm 100 câu, scorer khớp người 96/100 (92/100 theo phiếu chấm lại, §6.6.5) |
 | L4 lọc trước truy xuất | `rel_up` lấy seed trước bộ lọc ngày để tìm lệnh tác động rồi lọc văn bản lệnh; lệch thứ tự cam kết |
-<!-- nguồn: docs/vilextime-dinh-nghia.md, mục 11; docs/de_cuong_kltn.docx; data/benchmark/test_v1/vilextime.jsonl; data/benchmark/test2/test2_release_v2.jsonl; data/benchmark/test_v1/vilextime_silver.jsonl; data/benchmark/test_v1/vilextime_meta.jsonl; runs/early/domain_breakdown/report.json; src/vilexgraph/framework/graphx.py; docs/vilextime-datasheet.md -->
+<!-- nguồn: docs/vilextime-dinh-nghia.md, mục 11; docs/de_cuong_kltn.docx; data/benchmark/earlier_test_v1/vilextime.jsonl; data/benchmark/earlier_test2/test2_release_v2.jsonl; data/benchmark/earlier_test_v1/vilextime_silver.jsonl; data/benchmark/earlier_test_v1/vilextime_meta.jsonl; runs/earlier_tests/domain_breakdown/report.json; src/vilexgraph/framework/graphx.py; docs/vilextime-datasheet.md -->
 
 V1.0 được khai là bản xác nhận lần 1 trong ADR 0005; amendment 03/11 gọi test 2 là bản lặp lại. Ngày 05/11, sau khi đã thấy kết quả (XN1 được ủng hộ ở v1.0, không đủ bằng chứng ở test 2), kế hoạch mới đổi vai cả hai thành vòng thử và mở bộ cuối. Đây là thay đổi sau quan sát, không phải vai trò được định trước. Giữ cả ba phán quyết cạnh nhau, không gộp điểm hoặc chọn phán quyết thuận lợi. Lịch sử các lần nhìn được ghi ở ADR 0006 §8 và quy tắc kết luận ở §6; ADR này Accepted ngày 12/11/2026 (commit `ac32a89`), trước đợt chạy G4 trên bộ cuối (hai lần r1, r2, bắt đầu 14:08 UTC cùng ngày).
-<!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md, §1 và amendment 03/11; runs/early/generation_test_v1/test/confirm.json; runs/early/generation_test2/rescore/confirm.json; docs/plans/active/master-plan.md, xử lý C3 -->
+<!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md, §1 và amendment 03/11; runs/earlier_tests/generation_test_v1/test/confirm.json; runs/earlier_tests/generation_test2/rescore/confirm.json; docs/plans/active/master-plan.md, xử lý C3 -->
 
 Ngoài các lệch trên, trạng thái chưa hoàn tất cũng phải được công bố: M2 theo đề cương (100 truy vấn đối chiếu tay) chưa đạt, gold mù A2 (81 lineage) được dùng thay một phần; Verifier chưa cho thấy tác dụng khi bộ lọc đã loại căn cứ không hợp lệ. Bộ cuối đã chạy một lần theo ADR 0006 (G4, 12–13/11); các so sánh thêm sau đó (`b7v`, `bvnone`, `bvdate`, quy kết) là thăm dò hậu nghiệm, báo tách khỏi phép kiểm đã khai.
-<!-- nguồn: docs/plans/active/master-plan.md; docs/plans/active/REFACTOR_PLAN.md; data/benchmark/test_final/README.md; data/benchmark/test_final/STATUS.md; runs/final/main/; runs/final/posthoc/ -->
-<!-- nguồn: runs/README.md -->
+<!-- nguồn: docs/plans/active/master-plan.md; docs/plans/active/REFACTOR_PLAN.md; data/benchmark/final_test/README.md; data/benchmark/final_test/STATUS.md; runs/final_test/main/; runs/final_test/extra_analysis/ -->
+<!-- nguồn: runs/LOG.md -->
 
 ## 1.7. Cấu trúc khóa luận
 

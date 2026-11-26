@@ -271,7 +271,7 @@ Tradeoffs:
   `domain` + `domain_source` (`seed` · `quan_he_<n>` · `khong_ro`);
   `legal_markers` (`actor_has_transitional` · `split_effective_date`, heuristic,
   không phải cờ lỗi — `flags` vẫn chỉ cho lỗi cấu trúc); `short_answer` (từ
-  `data/benchmark/test2/short_answers.jsonl`, phải là một đoạn của đáp án/câu dẫn).
+  `data/benchmark/earlier_test2/short_answers.jsonl`, phải là một đoạn của đáp án/câu dẫn).
   Corpus hai lớp: `scripts/pipeline/build_corpus.py`. Kiểm:
   `scripts/check/check_release.py`. Cùng ngày: T6 có `repeal_mode` (`direct` ·
   `ancestor`) và, với `ancestor`, `repealed_by` (`ancestor_id`, `event_id`) —
@@ -279,7 +279,7 @@ Tradeoffs:
 - **28/09 (CMT), MINOR:** `question_source` có thêm hai trường tùy chọn
   `edited_by` (mã giả danh, ví dụ `human:excel`) và `edited_at` khi người kiểm
   tay viết lại câu hỏi của model. `kind` vẫn là `llm` (câu gốc do model viết,
-  giữ ở `model_question` trong `data/benchmark/test2/questions.jsonl`), câu sửa vẫn phải
+  giữ ở `model_question` trong `data/benchmark/earlier_test2/questions.jsonl`), câu sửa vẫn phải
   qua `validate()` (C2). Áp cho 10 câu T1 sửa trong đợt kiểm tay đầu.
 - **Chốt 24/09 (CMT):** quota trong `docs/plans/active/phase-4-vilextime.md` (T1 250 ·
   T2 400 · T3 200 · T4 150 · T5 50 · T6 100 = 1.150) đếm theo **dòng QA**

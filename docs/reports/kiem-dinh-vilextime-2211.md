@@ -81,7 +81,7 @@ Riêng nhóm repealed (T6) loại 133 lineage vì không rõ nội dung đã chu
 **3.6 Tái lập.**
 - Có datasheet, schema, prompt nguyên văn, nhãn thô và changelog.
 - Thiếu danh sách 175 lineage bị loại kèm mã lý do. Thiếu DOI.
-- Một phần đầu vào nằm ngoài repo (`~/vilextime_loc/`). Chúng đã được sao vào `data/benchmark/test_final/inputs/` kèm sha256.
+- Một phần đầu vào nằm ngoài repo (`~/vilextime_loc/`). Chúng đã được sao vào `data/benchmark/final_test/inputs/` kèm sha256.
 
 ## 4. Danh sách phát hiện
 

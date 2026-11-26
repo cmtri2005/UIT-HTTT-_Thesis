@@ -82,7 +82,7 @@ def render(results):
         lines += [f'## {label}', '', f"{result['rows']} dòng / {result['lineages']} lineage; release `{result['release']}`; "
                   f"SHA-256 `{result['release_sha256']}`.", '',
                   'v1.0 dùng metadata đồng hành; test 2 dùng bản v2 có đáp án ngắn đã sửa. Nhãn test 2 là nhãn LLM. '
-                  'Nguồn, hash dự đoán/metadata và số tổng kiểm lại: `runs/early/domain_breakdown/report.json`.', '',
+                  'Nguồn, hash dự đoán/metadata và số tổng kiểm lại: `runs/earlier_tests/domain_breakdown/report.json`.', '',
                   '| Miền | Dòng | Lineage | Hệ | Accuracy | TV-R@1 | TVER | Dòng có trích dẫn |',
                   '|---|---:|---:|---|---:|---:|---:|---:|']
         for domain, cell in result['domains'].items():
@@ -98,12 +98,12 @@ def render(results):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--data', type=Path, default=Path('data'))
-    ap.add_argument('--v1-dir', type=Path, default=Path('runs/early/generation_test_v1/test'))
-    ap.add_argument('--test2-dir', type=Path, default=Path('runs/early/generation_test2/test'))
+    ap.add_argument('--v1-dir', type=Path, default=Path('runs/earlier_tests/generation_test_v1/test'))
+    ap.add_argument('--test2-dir', type=Path, default=Path('runs/earlier_tests/generation_test2/test'))
     ap.add_argument('--out', type=Path, default=Path('docs/reports/theo_mien_e3.md'))
-    ap.add_argument('--json-out', type=Path, default=Path('runs/early/domain_breakdown/report.json'))
+    ap.add_argument('--json-out', type=Path, default=Path('runs/earlier_tests/domain_breakdown/report.json'))
     args = ap.parse_args()
-    results = {'v1.0': analyze(args.data / 'benchmark/test_v1/vilextime.jsonl', args.v1_dir, args.data),
+    results = {'v1.0': analyze(args.data / 'benchmark/earlier_test_v1/vilextime.jsonl', args.v1_dir, args.data),
                'test 2': analyze(args.data / 'vilextime/test2_release_v2.jsonl', args.test2_dir, args.data)}
     args.json_out.parent.mkdir(parents=True, exist_ok=True)
     args.json_out.write_text(json.dumps(results, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

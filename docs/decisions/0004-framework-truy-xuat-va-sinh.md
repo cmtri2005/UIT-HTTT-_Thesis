@@ -178,7 +178,7 @@ như công thức (4).
 
 Hệ quả: B3, B4 là baseline dense yếu hơn mức có thể đạt (1,5% lời văn bị cắt ở 256 token). Bảng
 chính không đổi vì chỉ dùng truy xuất từ vựng. Trên dev, B3 có R@1 0,260 so với `b2ctx` 0,420
-(`runs/README.md`, 19/10).
+(`runs/LOG.md`, 19/10).
 
 ## Amendment 2026-10-29 (§3, generator) — Accepted 29/10/2026 (CMT duyệt, trước khi sinh trên test)
 
@@ -206,11 +206,11 @@ prompt sha256 `991eada9…`.
 - Đúng định dạng: 100/100. Bị cắt cụt (`length`): 0.
 - Token trung bình: vào 5.061, ra 104. Thời gian trung bình: 12,7 giây/câu.
 - CMT đã đọc 20 câu (`doc_20_cau.md`).
-- Trên 151 dòng dev × 15 hệ (B2, `runs/README.md` 28–29/10): đúng định dạng 97,4–100%, cắt cụt
+- Trên 151 dòng dev × 15 hệ (B2, `runs/LOG.md` 28–29/10): đúng định dạng 97,4–100%, cắt cụt
   tối đa 3 câu/hệ, 12,6–15,3 giây/câu.
 
 **Chi phí:** lúc duyệt chưa ghi gói Colab và số giờ GPU; CMT bổ sung sau đợt test. Dev đã dùng khoảng
-3,3 giờ GPU ở lượt 1 (`runs/README.md`, 28/10). Ước cho test: 211 dòng `giua_khoang` × khoảng 13 giây,
+3,3 giờ GPU ở lượt 1 (`runs/LOG.md`, 28/10). Ước cho test: 211 dòng `giua_khoang` × khoảng 13 giây,
 tức khoảng 45 phút mỗi hệ (`b2` khoảng 90 phút); 17 hệ khoảng 13 giờ T4.
 
 **Model độ bền:** không có ở lần chạy test này. Nhóm quyết ngày 29/10 bỏ C6 (độ bền) và C11 (bảng

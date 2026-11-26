@@ -23,7 +23,7 @@ ghi (TSV, questions.jsonl, short_answers.jsonl) giống hệt khi gán ở máy.
     python scripts/review/label_ui.py --who A --pull <out_dir>/kiem_A
 
 Sửa câu chữ (CMT 21/10): câu hỏi (cả lineage) và đáp án ngắn (cả phiên bản) sửa được ngay trên trang. Lưu thì
-ghi vào data/benchmark/test2/questions.jsonl, short_answers.jsonl (giữ bản model ở `model_question`,
+ghi vào data/benchmark/earlier_test2/questions.jsonl, short_answers.jsonl (giữ bản model ở `model_question`,
 `model_short_answer`, ghi `edited_by`, `edited_at`) và vào phiếu TSV, để lần dựng lại sau mang chúng vào bản
 phát hành mà nhãn vẫn khớp. Lời văn luật, ngày, phiên bản do đồ thị suy ra thì không sửa tay: sai là khong_dat.
 Đáp án ngắn phải là đoạn trích của đáp án hoặc câu dẫn (enrich_vilextime.check_short_answer).
@@ -214,7 +214,7 @@ def save(path: Path, rid: str, new: dict, edits: dict | None = None, data: Path 
             def change(x, q=edits["question"]):
                 x["model_question"] = x.get("model_question") or x["question"]
                 x.update(question=q, **stamp)
-            if not rewrite_jsonl(data / "benchmark/test2/questions.jsonl",
+            if not rewrite_jsonl(data / "benchmark/earlier_test2/questions.jsonl",
                                  lambda x: x["lineage_id"] == lid and x["question"], change):
                 return [], [f"không thấy câu hỏi của {lid} trong questions.jsonl"]
             changed += [r for r in rows if r["lineage_id"] == lid]
@@ -226,7 +226,7 @@ def save(path: Path, rid: str, new: dict, edits: dict | None = None, data: Path 
             def change(x, s=edits["short_answer"]):
                 x["model_short_answer"] = x.get("model_short_answer") or x["short_answer"]
                 x.update(short_answer=s, **stamp)
-            if not rewrite_jsonl(data / "benchmark/test2/short_answers.jsonl",
+            if not rewrite_jsonl(data / "benchmark/earlier_test2/short_answers.jsonl",
                                  lambda x: x["lineage_id"] == lid and x["version_id"] == vid, change):
                 return [], [f"không thấy đáp án ngắn của {vid} trong short_answers.jsonl"]
             same = [r for r in rows if version_of.get(r["id"]) == vid]

@@ -146,8 +146,8 @@ def main():
 if __name__ == "__main__":
     res = main()
     # self-check on the uncorrected thesis release: the known F016 miss (NĐ 92/2017 on NĐ 20/2008 Điều 20)
-    # must be caught. Run: audit_missed_amendments.py runs/final/posthoc/t1_fix/release /tmp/x.tsv
-    if REL.resolve() == ROOT / "runs/final/posthoc/t1_fix/release":
+    # must be caught. Run: audit_missed_amendments.py runs/final_test/extra_analysis/t1_fix/release /tmp/x.tsv
+    if REL.resolve() == ROOT / "runs/final_test/extra_analysis/t1_fix/release":
         assert any(o["lineage_id"].endswith("7ba9e014-eb7b-11f0-954d-af330569649d") and o["actor_id"] == "146942"
                    and o["strength"] in ("point", "clause", "article") for o in res), "F016 not caught"
         print("self-check: F016 caught")

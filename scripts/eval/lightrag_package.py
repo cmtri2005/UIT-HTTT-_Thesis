@@ -30,7 +30,7 @@ NAME = "lightrag"
 CONTEXT_ID = "lightrag:context"     # the one evidence block; not a corpus unit, so citations stay unresolved
 INDEX = Path("data/derived/corpus/index.sqlite")
 RELEASES = {"dev": Path("data/vilextime_dataset_h6/vilextime.jsonl"),
-            "test": Path("data/benchmark/test_final/vilextime.jsonl")}
+            "test": Path("data/benchmark/final_test/vilextime.jsonl")}
 
 
 def sha(path: Path) -> str:

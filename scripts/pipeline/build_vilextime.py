@@ -331,7 +331,7 @@ def main() -> None:
                     lead_ins[(parent, at)] = text
                     break
 
-    questions_path = data / "benchmark/test2/questions.jsonl"
+    questions_path = data / "benchmark/earlier_test2/questions.jsonl"
     questions: dict[str, dict] = {}
     if questions_path.exists():
         for line in questions_path.open(encoding="utf-8"):

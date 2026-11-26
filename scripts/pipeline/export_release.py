@@ -3,7 +3,7 @@
 
 Reads data/derived/vilextime/release.jsonl and the 100% check (data/labels/kiem_{A,B}.tsv,
 optional kiem_agent.tsv, and hoa_giai_kiem.tsv once the lawyer has settled disagreements), and writes to
-data/benchmark/test_v1/ (its own folder, apart from the build inputs in data/benchmark/test2/):
+data/benchmark/earlier_test_v1/ (its own folder, apart from the build inputs in data/benchmark/earlier_test2/):
 
     vilextime.jsonl          13 columns, the rows a person checked and passed: what a user needs
     vilextime_silver.jsonl   same columns, rows nobody has checked yet (definition §8, `not_verified`)
@@ -116,14 +116,14 @@ ROW_REASONS = {"superseded_by_other_norm", PARTIAL_REPEAL}
 def row_exclusions(data: Path, rows: list[dict]) -> dict[str, dict]:
     """row id -> {code, note}: rows kept out of scoring one by one, not by lineage (H5, 10/11/2026).
 
-    * `data/benchmark/test2/dropped_rows.jsonl` — a row the review found superseded by another norm
+    * `data/benchmark/earlier_test2/dropped_rows.jsonl` — a row the review found superseded by another norm
       (`superseded_by_other_norm`, H021) while its lineage's other rows stand. Its twins go with it.
     * `partial_repeal` (Q1) — the row is asked on or after the date an event trimmed part of the node
       (or of a node under it): the graph keeps the old wording open, so the gold is unknown. The
       node is not split into the words that remain.
     """
     out: dict[str, dict] = {}
-    path = data / "benchmark/test2/dropped_rows.jsonl"
+    path = data / "benchmark/earlier_test2/dropped_rows.jsonl"
     if path.exists():
         for line in path.read_text(encoding="utf-8").splitlines():
             d = json.loads(line)
@@ -271,7 +271,7 @@ def main() -> None:
     args = ap.parse_args()
     if args.final and args.draft:
         ap.error("--final or --draft, not both")
-    m = export(args.data, args.out or args.data / "benchmark" / "test_v1", args.final, args.draft)
+    m = export(args.data, args.out or args.data / "benchmark" / "earlier_test_v1", args.final, args.draft)
     print(f"schema {m['schema_version']}: {m['rows']['main']} dòng chính, {m['rows']['silver']} dòng silver; "
           f"lineage {m['lineages']}")
     print(f"  dòng ranh giới: {m['boundary_rows']}")

@@ -3,7 +3,7 @@
 
     .venv/bin/python scripts/review/version_recheck_score.py \\
         --dir data/labels/human_scoring/recheck_versions --filled phieu_da_cham.xlsx \\
-        --out runs/final/version_recheck/agreement.json --note "<ai chấm, có AI nháp không>"
+        --out runs/final_test/version_recheck/agreement.json --note "<ai chấm, có AI nháp không>"
 """
 from __future__ import annotations
 

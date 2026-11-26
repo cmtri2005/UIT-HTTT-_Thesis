@@ -50,10 +50,10 @@ def describe(rows, predictions, corpus):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--release', type=Path, default=Path('data/benchmark/test_v1/vilextime.jsonl'))
+    ap.add_argument('--release', type=Path, default=Path('data/benchmark/earlier_test_v1/vilextime.jsonl'))
     ap.add_argument('--index', type=Path, default=Path('data/derived/corpus/index.sqlite'))
-    ap.add_argument('--predictions', type=Path, default=Path('runs/dev/pilot_generation/dev'))
-    ap.add_argument('--out', type=Path, default=Path('runs/dev/verifier/report.json'))
+    ap.add_argument('--predictions', type=Path, default=Path('runs/dev_tuning/pilot_generation/dev'))
+    ap.add_argument('--out', type=Path, default=Path('runs/dev_tuning/verifier/report.json'))
     args = ap.parse_args()
     rows = [r for r in load_rows(args.release) if r['split'] == 'dev' and r['as_of_strategy'] == 'giua_khoang']
     corpus = Corpus(args.index)

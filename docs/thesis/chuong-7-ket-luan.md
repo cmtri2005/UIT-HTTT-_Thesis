@@ -12,7 +12,7 @@
 <!-- nguồn: docs/thesis/chuong-6-thuc-nghiem.md §6.6; docs/thesis/chuong-4-vilextime.md -->
 
 **Thước đo đã được người kiểm một phần.** Accuracy của scorer khớp người chấm 96/100 câu (92/100 nếu dùng nhãn phiếu chấm lại 33 câu; cùng người chấm đổi đúng/sai ở 6/33 dòng), không có câu nào scorer chấm đúng mà người chấm sai. Bản chấm đầu là 95/100; sau khi thấy các dòng lệch, người chấm đổi một nhãn theo hướng khớp scorer. Mẫu gồm `b1`, `b4`, `proposed2`, lần 1, T2/T3/T6, không có T1; một người chấm, là tác giả. Trong phạm vi đó, không cần giám khảo LLM cho Accuracy (§6.6.5).
-<!-- nguồn: runs/final/posthoc/human_score/agreement.json -->
+<!-- nguồn: runs/final_test/extra_analysis/human_score/agreement.json -->
 
 ## 7.2. Trả lời câu hỏi nghiên cứu
 
@@ -21,7 +21,7 @@
 - **RAG phẳng sai phiên bản thường xuyên.** Trên bộ cuối, lần 1, câu trả lời của `b2ctx` và `b4` chứa đoạn chỉ phiên bản khác có ở 0,253 và 0,291 trong 265 dòng có đoạn phân biệt phiên bản. Accuracy chỉ 0,302 và 0,324. Đây là số theo scorer; phiếu người chưa xác nhận độ lớn của tỷ lệ sai phiên bản (§6.6.5).
 - **Cỡ của bài toán thời gian.** Khi được cấp sẵn căn cứ, cùng generator đúng 0,956 với bản đúng mốc nhưng chỉ 0,456 với bản hiện hành.
 - **LLM không truy xuất gần như không trả lời đúng.** `b1` (GPT-4o mini) có Accuracy 0,006; người chấm thấy 2/34 câu đúng, phần lớn sai nội dung. Tỷ lệ sai phiên bản của nó chưa đo được, và mới có một LLM.
-<!-- nguồn: runs/final/main/r1/results.md; runs/final/posthoc/human_score/agreement.json -->
+<!-- nguồn: runs/final_test/main/r1/results.md; runs/final_test/extra_analysis/human_score/agreement.json -->
 
 ### RQ2. Hệ đề xuất so với đối chứng (xác nhận)
 
@@ -32,10 +32,10 @@ Hệ đề xuất `proposed2` hơn RAG phẳng lai ghép (`b4`) và hơn mở r�
 | F1 | P − `b4`, Accuracy | +0,343 [+0,283; +0,401] | ủng hộ, ổn định |
 | F2 | P − `b5`, Accuracy | +0,355 [+0,297; +0,414] | ủng hộ, ổn định |
 | F3 | P − `b4`, `wrong_version` | −0,283 [−0,330; −0,237] | ủng hộ, ổn định |
-<!-- nguồn: runs/final/main/r1/confirm.json; runs/final/main/compare_runs.json -->
+<!-- nguồn: runs/final_test/main/r1/confirm.json; runs/final_test/main/compare_runs.json -->
 
 Scorer không chấm dễ dãi (§6.6.5). Trên mẫu người chấm, `proposed2` vẫn hơn `b4` rõ (23/33 so với 10/33 câu đúng), cùng chiều F1; đây là mô tả, không phải phép so ghép cặp. Độ lớn của F3 là theo scorer. `b5` là mở rộng một bước tự xây, không phải GraphRAG đầy đủ. **(Thăm dò)** So với một GraphRAG thật (LightRAG, thêm sau khi đã thấy bộ cuối): `proposed2 − lightrag` +0,321 [+0,249; +0,392] lần 1, +0,308 [+0,235; +0,382] lần 2; LightRAG chỉ ngang RAG phẳng (`lightrag − b4` +0,022 [−0,037; +0,080] lần 1). LightRAG chạy trên kho nhỏ hơn với ngữ cảnh dài hơn, nên đây không phải so sánh ngang hàng (§6.6.6).
-<!-- nguồn: runs/final/lightrag_baseline/test/{r1,r2}/lightrag_vs_b4_p.score.json -->
+<!-- nguồn: runs/final_test/lightrag_baseline/test/{r1,r2}/lightrag_vs_b4_p.score.json -->
 
 
 ### RQ3 và giả thuyết đề cương: lợi ích đến từ đâu
@@ -48,7 +48,7 @@ Scorer không chấm dễ dãi (§6.6.5). Trên mẫu người chấm, `proposed
 - Accuracy trên `all`, lần 1: `proposed2` − `b7pp` +0,006 [−0,016; +0,028]; `proposed2` − `b7plus` +0,013 [−0,009; +0,035]. KTC chứa 0 ở cả hai lần: không thấy lợi ích lớn hơn khoảng 4 điểm từ phần đồ thị lúc truy vấn.
 - TV-R@1: kho phiên bản không có bộ lọc còn kém lớp lời văn gốc (`b7v` − `b7` −0,044), và cần bộ lọc mới có lợi (`b7plus` − `b7v` +0,159).
 - Lọc cứng trước khi xếp hạng còn giá trị riêng so với chỉ in khoảng hiệu lực vào prompt (Accuracy `b7plus` − `bvdate` +0,245 [+0,18; +0,31] lần 1, +0,230 [+0,17; +0,29] lần 2).
-<!-- nguồn: runs/final/main/r1/confirm.json; runs/final/posthoc/attribution.json; runs/final/posthoc/test/ -->
+<!-- nguồn: runs/final_test/main/r1/confirm.json; runs/final_test/extra_analysis/attribution.json; runs/final_test/extra_analysis/test/ -->
 
 **Kết luận cho RQ3 (xác nhận).** Lợi ích đo được đến từ hai nấc lọc: lọc theo ngày văn bản (F4) và **kho phiên bản kèm lọc khoảng hiệu lực** (F5). Đồ thị đóng vai **ngoại tuyến**: dựng lịch sử sửa đổi và tính khoảng hiệu lực. **(Thăm dò)** Trên `all`, phần đồ thị lúc truy vấn không cho thấy lợi ích Accuracy lớn hơn khoảng 4 điểm; ngoại lệ thăm dò là T6 không đáp án (+0,174 so với `b7plus`, mục dưới). Đề cương đặt giả thuyết vào biểu diễn đồ thị; kết quả ủng hộ ở mức biểu diễn phiên bản dựng từ đồ thị, không ở mức duyệt đồ thị khi trả lời.
 
@@ -57,14 +57,14 @@ Scorer không chấm dễ dãi (§6.6.5). Trên mẫu người chấm, `proposed
 - **Xác nhận:** F7 (P − `b7pp`, T6 không đáp án) **không đủ bằng chứng** ở cả hai lần: +0,087 [0,000; +0,217] và +0,043 [0,000; +0,130]. Chỉ có 23 lineage, MDE khoảng 0,185, nên đây không phải bằng chứng hiệu ứng bằng không.
 - **Thăm dò:** `proposed2` − `b7plus` trên T6 không đáp án là +0,174 [+0,043; +0,348] ở cả hai lần. `proposed2` khẳng định "hết hiệu lực" 11 lần, đúng 7 (precision 0,64; recall 7/23).
 - Nhận diện bãi bỏ vẫn yếu, kể cả với hệ tốt nhất (recall 7/23).
-<!-- nguồn: runs/final/main/r1/confirm.json; runs/final/posthoc/attribution.json -->
+<!-- nguồn: runs/final_test/main/r1/confirm.json; runs/final_test/extra_analysis/attribution.json -->
 
 ### Độ bền của kết luận
 
 - **Gold mù do người đọc nguồn** phủ 105/156 lineage (215 dòng, gồm cả 23 T6; không có T1): 24 lineage đợt 1, 81 lineage do NMT đọc; luật sư đọc lại mù 30 dòng, đồng thuận hiệu lực với NMT 29/30 (κ 0,932). Hai người đọc tìm ra 3 lineage kho sai; sửa gold theo ADR 0006 §7 không đổi phán quyết F1–F7 nào. Trên 105 lineage, F1–F6 cùng chiều với toàn bộ cuối ở cả hai lần. NMT là đồng tác giả; người ngoài nhóm chỉ đọc 30 dòng.
 - **Người chấm câu trả lời** khớp scorer 96/100 (bản đầu 95/100; 92/100 theo phiếu chấm lại; một người chấm, mẫu không có T1).
 - **(Thăm dò) Xếp hạng là nút thắt lớn:** khi căn cứ đúng đứng hạng 1, `proposed2` đúng 102/107 (95%); nhưng căn cứ đúng chỉ đứng hạng 1 ở 107/295 dòng có đáp án. Trong 247 dòng có căn cứ đúng trong prompt, `proposed2` vẫn sai 46 (5 khi căn cứ đúng ở hạng 1, 41/140 khi ở hạng 2 trở xuống).
-<!-- nguồn: runs/final/posthoc/gold_subset/; runs/final/posthoc/human_score/agreement.json; runs/final/posthoc/attribution.json -->
+<!-- nguồn: runs/final_test/extra_analysis/gold_subset/; runs/final_test/extra_analysis/human_score/agreement.json; runs/final_test/extra_analysis/attribution.json -->
 
 ## 7.3. Điều chưa thể kết luận
 

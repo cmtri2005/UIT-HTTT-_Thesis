@@ -7,7 +7,7 @@
 - Kiến trúc L0–L5: có đủ. `proposed2` = từ vựng + dense + lọc phiên bản lan truyền + mở rộng 1 bước + Verifier.
 - Baseline: `b1`…`b7`, LightRAG, KG phân cấp `b6`, chỉ lọc siêu dữ liệu `b7`.
 - Chỉ số: Recall@k, MRR, TV-Recall, Accuracy, F1, TVER, VCR, TCS. LLM-judge có script, chưa hiệu chuẩn.
-- RQ1–RQ3 có câu trả lời (G4, `runs/final/main/r1/test/all.score.json`, 318 dòng):
+- RQ1–RQ3 có câu trả lời (G4, `runs/final_test/main/r1/test/all.score.json`, 318 dòng):
   - RQ1: `b1` Acc 0,006; RAG phẳng 0,30–0,34, TVER 0,54.
   - RQ2: `proposed2` 0,667 so với `b4` 0,324, `b5`/`b6` 0,31–0,34.
   - RQ3: lợi ích đến từ kho phiên bản + lọc: `b7plus − b7` +0,167; `proposed2 − b7plus` +0,013 [−0,009; +0,035].

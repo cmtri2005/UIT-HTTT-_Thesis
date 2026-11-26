@@ -26,7 +26,7 @@ vocabulary, so free-text codes cannot creep back in.
                        validity flags of the lineage (data/labels/validity_queue.tsv)
                        and the amending documents, since guideline 1.2 asks the
                        auditor to check the gold at those dates too;
-                       a row whose lineage was dropped (data/benchmark/test2/dropped.jsonl)
+                       a row whose lineage was dropped (data/benchmark/earlier_test2/dropped.jsonl)
                        is still there, read from its group file, with the drop in `fix`;
                        a label on any other row the release no longer ships is left out
     import-audit XLSX  writes `audit`, `auditor`, `audit_note` filled in that
@@ -288,7 +288,7 @@ def audit_sheet(data: Path, out: Path, group: str | None) -> None:
     ws.append(SHEET)
     todo = [x for x in read(data / "labels/labels.tsv")
             if x["audit_required"] and not x["audit"] and (not group or x["group"] == group)]
-    dropfile = data / "benchmark/test2/dropped.jsonl"
+    dropfile = data / "benchmark/earlier_test2/dropped.jsonl"
     dropped = ({d["lineage_id"]: d for d in map(json.loads, dropfile.open(encoding="utf-8"))}
                if dropfile.exists() else {})
     again = collections.defaultdict(list)          # boundary id -> "as_of (mode)" of its twin and after-end row

@@ -28,7 +28,7 @@ Phụ lục chỉ xác nhận những hoạt động có hồ sơ trong kho. A/B
 | E7 lượt máy | Script phân loại lỗi theo quy tắc ưu tiên, tạo thống kê và phiếu | Assert tổng, test hành vi và đối chiếu với score đã lưu | Chưa có người mã hóa; tầng máy là phân tích thăm dò |
 | Tài liệu và bản nháp khóa luận | AI hỗ trợ tổng hợp code, ADR, số đo và soạn văn bản | Bản nháp hiện chờ tác giả và người hướng dẫn rà nội dung, số liệu, cách diễn giải | Không khai rằng đã được GVHD hoặc UIT phê duyệt |
 
-<!-- nguồn: data/labels/kiem_A.tsv; data/benchmark/test_v1/vilextime_silver.jsonl; data/labels/annotation_rounds/gold1/gold_sample.tsv; data/labels/annotation_rounds/gold1/gold_A.tsv; data/labels/annotation_rounds/gold1/gold_B.tsv; yêu cầu C9b của tác giả -->
+<!-- nguồn: data/labels/kiem_A.tsv; data/benchmark/earlier_test_v1/vilextime_silver.jsonl; data/labels/annotation_rounds/gold1/gold_sample.tsv; data/labels/annotation_rounds/gold1/gold_A.tsv; data/labels/annotation_rounds/gold1/gold_B.tsv; yêu cầu C9b của tác giả -->
 <!-- nguồn: docs/vilextime-datasheet.md -->
 <!-- nguồn: docs/reports/D5_bien_ban.md -->
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
@@ -39,13 +39,13 @@ Phụ lục chỉ xác nhận những hoạt động có hồ sơ trong kho. A/B
 ## A.3. Những giới hạn kiểm tra không được lược bỏ
 
 Metadata v1.0 của phần test ranh giới ghi 88 dòng nhãn A+B, 33 dòng luật sư và 90 dòng nhãn agent. Trong phần luật sư có các phiếu hỗ trợ bởi Claude. Đây là nguồn gốc nhãn, không phải tỷ lệ độ đúng của từng loại người hoặc model. Việc mang nhãn theo lineage sang mốc giữa khoảng không tạo thêm một lượt người kiểm độc lập.
-<!-- nguồn: data/benchmark/test_v1/vilextime_meta.jsonl -->
+<!-- nguồn: data/benchmark/earlier_test_v1/vilextime_meta.jsonl -->
 
 Manifest final ghi AC1 giữa người gán là 0,377 trên 246 dòng, κ 0,235. Hiệu chuẩn agent được datasheet ghi AC1 0,721 trên 178 dòng và không đạt cổng toàn tập. Các giá trị này phải được giữ khi công bố vai trò AI; không chỉ nêu rằng “nhãn đã được kiểm”. Bộ gold độc lập vẫn chưa hoàn tất.
-<!-- nguồn: data/benchmark/test_v1/manifest.json -->
+<!-- nguồn: data/benchmark/earlier_test_v1/manifest.json -->
 <!-- nguồn: docs/vilextime-datasheet.md -->
 
-Test 2 — nhãn LLM — có một lần chấm sai được khai báo ở amendment 04/11. Việc sửa đáp án ngắn và chấm lại đầu ra có sẵn là một sửa lỗi sau quan sát kết quả, không phải khai báo trước. Accuracy hợp lệ được lưu riêng ở `runs/early/generation_test2/rescore/`. Sự minh bạch về sai sót là một phần hồ sơ tái lập, không phải bằng chứng rằng các lỗi chưa biết đã được loại hết.
+Test 2 — nhãn LLM — có một lần chấm sai được khai báo ở amendment 04/11. Việc sửa đáp án ngắn và chấm lại đầu ra có sẵn là một sửa lỗi sau quan sát kết quả, không phải khai báo trước. Accuracy hợp lệ được lưu riêng ở `runs/earlier_tests/generation_test2/rescore/`. Sự minh bạch về sai sót là một phần hồ sơ tái lập, không phải bằng chứng rằng các lỗi chưa biết đã được loại hết.
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
 
 Các phiếu E7 người gán không chứa cột hệ hoặc tầng máy. File máy giữ hệ và tầng, liên kết qua `stt`; thứ tự mẫu giữ nguyên khi bỏ cột hệ. Biện pháp này giảm lộ trực tiếp danh tính hệ, nhưng không bảo đảm người gán không thể đoán hệ từ phong cách câu trả lời hoặc loại bằng chứng. Chưa có kết quả kiểm độ mù hoặc độ đồng thuận E7 của người.
@@ -55,11 +55,11 @@ Các phiếu E7 người gán không chứa cột hệ hoặc tầng máy. File 
 ### Khai báo bổ sung về đợt gán và hòa giải 26/10
 
 Ước tính 5 giây/dòng trong kế hoạch chưa có log thực để xác minh, nên không dùng làm số đo. Phiếu A có 971 dòng điền `phut` trên 1.120 dòng tổng, trung vị 1,0 phút và tổng 990 phút; đây là thời lượng khai trong phiếu, không phải timestamp tự động. AC1 0,377 trên 246 dòng vẫn là phép đo người–người có đồng thuận thấp, không tự xác nhận chất lượng pháp lý.
-<!-- nguồn: data/labels/kiem_A.tsv; data/benchmark/test_v1/manifest.json -->
+<!-- nguồn: data/labels/kiem_A.tsv; data/benchmark/earlier_test_v1/manifest.json -->
 <!-- nguồn: docs/plans/active/master-plan.md, D1 -->
 
 Trong vòng theo hướng dẫn 3.0 có 101 dòng lệch, 97 dòng là A đạt và B không đạt; luật sư đứng về phía B ở 87/101 dòng, nhưng đã có phiếu Claude hỗ trợ. Metadata test v1.0 ghi 10 dòng luật sư có hỗ trợ Claude. Hai phạm vi này khác nhau: không dùng số ở test thay số của toàn vòng hòa giải 26/10. Cần gọi ghi chú Claude là **bản nháp hỗ trợ**, không phải nhận định độc lập của người hoặc bằng chứng luật sư đã tự kiểm không có gợi ý.
-<!-- nguồn: docs/plans/active/master-plan.md, D1; data/benchmark/test_v1/vilextime_meta.jsonl -->
+<!-- nguồn: docs/plans/active/master-plan.md, D1; data/benchmark/earlier_test_v1/vilextime_meta.jsonl -->
 
 ## A.4. Bản nháp hiện tại và trách nhiệm tác giả
 
@@ -94,7 +94,7 @@ Theo quy trình bộ cuối, AI có thể hỗ trợ mã, chuẩn bị phiếu v
 - **Xem lại sau khi thấy kết quả:** khi báo bản đầu (95/100), Claude đã nêu các dòng lệch với scorer và gợi ý xem lại dòng 5, 36, 93. Sau đó CMT đổi một nhãn (dòng 93, `dung` → `sai_noi_dung`, theo hướng khớp scorer). Chương 6 báo cả hai bản.
 - **Kiểm số:** các số hậu nghiệm, số chấm tay và chương 7 được một phiên AI tách riêng (`evidence-gate`) tái chạy và đối soát; các lượt gate 14/11 tìm ra lỗi số và câu chữ ở Chương 6 và 7 (kể cả hai lỗi các lượt trước bỏ sót), đã sửa trước khi commit. Đây là kiểm của AI, không phải duyệt của người hay GVHD.
 - **Viết:** Claude viết lại Chương 7 theo kết quả G4 và sửa câu chữ Chương 6 theo các lượt gate. Hai tác giả vẫn phải đọc và chịu trách nhiệm từng kết luận.
-<!-- nguồn: docs/thesis/chuong-6-thuc-nghiem.md §6.6, §6.6.5; runs/README.md; runs/final/posthoc/human_score/agreement.json -->
+<!-- nguồn: docs/thesis/chuong-6-thuc-nghiem.md §6.6, §6.6.5; runs/LOG.md; runs/final_test/extra_analysis/human_score/agreement.json -->
 
 ### Cập nhật C9b
 
@@ -107,7 +107,7 @@ Lượt C12 sửa theo phản biện 05/11 chỉ đọc artifact cục bộ, tí
 ### Đối chiếu lại các con số phản biện C12
 
 Không chép số power sau Holm 0,25 ở V2: với cùng hiệu và phương sai theo cụm từ file, xấp xỉ chuẩn cho 150 lineage cho 0,346 ở α = 0,05, và 0,141 ở ngưỡng α/6; kết quả phụ thuộc bậc Holm, không có một số cố định trước khóa họ. L2 nói 971/971 nhưng đó là phần có verdict/thời gian, còn toàn phiếu có 1.120 dòng; giữ 971/1.120 và phân biệt số tự khai với log thực. Các ý cảnh báo của V2/L2 vẫn được tiếp thu, chỉ không nhận các con số chưa đúng phạm vi.
-<!-- nguồn: scripts/paper/paper_values.py; runs/early/retrieval_test2/test/b7.jsonl; runs/early/retrieval_test2/test/b7pp.jsonl; data/benchmark/test2/test2_release_v2.jsonl; data/labels/kiem_A.tsv; docs/reports/phan-bien-ban-nhap-20261105.md, V2 và L2 -->
+<!-- nguồn: scripts/paper/paper_values.py; runs/earlier_tests/retrieval_test2/test/b7.jsonl; runs/earlier_tests/retrieval_test2/test/b7pp.jsonl; data/benchmark/earlier_test2/test2_release_v2.jsonl; data/labels/kiem_A.tsv; docs/reports/phan-bien-ban-nhap-20261105.md, V2 và L2 -->
 
 ## A.5. Quy định cơ sở đào tạo
 

@@ -2,7 +2,7 @@
 
 **AI-đề xuất (`vn-law-verifier`, sonnet, hai lô không trùng), chờ luật sư chốt.** Nguồn: toàn văn vbpl (`data/raw/`, API vbpl), `data/temporal.sqlite` chỉ đọc, Lawgical 5 lượt (lô A 3, lô B 2).
 Câu hỏi: nhãn "không đáp án" có đúng theo phán quyết 05/10 (R2: câu hỏi nội dung trả bằng quy phạm đang điều chỉnh), hay nội dung đã chuyển sang quy phạm khác?
-Dữ liệu dòng: `docs/reports/chan-doan-t6-dev-20261111.tsv`; câu trả lời: `runs/dev/rebuild_rerun/dev/proposed2.jsonl`.
+Dữ liệu dòng: `docs/reports/chan-doan-t6-dev-20261111.tsv`; câu trả lời: `runs/dev_tuning/rebuild_rerun/dev/proposed2.jsonl`.
 
 Cả 17 lệnh bãi bỏ đều đúng và có hiệu lực trước ngày hỏi (gold về bãi bỏ: 0 nghi).
 

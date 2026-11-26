@@ -22,7 +22,7 @@ Phản biện trong dự án do một phiên AI (`thesis-critic`) làm, chỉ đ
   - "TVER trên gold mù" không định nghĩa được. TVER chấm *mọi* trích dẫn, phần lớn không phải đơn vị gold, theo `effective_intervals` của đồ thị. Gold mù chỉ kiểm `version_id` của dòng.
 - **Bằng chứng [đã kiểm]:**
   - Scorer: `score_vilextime.py:163-164, 216, 459` dùng `v["effective_intervals"]`.
-  - `runs/dev/verifier/report.json` tự ghi "Verifier và TVER dùng chung khoảng hiệu lực của đồ thị".
+  - `runs/dev_tuning/verifier/report.json` tự ghi "Verifier và TVER dùng chung khoảng hiệu lực của đồ thị".
   - TVER `b7pp` = 0,000 [0,000; 0,000] ở cả hai bộ.
   - VBHN: chỉ 2 cặp so được, khớp 1 (`docs/reports/doi-chieu-vbhn.md`).
   - Phiếu gold: `gold_A`/`gold_B` có 0/37 và 0/38 ô điền.
@@ -69,14 +69,14 @@ Phản biện trong dự án do một phiên AI (`thesis-critic`) làm, chỉ đ
   - T3 trong đề cương là "truy vết A→B→C, đo lợi ích của đồ thị". Thực tế T3 là "≥ 3 đáp án theo mốc", không đòi truy vết.
   - Claude chọn đáp án ngắn, tức chọn chính tiêu chí chấm.
   - Có bước LLM lọc trước khi đưa người.
-  - Bốn miền đề cương chỉ chiếm khoảng 36% dòng: `khac` 136/211 dòng test v1.0 và 243/389 dòng silver; đất đai chỉ 5 dòng / 3 lineage (`runs/early/domain_breakdown/report.json`, meta `domain`).
+  - Bốn miền đề cương chỉ chiếm khoảng 36% dòng: `khac` 136/211 dòng test v1.0 và 243/389 dòng silver; đất đai chỉ 5 dòng / 3 lineage (`runs/earlier_tests/domain_breakdown/report.json`, meta `domain`).
   - TCS, VCR, MRR, EM/F1 và LLM-judge chưa báo.
   - L4 hứa "trước tiên lọc", nhưng `rel_up` lấy seed *trước* bộ lọc (chuong-5:117).
 - **Sửa:** gộp mục §11 của định nghĩa vào §1.6, thêm các dòng trên kèm số đo.
 
 **C5. Hai "phần riêng" còn lại của paper chưa có bằng chứng**
 - **Ở đâu:** paper:60, 66 và 77(b); chuong-1:20; chuong-2:211–215.
-- **Nấc lan truyền [đã kiểm]:** `b7pp − b7plus` = +0,000 [0; 0] ở **mọi nhóm, cả hai bộ** (`runs/early/retrieval_test_v1/test/ladder.score.json`, `runs/early/retrieval_test2/...`).
+- **Nấc lan truyền [đã kiểm]:** `b7pp − b7plus` = +0,000 [0; 0] ở **mọi nhóm, cả hai bộ** (`runs/earlier_tests/retrieval_test_v1/test/ladder.score.json`, `runs/earlier_tests/retrieval_test2/...`).
   - XN5 chưa từng chạy.
   - Thiết kế cuối (master-plan.md:212–219) không có kiểm định nào cho `b7pp − b7plus`.
   - Dòng "T6 lan truyền" thực ra so phần mở rộng trực tuyến (`proposed2 − b7pp`), không so lan truyền.
@@ -213,7 +213,7 @@ Phản biện trong dự án do một phiên AI (`thesis-critic`) làm, chỉ đ
 - **Sửa:** báo cả hai, nhất là cho `proposed3`.
 
 **V6. Bộ dữ liệu thiên về truy xuất từ vựng**
-- [đã kiểm] Dense R@1 0,253 so với BM25 0,409 trên dev (`runs/README.md`, W2-12).
+- [đã kiểm] Dense R@1 0,253 so với BM25 0,409 trên dev (`runs/LOG.md`, W2-12).
 - [đã kiểm] Top-20 ở T2 v1.0 là 0,978 (master plan D5). Số trùng chữ 0,48/0,30 chưa lưu thành file (paper:155).
 - [suy đoán] Câu hỏi viết từ phần lời văn thay đổi, nên lai ghép (L4) khó cho thấy lợi ích trên bộ này.
 - **Sửa:** lưu mức trùng chữ từng dòng của bộ cuối; báo kết quả theo tầng trùng chữ.
@@ -268,8 +268,8 @@ Phản biện trong dự án do một phiên AI (`thesis-critic`) làm, chỉ đ
 
 ### Số đã đối chiếu: khớp hết [đã kiểm]
 
-- **E3 v1.0** (`runs/early/generation_test_v1/test/all.score.json`, `confirm.json`): Accuracy, TV-R@1, TVER, độ phủ trích dẫn, `tver_strict` của 6 hệ; Accuracy theo T1, T2, T3, T6; XN1–XN9 đủ ước lượng, KTC, p Holm.
-- **E3 test 2** (`runs/early/generation_test2/rescore/`): như trên.
+- **E3 v1.0** (`runs/earlier_tests/generation_test_v1/test/all.score.json`, `confirm.json`): Accuracy, TV-R@1, TVER, độ phủ trích dẫn, `tver_strict` của 6 hệ; Accuracy theo T1, T2, T3, T6; XN1–XN9 đủ ước lượng, KTC, p Holm.
+- **E3 test 2** (`runs/earlier_tests/generation_test2/rescore/`): như trên.
 - **Phân rã:** `b7 − b5` (+0,161 / +0,159); `proposed − b7pp` (+0,019 [+0,005; +0,039] / +0,018 [−0,026; +0,058]); Bảng 12–13 của paper.
 - **E1:** TV-R@1 và R@1 của 5 nấc ở hai bộ; `b7v − b7`, `b7plus − b7v`, `b7pp − b7plus`.
 - **Bãi bỏ và `b1`:** 0/15 dòng bãi bỏ; 1/16 cho `b2ctx`, `b7`, `b7pp`, `proposed` (0 cho `b1`, `b5`); `b1` để trống 182/196 và 208/211.

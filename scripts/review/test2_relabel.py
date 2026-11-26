@@ -89,8 +89,8 @@ def calib_records(data: Path, evidence_paths: list[Path]) -> tuple[list[dict], d
     truth = {l: t for l, revs in reviews.items() if (t := truth_of(revs, len(lineages[l])))}
     truth = {l: t for l, t in truth.items()
              if (lineages[l][0]["target"]["law_id"], lineages[l][0]["target"]["citation"]) not in EXAMPLES}
-    questions = {q["lineage_id"]: q for q in jsonl(ROOT / "data/benchmark/test2/questions.jsonl") if q.get("question")}
-    shorts = {(s["lineage_id"], s["version_id"]): s["short_answer"] for s in jsonl(ROOT / "data/benchmark/test2/short_answers.jsonl")}
+    questions = {q["lineage_id"]: q for q in jsonl(ROOT / "data/benchmark/earlier_test2/questions.jsonl") if q.get("question")}
+    shorts = {(s["lineage_id"], s["version_id"]): s["short_answer"] for s in jsonl(ROOT / "data/benchmark/earlier_test2/short_answers.jsonl")}
     wanted = {r["id"] for l in truth for r in lineages[l]}
     evidence = {e["id"]: e for p in evidence_paths for e in jsonl(p) if e["id"] in wanted}
     if missing := wanted - evidence.keys():

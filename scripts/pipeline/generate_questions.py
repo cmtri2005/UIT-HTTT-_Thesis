@@ -16,7 +16,7 @@ Two rules shape this file:
   `validate()` before it is kept, and a rejection is written down with its
   reason rather than silently retried into something that passes.
 
-Output is `data/benchmark/test2/questions.jsonl`, one row per lineage,
+Output is `data/benchmark/earlier_test2/questions.jsonl`, one row per lineage,
 append-only so a run that dies at 2,000 of 2,500 resumes where it stopped.
 `build_vilextime.py` merges it into the released records.
 
@@ -24,7 +24,7 @@ Usage:
     python scripts/pipeline/generate_questions.py --group T1 --dry-run --limit 3
     python scripts/pipeline/generate_questions.py --group T1 --limit 50
     python scripts/pipeline/generate_questions.py --group T1
-    python scripts/pipeline/generate_questions.py --group T1 --sample data/benchmark/test2/sample.jsonl
+    python scripts/pipeline/generate_questions.py --group T1 --sample data/benchmark/earlier_test2/sample.jsonl
     python scripts/pipeline/generate_questions.py --group T1 --revalidate   # after changing validate()
 """
 from __future__ import annotations
@@ -383,7 +383,7 @@ def main() -> None:
     for records in by_lineage.values():
         records.sort(key=lambda r: r["as_of"])
 
-    out_path = args.out or args.data / "benchmark/test2/questions.jsonl"   # committed: not rebuildable
+    out_path = args.out or args.data / "benchmark/earlier_test2/questions.jsonl"   # committed: not rebuildable
     sibs: dict[str, list[str]] = {}
 
     def prompt_for(records):

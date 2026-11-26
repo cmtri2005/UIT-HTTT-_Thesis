@@ -53,7 +53,7 @@ def pairs(text: str) -> list[tuple[str, str]]:
 
 
 def main(data: Path = Path("data")) -> None:
-    rows = [json.loads(line) for line in open(data / "benchmark/test_v1/vilextime.jsonl", encoding="utf-8")]
+    rows = [json.loads(line) for line in open(data / "benchmark/earlier_test_v1/vilextime.jsonl", encoding="utf-8")]
     rows = [r for r in rows if r.get("answerable") and (r.get("context") or r.get("answer"))]
     keys = {f"{strip(a)} {strip(b)}" for r in rows for f in ("context", "answer") for a, b in pairs(r.get(f) or "")}
     counts: dict[str, collections.Counter] = collections.defaultdict(collections.Counter)

@@ -6,13 +6,13 @@
 
 Bảng tần suất dùng toàn bộ dòng sai, không phải mẫu phiếu. `b1` không truy xuất theo thiết kế nên RET-UNIT ở hệ này chỉ mô tả thiếu căn cứ trong prompt, không phải lỗi triển khai truy xuất. Phân loại ưu tiên không khẳng định nguyên nhân nhân quả.
 
-Đối chiếu mô tả với oracle context dev **0,854** (129/151, `runs/dev/pilot_generation/dev/all.score.json`, `oracle`, `giua_khoang/all`). Khác split, nhóm và số căn cứ; tỷ lệ có điều kiện dưới đây không phải phép so sánh ghép cặp hay bằng chứng vượt oracle. Không thêm kiểm định hoặc đổi chỉ số.
+Đối chiếu mô tả với oracle context dev **0,854** (129/151, `runs/dev_tuning/pilot_generation/dev/all.score.json`, `oracle`, `giua_khoang/all`). Khác split, nhóm và số căn cứ; tỷ lệ có điều kiện dưới đây không phải phép so sánh ghép cặp hay bằng chứng vượt oracle. Không thêm kiểm định hoặc đổi chỉ số.
 
 Tái lập tuần tự: `.venv/bin/python scripts/review/e7_error_analysis.py report`; `.venv/bin/python scripts/review/e7_error_analysis.py sample`. Phiếu lấy tối đa 20 lỗi/hệ × nhóm, seed `vilextime-e7-0411`. Theo MASTER_RESEARCH_GUIDE §9.4, người gán dùng RET-UNIT, RET-VER-OLD, RET-VER-NEW, FUT, REP-DIRECT, REP-ANCESTOR, GEN-HEDGE, GEN-MISREAD, ABST-WRONG, CITE, GOLD, QUESTION; 30 dòng đầu mỗi phiếu cần hai người mã hóa độc lập. Chỉ gửi `phieu_*.tsv` không có hậu tố `_may` cho người gán; các cột mã và ghi chú A/B để trống.
 
 ## v1.0
 
-Nguồn: `data/benchmark/test_v1/vilextime.jsonl`, `runs/early/generation_test_v1/test`; split `test`, lát `giua_khoang`.
+Nguồn: `data/benchmark/earlier_test_v1/vilextime.jsonl`, `runs/earlier_tests/generation_test_v1/test`; split `test`, lát `giua_khoang`.
 
 | Hệ | Nhóm | N | Sai | ABST | RET-UNIT | RET-VER-OLD | RET-VER-NEW | GEN-BLANK | GEN-MISREAD | MISREAD chứa bản khác |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -86,7 +86,7 @@ Ca biên trên các hệ (đếm lượt hệ × dòng): cả hướng cũ và m
 
 ## Test 2 — nhãn LLM, không phải người
 
-Nguồn: `data/benchmark/test2/test2_release_v2.jsonl`, `runs/early/generation_test2/test`; split `test`, lát `giua_khoang`.
+Nguồn: `data/benchmark/earlier_test2/test2_release_v2.jsonl`, `runs/earlier_tests/generation_test2/test`; split `test`, lát `giua_khoang`.
 
 | Hệ | Nhóm | N | Sai | ABST | RET-UNIT | RET-VER-OLD | RET-VER-NEW | GEN-BLANK | GEN-MISREAD | MISREAD chứa bản khác |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|

@@ -25,7 +25,7 @@ hành một file phẳng 9 cột.
 | `vilextime.csv`, `vilextime_silver.csv` | 13 cột như bản `.jsonl`, để mở bằng Excel: UTF-8 có BOM, `accepted_evidence` nối bằng `;`, ô rỗng là null |
 | `manifest.json` | phiên bản, số dòng theo nhóm × chế độ × split, lineage bị loại theo mã lý do, đồng thuận, sha256 |
 
-Thư mục ra: `data/benchmark/test_v1/`, riêng khỏi đầu vào dựng dữ liệu ở `data/benchmark/test2/` và bản nội bộ
+Thư mục ra: `data/benchmark/earlier_test_v1/`, riêng khỏi đầu vào dựng dữ liệu ở `data/benchmark/earlier_test2/` và bản nội bộ
 `data/derived/vilextime/release.jsonl`. Là file dẫn xuất (gitignore như `release.jsonl`), dựng lại bằng lệnh ở mục Cách xuất.
 
 ## File chính `vilextime.jsonl` (13 cột)
@@ -114,7 +114,7 @@ Không đưa vào schema: trường `reasoning` sinh bằng máy (CMT chưa ch�
 
 ## Sửa câu chữ
 
-Người kiểm sửa câu hỏi và đáp án ngắn ngay trên `label_ui.py`. Bản sửa ghi vào `data/benchmark/test2/questions.jsonl` và
+Người kiểm sửa câu hỏi và đáp án ngắn ngay trên `label_ui.py`. Bản sửa ghi vào `data/benchmark/earlier_test2/questions.jsonl` và
 `short_answers.jsonl` (bản model giữ ở `model_question`, `model_short_answer`; `edited_by`, `edited_at`), nên
 `question_source` của dòng phát hành nói rõ câu nào người đã sửa. Lời văn luật (`context`), `as_of`, `version_id`
 không sửa tay: sai thì dòng là `khong_dat`.
@@ -128,7 +128,7 @@ python scripts/pipeline/build_vilextime.py && python scripts/pipeline/sample_vil
 python scripts/pipeline/export_release.py --draft    # đủ mọi dòng (trừ lineage bị loại) để đọc
 python scripts/pipeline/export_release.py            # bản ứng viên: dòng chưa kiểm vào silver
 python scripts/pipeline/export_release.py --final    # từ chối, không ghi gì, khi còn dòng ranh giới chưa có nhãn cuối
-python scripts/eval/score_vilextime.py pred.jsonl --release data/benchmark/test_v1/vilextime.jsonl
+python scripts/eval/score_vilextime.py pred.jsonl --release data/benchmark/earlier_test_v1/vilextime.jsonl
 ```
 
 ## Còn mở

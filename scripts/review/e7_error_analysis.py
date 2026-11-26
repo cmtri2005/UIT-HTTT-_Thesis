@@ -37,8 +37,8 @@ SAMPLE_SYSTEMS = ('proposed', 'b7', 'b2ctx', 'b1')
 LAYERS = ('ABST', 'RET-UNIT', 'RET-VER-OLD', 'RET-VER-NEW', 'GEN-BLANK', 'GEN-MISREAD')
 SEED = 'vilextime-e7-0411'
 DATASETS = (
-    ('v1', Path('data/benchmark/test_v1/vilextime.jsonl'), Path('runs/early/generation_test_v1/test')),
-    ('test2', Path('data/benchmark/test2/test2_release_v2.jsonl'), Path('runs/early/generation_test2/test')),
+    ('v1', Path('data/benchmark/earlier_test_v1/vilextime.jsonl'), Path('runs/earlier_tests/generation_test_v1/test')),
+    ('test2', Path('data/benchmark/earlier_test2/test2_release_v2.jsonl'), Path('runs/earlier_tests/generation_test2/test')),
 )
 
 
@@ -207,7 +207,7 @@ def main() -> None:
              '`b1` không truy xuất theo thiết kế nên RET-UNIT ở hệ này chỉ mô tả thiếu căn cứ trong prompt, '
              'không phải lỗi triển khai truy xuất. Phân loại ưu tiên không khẳng định nguyên nhân nhân quả.', '',
              'Đối chiếu mô tả với oracle context dev **0,854** (129/151, '
-             '`runs/dev/pilot_generation/dev/all.score.json`, `oracle`, `giua_khoang/all`). '
+             '`runs/dev_tuning/pilot_generation/dev/all.score.json`, `oracle`, `giua_khoang/all`). '
              'Khác split, nhóm và số căn cứ; tỷ lệ có điều kiện dưới đây không phải phép so sánh ghép cặp '
              'hay bằng chứng vượt oracle. Không thêm kiểm định hoặc đổi chỉ số.', '',
              'Tái lập tuần tự: `.venv/bin/python scripts/review/e7_error_analysis.py report`; '

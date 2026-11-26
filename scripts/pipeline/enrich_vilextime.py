@@ -63,7 +63,7 @@ and picks boundary rows as before; this step reads `selected.jsonl` and writes
       after its amending act was signed and before it applies), T6a (repealed by
       name), T6b (fell with an ancestor).
   short_answer
-      From `data/benchmark/test2/short_answers.jsonl`, keyed by (lineage, version),
+      From `data/benchmark/earlier_test2/short_answers.jsonl`, keyed by (lineage, version),
       its writer in `by` (a person or a model, audited with the row's label);
       it must be a span of the answer or lead-in,
       or several such spans joined by " … ". One that no longer is — a rebuild
@@ -448,7 +448,7 @@ def main() -> None:
     fields = domains(data, {r["target"]["document_id"] for r in rows})
 
     shorts, stale_shorts = {}, []
-    path = data / "benchmark/test2/short_answers.jsonl"
+    path = data / "benchmark/earlier_test2/short_answers.jsonl"
     if path.exists():
         for line in path.open(encoding="utf-8"):
             s = json.loads(line)

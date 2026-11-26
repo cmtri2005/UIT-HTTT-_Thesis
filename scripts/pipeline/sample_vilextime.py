@@ -18,7 +18,7 @@ Rules, in order:
   documents do not collapse into a handful of decrees;
 * a lineage is never cut between its dates.
 
-Writes `data/benchmark/test2/sample.jsonl`, committed: it is the ranking of record, and
+Writes `data/benchmark/earlier_test2/sample.jsonl`, committed: it is the ranking of record, and
 a re-run keeps it (see `sample`). Offline and deterministic given that file.
 
 `--select` is the second half, run after `generate_questions.py --sample` and
@@ -26,7 +26,7 @@ a re-run keeps it (see `sample`). Offline and deterministic given that file.
 first lineages whose question is the model's (not the template) and whose rows
 still fit, to exactly the release quota (`RELEASE`); T5 takes only the pairs the
 lawyer confirmed. A lineage listed in
-`data/benchmark/test2/dropped.jsonl` (review found it unfixable: not a norm, a
+`data/benchmark/earlier_test2/dropped.jsonl` (review found it unfixable: not a norm, a
 truncated source, too few distinct answers) is skipped as if its question had
 failed, so the next ranked lineage takes its rows; so is one rule R6 keeps out of test
 (`pending_events.blocked`).
@@ -174,8 +174,8 @@ def main() -> None:
     args = parser.parse_args()
 
     base = args.data / "derived/vilextime"
-    ranking = args.ranking or args.data / "benchmark/test2/sample.jsonl"
-    dropfile = args.data / "benchmark/test2/dropped.jsonl"
+    ranking = args.ranking or args.data / "benchmark/earlier_test2/sample.jsonl"
+    dropfile = args.data / "benchmark/earlier_test2/dropped.jsonl"
     dropped = ({json.loads(line)["lineage_id"] for line in dropfile.open(encoding="utf-8")}
                if dropfile.exists() else set())
     if args.select:

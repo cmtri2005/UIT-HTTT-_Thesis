@@ -40,7 +40,7 @@ def effect_article(raw: Path) -> str | None:
 def main(data: Path = Path("data")) -> None:
     docs = {d["document_id"]: d for d in map(json.loads, open(data / "derived/corpus/documents.jsonl", encoding="utf-8"))}
     use = collections.defaultdict(list)          # văn bản tác động -> dòng dùng nó làm mốc
-    for line in open(data / "benchmark/test_v1/vilextime_meta.jsonl", encoding="utf-8"):
+    for line in open(data / "benchmark/earlier_test_v1/vilextime_meta.jsonl", encoding="utf-8"):
         m = json.loads(line)
         for t in m["derivation"]["transitions"]:
             use[t["actor"]["document_id"]].append(m)

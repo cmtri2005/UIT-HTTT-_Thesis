@@ -38,7 +38,7 @@ Sơ đồ mô tả `proposed` đã chạy ở hai vòng thử, chỉ dùng truy 
 | L2–L3 | Trích thao tác sửa đổi, bổ sung, bãi bỏ, thay thế; hợp nhất chuỗi phiên bản, xác định hiệu lực | Đã dựng lớp phiên bản và khoảng hiệu lực; M2 chưa đạt, cần VBHN và gold mù |
 | L4 | Lọc hiệu lực trước truy xuất; kết hợp từ vựng, ngữ nghĩa và mở rộng đồ thị | `proposed` đã chạy vòng thử chỉ dùng từ vựng; `proposed2` lai ghép mới đo truy xuất trên dev |
 | L5 | Sinh có trích dẫn cấp Điều/Khoản/Điểm; Temporal Verifier kiểm trích dẫn tại mốc | Có generator và bộ kiểm ID; chưa có bằng chứng Verifier sửa đầu ra khi bộ lọc cùng tier đã áp dụng |
-<!-- nguồn: docs/de_cuong_kltn.docx; runs/README.md; docs/plans/active/master-plan.md -->
+<!-- nguồn: docs/de_cuong_kltn.docx; runs/LOG.md; docs/plans/active/master-plan.md -->
 
 ## 5.2. Bộ lọc theo mức thông tin thời gian
 
@@ -68,7 +68,7 @@ Kích thước danh sách ban đầu được khóa ở (k=20). Chế độ gi�
 Các khai báo mặc định trong `systems.py` có thể bật dense và rerank. Cấu hình đã chạy lại được ghi trong provenance của từng hệ: biến thể `-lex` tắt hai thành phần này. Bộ tìm kiếm hiện còn từ chối cấu hình yêu cầu reranker chưa được xây dựng. Vì vậy, không suy cấu hình thực nghiệm chỉ từ tên hệ hoặc giá trị mặc định trong registry.
 <!-- nguồn: scripts/eval/run_vilextime.py -->
 <!-- nguồn: src/vilexgraph/framework/retrieve.py -->
-<!-- nguồn: runs/early/generation_test_v1/test/proposed.run.json -->
+<!-- nguồn: runs/earlier_tests/generation_test_v1/test/proposed.run.json -->
 
 ## 5.4. Thang biểu diễn và phép đối chứng
 
@@ -122,7 +122,7 @@ Lúc truy xuất, FTS, đơn vị corpus và khoảng hiệu lực được đ�
 <!-- nguồn: src/vilexgraph/framework/corpus.py; src/vilexgraph/framework/retrieve.py; src/vilexgraph/framework/graphx.py -->
 
 Trên dev (151 dòng, GPT-4o mini, chạy lại sau khi sửa đồ thị ngày 11/11), Accuracy của `b7pp` là 0,709, `p2a2` 0,702, `p2a3` 0,728, `proposed2` 0,722 và `proposed3` 0,735 (§6.5). Cấu hình khóa ở ADR 0006 §2: generator `gpt-4o-mini-2024-07-18`, nhiệt độ 0, seed 20261109; embedding `dangvantuan/vietnamese-embedding`; mọi hệ có dense chạy lai ghép, k = 20, không reranker; P = `proposed2` theo quy tắc chọn khai trước. Trên bộ test cuối, `proposed2` đạt Accuracy 0,667 [0,598; 0,733] ở lần 1 (§6.6).
-<!-- nguồn: runs/dev/rebuild_rerun/all.score.json; docs/decisions/0006-ke-hoach-phan-tich-bo-test-cuoi.md §2; runs/final/main/r1/results.md -->
+<!-- nguồn: runs/dev_tuning/rebuild_rerun/all.score.json; docs/decisions/0006-ke-hoach-phan-tich-bo-test-cuoi.md §2; runs/final_test/main/r1/results.md -->
 
 ## 5.6. Sinh câu trả lời và phân biệt từ chối với hết hiệu lực
 
@@ -135,7 +135,7 @@ Parser phân biệt “còn”, “không” và “không rõ”. Chỉ khẳng
 
 Generator đã chọn là `Qwen/Qwen3-4B-Instruct-2507`, revision `cdbee75f17c01a7cc42f958dc650907174af0554`, chạy trọng số qua batch Colab, NF4 và greedy, tối đa 512 token mới. Đường này xuất prompt rồi nhập raw có kiểm hash, không gọi API từ runner để sinh cột test chính. Quyết định generator dựa trên dev; các số đo test được trình bày ở Chương 6. Chưa có model khác họ qua cổng để kiểm độ bền.
 <!-- nguồn: docs/decisions/0004-framework-truy-xuat-va-sinh.md -->
-<!-- nguồn: runs/early/generation_test_v1/test/proposed.run.json -->
+<!-- nguồn: runs/earlier_tests/generation_test_v1/test/proposed.run.json -->
 
 ## 5.7. Temporal Verifier và giới hạn tác dụng
 
@@ -147,8 +147,8 @@ Verifier kiểm các ID được câu trả lời trích, không kiểm đúng s
 <!-- nguồn: src/vilexgraph/framework/verify.py -->
 
 Trong cấu hình đề xuất, truy xuất, mở rộng và Verifier dùng cùng tier. Trên dev đã chạy, Verifier không bác câu nào; `a3` và `proposed` cho đầu ra trùng nhau. Khi bộ lọc đã áp cùng điều kiện, chưa có bằng chứng về tác dụng tăng thêm của Verifier. L5 hiện là phép kiểm nhất quán, tác dụng tăng thêm đo được trên dev bằng 0; sự tương đương `p2a3 ≡ proposed2` còn được kế hoạch ghi là do cách dựng. Đo trên cấu hình thiếu bộ lọc có thể tạo cờ nhưng vẫn dùng cùng khoảng hiệu lực với TVER, không trở thành bằng chứng pháp lý độc lập.
-<!-- nguồn: runs/dev/verifier/report.json; docs/plans/active/master-plan.md, Risks và xử lý V8 -->
-<!-- nguồn: runs/README.md; docs/plans/active/master-plan.md -->
+<!-- nguồn: runs/dev_tuning/verifier/report.json; docs/plans/active/master-plan.md, Risks và xử lý V8 -->
+<!-- nguồn: runs/LOG.md; docs/plans/active/master-plan.md -->
 
  Những đơn vị đã được cho vào prompt vì thế thường cũng qua được kiểm của Verifier. Chính docstring ghi Verifier có thể là phép kiểm không thay đổi đầu ra theo thiết kế. Không được gán mức tăng Accuracy cho Verifier nếu chưa có bằng chứng nó đã sửa hoặc bác câu nào; cũng không coi TVER thấp là bằng chứng rằng câu trả lời nhận ra đúng việc bãi bỏ.
 <!-- nguồn: src/vilexgraph/framework/verify.py -->
@@ -161,13 +161,13 @@ Trong cấu hình đề xuất, truy xuất, mở rộng và Verifier dùng cùn
 
 Mỗi dự đoán giữ ID dòng, câu trả lời, cờ hiệu lực, trích dẫn và danh sách căn cứ. Provenance bổ sung cấu hình, mã băm release, prompt, raw và revision model. Các cấu hình được thử trên dev trước khi chạy test; không thay metric khi nhìn thấy kết quả. Cùng engine và prompt làm giảm khác biệt ngoài biến đang nghiên cứu, nhưng không bảo đảm rằng một generator duy nhất (trong họ xác nhận) là baseline mạnh cho mọi loại câu hỏi.
 <!-- nguồn: scripts/eval/run_vilextime.py -->
-<!-- nguồn: runs/early/generation_test_v1/test/proposed.run.json -->
+<!-- nguồn: runs/earlier_tests/generation_test_v1/test/proposed.run.json -->
 <!-- nguồn: docs/decisions/0005-ke-hoach-phan-tich.md -->
 
 Các tài liệu cũ mô tả hybrid kèm reranker và truy vấn Neo4j/Milvus; code và provenance hiện tại chỉ xác nhận đường từ vựng, SQL và các biến thể đã nêu. Việc chưa thực hiện một thành phần phải được công bố thay vì suy từ kiến trúc dự kiến sang kết quả thực đo. Khóa luận cũng cần phân biệt bản kernel attention có mã trong repo với biến thể từng dùng trên dev nhưng chưa được lưu đầy đủ.
 <!-- nguồn: docs/decisions/0004-framework-truy-xuat-va-sinh.md -->
 <!-- nguồn: src/vilexgraph/framework/retrieve.py -->
-<!-- nguồn: runs/early/generation_test_v1/test/proposed.run.json -->
+<!-- nguồn: runs/earlier_tests/generation_test_v1/test/proposed.run.json -->
 
 ## 5.9. Câu trả lời có thể rút ra
 
