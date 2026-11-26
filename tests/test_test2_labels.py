@@ -478,7 +478,7 @@ def test_silver_stops_over_ten_percent_missing_sources(tmp_path, monkeypatch):
     import subprocess
     import test2_prepare as prepare
     data = tmp_path / 'data'
-    pub = data / 'vilextime_dataset'
+    pub = data / 'benchmark' / 'test_v1'
     pub.mkdir(parents=True)
     for name in ('vilextime.jsonl', 'vilextime_meta.jsonl'):
         (pub / name).write_text('')
